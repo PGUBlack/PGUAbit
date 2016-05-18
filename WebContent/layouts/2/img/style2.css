@@ -1,0 +1,538 @@
+FONT.text_th {
+	COLOR: #b20000; FONT-FAMILY: "MS Sans Serif", Geneva, sans-serif; FONT-SIZE: 11pt; FONT-WEIGHT: bold;TEXT-DECORATION: none;
+}
+FONT.text_th9 {
+	COLOR: #b20000; FONT-FAMILY: "MS Sans Serif", Geneva, sans-serif; FONT-SIZE: 9pt; FONT-WEIGHT: bold;TEXT-DECORATION: none; 
+}
+FONT.text_th_sm {
+	COLOR: #b90000; FONT-FAMILY: "MS Sans Serif", Geneva, sans-serif; FONT-SIZE: 9pt; FONT-WEIGHT: bold;TEXT-DECORATION: none;
+}
+
+.text_th_ab { font-family: "Arial"; font-weight: bold; font-size: 12pt; text-decoration: none; color: #134CF2 }
+
+panel {
+	Z-INDEX: 1; LEFT: 0px; WIDTH: 400px; POSITION: absolute; TOP: 31px; TEXT-ALIGN: right
+}
+divContainer {
+	LEFT: 0px; VISIBILITY: hidden; MARGIN: 10px; OVERFLOW: hidden; WIDTH: 400px; CLIP: rect(0px 400px 524px 0px); POSITION: absolute; TOP: 45px; HEIGHT: 524px
+}
+divContent {
+	LEFT: 0px; POSITION: absolute; TOP: 0px
+}
+bottom {
+	Z-INDEX: 2; LEFT: 0px; WIDTH: 100%; POSITION: absolute; TOP: 594px; HEIGHT: 30px; TEXT-ALIGN: center
+}
+A:link {
+	FONT-SIZE: 12px; FONT-WEIGHT: bold; COLOR: #ffffff; FONT-FAMILY: arial, helvetica, verdana, sans-serif; TEXT-DECORATION: none
+}
+A:visited {
+	FONT-SIZE: 12px; FONT-WEIGHT: bold; COLOR: #ffffff; FONT-FAMILY: arial, helvetica, verdana, sans-serif; TEXT-DECORATION: none
+}
+A:active {
+	FONT-SIZE: 12px; COLOR: #ffffff; FONT-FAMILY: arial, helvetica, verdana, sans-serif; TEXT-DECORATION: none
+}
+A:hover {
+	FONT-SIZE: 12px; COLOR: #737475; FONT-FAMILY: arial, helvetica, verdana, sans-serif; TEXT-DECORATION: none
+}
+INPUT {
+	BORDER-RIGHT: #413A34 1px solid; BORDER-TOP: #14140E 1px solid; FONT-SIZE: 12px; BACKGROUND-IMAGE: url(../../../themes/XtratoVeil/images/input.gif); BORDER-LEFT: #14140E 1px solid; COLOR: #ffffff; BORDER-BOTTOM: #413A34 1px solid; BACKGROUND-REPEAT: repeat-x; FONT-FAMILY: arial, helvetica, verdana, sans-serif; BACKGROUND-COLOR: #272B22; TEXT-DECORATION: none
+}
+TEXTAREA {
+	BORDER-RIGHT: #413A34 1px solid; BORDER-TOP: #14140E 1px solid; FONT-SIZE: 12px; BACKGROUND-IMAGE: url(../../../themes/XtratoVeil/images/input.gif); BORDER-LEFT: #14140E 1px solid; COLOR: #ffffff; BORDER-BOTTOM: #413A34 1px solid; BACKGROUND-REPEAT: repeat-x; FONT-FAMILY: arial, helvetica, verdana, sans-serif; BACKGROUND-COLOR: #272B22; TEXT-DECORATION: none
+}
+P {
+	FONT-SIZE: 12px; COLOR: #ffffff; LINE-HEIGHT: 1.4; FONT-FAMILY: arial, helvetica, verdana, sans-serif; TEXT-DECORATION: none
+}
+TD.content {
+	BORDER-RIGHT: #413A34 1px solid; BORDER-TOP: #14140E 1px solid; FONT-SIZE: 12px; BORDER-LEFT: #14140E 1px solid; COLOR: #ffffff; BORDER-BOTTOM: #413A34 1px solid; FONT-FAMILY: arial, helvetica, verdana, sans-serif; BACKGROUND-COLOR: #272B22; TEXT-DECORATION: none
+}
+TD.extra {
+	BORDER-RIGHT: #413A34 1px solid; BORDER-TOP: #14140E 1px solid; FONT-SIZE: 12px; BORDER-LEFT: #14140E 1px solid; COLOR: #ffffff; BORDER-BOTTOM: #413A34 1px solid; FONT-FAMILY: arial, helvetica, verdana, sans-serif; BACKGROUND-COLOR: #272B22; TEXT-DECORATION: none
+}
+TD.extras {
+	BORDER-RIGHT: #413A34 1px solid; BORDER-TOP: #14140E 1px solid; FONT-SIZE: 12px; BORDER-LEFT: #14140E 1px solid; COLOR: #ffffff; BORDER-BOTTOM: #413A34 1px solid; FONT-FAMILY: arial, helvetica, verdana, sans-serif; BACKGROUND-COLOR: #272B22; TEXT-DECORATION: none
+}
+TD.footer {
+	BORDER-RIGHT: #413A34 1px solid; BORDER-TOP: #14140E 1px solid; FONT-SIZE: 12px; BORDER-LEFT: #14140E 1px solid; COLOR: #ffffff; BORDER-BOTTOM: #413A34 1px solid; FONT-FAMILY: arial, helvetica, verdana, sans-serif; BACKGROUND-COLOR: #272B22; TEXT-DECORATION: none
+}
+TD.title {
+	BORDER-RIGHT: #413A34 1px solid; BORDER-TOP: #14140E 1px solid; FONT-SIZE: 12px; BORDER-LEFT: #14140E 1px solid; COLOR: #ffffff; BORDER-BOTTOM: #413A34 1px solid; FONT-FAMILY: arial, helvetica, verdana, sans-serif; BACKGROUND-COLOR: #272B22; TEXT-DECORATION: none
+}
+TD.story {
+	BORDER-RIGHT: #413A34 1px solid; BORDER-TOP: #14140E 1px solid; FONT-SIZE: 12px; BORDER-LEFT: #14140E 1px solid; COLOR: #ffffff; BORDER-BOTTOM: #413A34 1px solid; FONT-FAMILY: arial, helvetica, verdana, sans-serif; BACKGROUND-COLOR: #272B22; TEXT-DECORATION: none
+}
+TD.row1 {
+	BORDER-RIGHT: #413A34 1px solid; BORDER-TOP: #14140E 2px solid; BACKGROUND-IMAGE: url(../../../themes/XtratoVeil/images/input.gif); BORDER-LEFT: #14140E 2px solid; BORDER-BOTTOM: #413A34 1px solid; BACKGROUND-REPEAT: repeat-x; BACKGROUND-COLOR: #272B22
+}
+UL {
+	LIST-STYLE-TYPE: square
+}
+.center {
+	TEXT-ALIGN: center
+}
+.justify {
+	TEXT-ALIGN: justify
+}
+.right {
+	TEXT-ALIGN: right
+}
+H1 {
+	FONT-WEIGHT: bold; FONT-SIZE: 12px; COLOR: #ffffff; FONT-FAMILY: arial, helvetica, verdana, sans-serif; LETTER-SPACING: 0px; TEXT-DECORATION: none
+}
+.heading {
+	FONT-WEIGHT: bold; FONT-SIZE: 12px; FONT-FAMILY: arial, helvetica, verdana, sans-serif; LETTER-SPACING: 0px; TEXT-DECORATION: none
+}
+IMG.work {
+	BORDER-RIGHT: #ffffff 1px solid; BORDER-TOP: #ffffff 1px solid; BORDER-LEFT: #ffffff 1px solid; BORDER-BOTTOM: #ffffff 1px solid
+}
+.error {
+	COLOR: #990000; BACKGROUND-COLOR: #ffffff
+}
+.copyright {
+	FONT-SIZE: 10px; COLOR: #444444; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif; TEXT-DECORATION: none
+}
+A.copyright {
+	COLOR: #444444; TEXT-DECORATION: none
+}
+A.copyright:link {
+	COLOR: #444444; TEXT-DECORATION: none
+}
+A.copyright:visited {
+	COLOR: #444444; TEXT-DECORATION: none
+}
+A.copyright:hover {
+	COLOR: #f3d823; TEXT-DECORATION: none
+}
+BODY {
+	SCROLLBAR-FACE-COLOR: #272B22; SCROLLBAR-HIGHLIGHT-COLOR: #413A34; SCROLLBAR-SHADOW-COLOR: #14140E; SCROLLBAR-3DLIGHT-COLOR: #62614F; SCROLLBAR-ARROW-COLOR: #ffffff; SCROLLBAR-TRACK-COLOR: #272B22; SCROLLBAR-DARKSHADOW-COLOR: #000000; BACKGROUND-COLOR: #272B22
+}
+TD IMG.decoration {
+	DISPLAY: block; VERTICAL-ALIGN: bottom
+}
+TR.decoration IMG {
+	DISPLAY: block
+}
+A:link {
+	FONT-SIZE: 12px; COLOR: #9E8D52; FONT-FAMILY: arial, helvetica, verdana, sans-serif; TEXT-DECORATION: none
+}
+A:visited {
+	FONT-SIZE: 12px; COLOR: #9E8D52; FONT-FAMILY: arial, helvetica, verdana, sans-serif; TEXT-DECORATION: none
+}
+.bgdown {
+	BACKGROUND-POSITION: 50% bottom
+}
+A:active {
+	FONT-SIZE: 12px; COLOR: #9E8D52; FONT-FAMILY: arial, helvetica, verdana, sans-serif; TEXT-DECORATION: none
+}
+A:hover {
+	FONT-SIZE: 12px; COLOR: #545863; FONT-FAMILY: arial, helvetica, verdana, sans-serif; TEXT-DECORATION: none
+}
+BODY {
+	FONT-SIZE: 14px; CURSOR: default; COLOR: #9E8D52; FONT-FAMILY: arial, helvetica, verdana, sans-serif; BACKGROUND-COLOR: #2D2820; TEXT-DECORATION: none
+}
+TEXTAREA {
+	BORDER-RIGHT: #5A573F 1px solid; BORDER-TOP: #000000 2px solid; BACKGROUND-IMAGE: url(../../../themes/XtratoVeil/images/input.gif); FONT: 11px Arial,Helvetica,sans-serif; BORDER-LEFT: #000000 2px solid; COLOR: #9E8D52; BORDER-BOTTOM: #5A573F 1px solid; BACKGROUND-REPEAT: repeat-x; BACKGROUND-COLOR: #2D2820
+}
+P {
+	FONT-SIZE: 12px; COLOR: #9E8D52; LINE-HEIGHT: 1.4; FONT-FAMILY: arial, helvetica, verdana, sans-serif; TEXT-DECORATION: none
+}
+TD.content {
+	FONT-SIZE: 12px; COLOR: #9E8D52; FONT-FAMILY: arial, helvetica, verdana, sans-serif; TEXT-DECORATION: none
+}
+TD.extra {
+	BORDER-RIGHT: #5A573F 1px solid; BORDER-TOP: #000000 2px solid; BACKGROUND-IMAGE: url(../../../themes/XtratoVeil/images/input.gif); FONT: 11px Arial,Helvetica,sans-serif; BORDER-LEFT: #000000 2px solid; COLOR: #9E8D52; BORDER-BOTTOM: #5A573F 1px solid; BACKGROUND-REPEAT: repeat-x; BACKGROUND-COLOR: #2D2820
+}
+
+TD.tbz1 {
+	BORDER-RIGHT: #5A573F 1px solid; BORDER-TOP: #000000 2px solid; BACKGROUND-IMAGE: url(../../../themes/XtratoVeil/images/Ftbs/tbz1.gif); BORDER-LEFT: #000000 2px solid; BORDER-BOTTOM: #5A573F 1px solid; BACKGROUND-REPEAT: repeat-x; BACKGROUND-COLOR: #2D2820
+}
+TD.tbz1-2 {
+	BORDER-RIGHT: #5A573F 1px solid; BORDER-TOP: #000000 2px solid; BACKGROUND-IMAGE: url(../../../themes/XtratoVeil/images/Ftbs/tbz1-2.gif); BORDER-LEFT: #000000 2px solid; BORDER-BOTTOM: #5A573F 1px solid; BACKGROUND-REPEAT: repeat-x; BACKGROUND-COLOR: #2D2820
+}
+TD.tbz2 {
+	BORDER-RIGHT: #5A573F 1px solid; BORDER-TOP: #000000 2px solid; BACKGROUND-IMAGE: url(../../../themes/XtratoVeil/images/Ftbs/tbz2.gif); BORDER-LEFT: #000000 2px solid; BORDER-BOTTOM: #5A573F 1px solid; BACKGROUND-REPEAT: repeat-x; BACKGROUND-COLOR: #2D2820
+}
+TD.info1 {
+	BORDER-RIGHT: #303030 1px solid; BORDER-TOP: #000000 1px solid; BACKGROUND-IMAGE: url(../../../themes/XtratoVeil/images/input3.gif); BORDER-LEFT: #303030 1px solid; COLOR: #9E8D52; BORDER-BOTTOM: #303030 1px solid; BACKGROUND-REPEAT: repeat-x; BACKGROUND-COLOR: #131313
+}
+TD.info2 {
+	BORDER-RIGHT: #5A573F 1px solid; BORDER-TOP: #000000 2px solid; BACKGROUND-IMAGE: url(../../../themes/XtratoVeil/images/input.gif); FONT: 11px Arial,Helvetica,sans-serif; BORDER-LEFT: #000000 2px solid; COLOR: #9E8D52; BORDER-BOTTOM: #5A573F 1px solid; BACKGROUND-REPEAT: repeat-x; BACKGROUND-COLOR: #2D2820
+}
+TD.infolt {
+	BORDER-RIGHT: #5A573F 1px solid; BORDER-TOP: #000000 2px solid; BACKGROUND-IMAGE: url(../../../themes/XtratoVeil/images/input.gif); BORDER-LEFT: #000000 2px solid; COLOR: #9E8D52; BORDER-BOTTOM: #5A573F 1px solid; BACKGROUND-REPEAT: repeat-x; BACKGROUND-COLOR: #2D2820
+}
+TD.infort {
+	BORDER-RIGHT: #303030 1px solid; BORDER-TOP: #000000 2px solid; BACKGROUND-IMAGE: url(../../../themes/XtratoVeil/images/input2.gif); BORDER-LEFT: #000000 2px solid; COLOR: #9E8D52; BORDER-BOTTOM: #303030 1px solid; BACKGROUND-REPEAT: repeat-x; BACKGROUND-COLOR: #202020
+}
+TD.extras {
+	BORDER-RIGHT: #5A573F 1px solid; BORDER-TOP: #000000 2px solid; BACKGROUND-IMAGE: url(../../../themes/XtratoVeil/images/input.gif); FONT: 11px Arial,Helvetica,sans-serif; BORDER-LEFT: #000000 2px solid; COLOR: #9E8D52; BORDER-BOTTOM: #5A573F 1px solid; BACKGROUND-REPEAT: repeat-x; BACKGROUND-COLOR: #2D2820
+}
+TD.extra1 {
+	BORDER-RIGHT: #5A573F 1px solid; BORDER-TOP: #000000 2px solid; BACKGROUND-IMAGE: url(../../../themes/XtratoVeil/images/input.gif); FONT: 11px Arial,Helvetica,sans-serif; BORDER-LEFT: #000000 2px solid; COLOR: #9E8D52; BORDER-BOTTOM: #5A573F 1px solid; BACKGROUND-REPEAT: repeat-x; BACKGROUND-COLOR: #2D2820
+}
+TD.extra2 {
+	BORDER-RIGHT: #5A573F 1px solid; BORDER-TOP: #000000 2px solid; BACKGROUND-IMAGE: url(../../../themes/XtratoVeil/images/input.gif); FONT: 11px Arial,Helvetica,sans-serif; BORDER-LEFT: #000000 2px solid; COLOR: #9E8D52; BORDER-BOTTOM: #5A573F 1px solid; BACKGROUND-REPEAT: repeat-x; BACKGROUND-COLOR: #2D2820
+}
+HR {
+	BORDER-TOP: #000000 1px solid; WIDTH: 100%; BORDER-BOTTOM: #5c5c77 1px solid; HEIGHT: 2px
+}
+UL {
+	LIST-STYLE-TYPE: square
+}
+.center {
+	TEXT-ALIGN: center
+}
+.justify {
+	TEXT-ALIGN: justify
+}
+.right {
+	TEXT-ALIGN: right
+}
+.heading {
+	FONT-WEIGHT: bold; FONT-SIZE: 12px; COLOR: #9E8D52; FONT-FAMILY: Tahoma; LETTER-SPACING: 0px; TEXT-DECORATION: none
+}
+.heading1 {
+	FONT-WEIGHT: bold; FONT-SIZE: 12px; COLOR: #d8d8d8; FONT-FAMILY: arial; LETTER-SPACING: 0px; TEXT-DECORATION: none
+}
+.user {
+	FONT-WEIGHT: bold; FONT-SIZE: 10px; COLOR: #9E8D52; FONT-FAMILY: arial, helvetica, verdana, sans-serif; LETTER-SPACING: 0px; TEXT-DECORATION: none
+}
+IMG.work {
+	BORDER-RIGHT: #ffffff 1px solid; BORDER-TOP: #ffffff 1px solid; BORDER-LEFT: #ffffff 1px solid; BORDER-BOTTOM: #ffffff 1px solid
+}
+.error {
+	COLOR: #9E8D52; BACKGROUND-COLOR: #2D2820
+}
+BODY {
+	SCROLLBAR-ARROW-COLOR: #0e0e19; SCROLLBAR-BASE-COLOR: #969696
+}
+TD.b1 {
+	BORDER-RIGHT: #5A573F 1px solid; BORDER-TOP: #000000 2px solid; BACKGROUND-IMAGE: url(../../../themes/XtratoVeil/images/input.gif); FONT: 11px Arial,Helvetica,sans-serif; BORDER-LEFT: #000000 2px solid; COLOR: #9E8D52; BORDER-BOTTOM: #5A573F 1px solid; BACKGROUND-REPEAT: repeat-x; BACKGROUND-COLOR: #2D2820
+}
+TD.b2 {
+	BORDER-RIGHT: #5A573F 1px solid; BORDER-TOP: #000000 2px solid; BACKGROUND-IMAGE: url(../../../themes/XtratoVeil/images/input.gif); FONT: 11px Arial,Helvetica,sans-serif; BORDER-LEFT: #000000 2px solid; COLOR: #9E8D52; BORDER-BOTTOM: #5A573F 1px solid; BACKGROUND-REPEAT: repeat-x; BACKGROUND-COLOR: #2D2820
+}
+TD.b3 {
+	BORDER-RIGHT: #5A573F 1px solid; BORDER-TOP: #000000 2px solid; BACKGROUND-IMAGE: url(../../../themes/XtratoVeil/images/input.gif); FONT: 11px Arial,Helvetica,sans-serif; BORDER-LEFT: #000000 2px solid; COLOR: #9E8D52; BORDER-BOTTOM: #5A573F 1px solid; BACKGROUND-REPEAT: repeat-x; BACKGROUND-COLOR: #2D2820
+}
+.bodyline {
+	BORDER-RIGHT: #000000 0px solid; BORDER-TOP: #000000 0px solid; BORDER-LEFT: #000000 0px solid; BORDER-BOTTOM: #000000 0px solid; BACKGROUND-COLOR: #2D2820
+}
+.tablein {
+	BORDER-RIGHT: #303030 1px solid; BORDER-TOP: #000000 2px solid; BACKGROUND-IMAGE: url(../../../themes/XtratoVeil/images/input2.gif); BORDER-LEFT: #000000 2px solid; COLOR: #9E8D52; BORDER-BOTTOM: #303030 1px solid; BACKGROUND-REPEAT: repeat-x; BACKGROUND-COLOR: #202020
+}
+.menu1 {
+	BORDER-RIGHT: #5A573F 1px solid; BORDER-TOP: #000000 2px solid; BACKGROUND-IMAGE: url(../../../themes/XtratoVeil/images/input.gif); FONT: 11px Arial,Helvetica,sans-serif; BORDER-LEFT: #000000 2px solid; COLOR: #9E8D52; BORDER-BOTTOM: #5A573F 1px solid; BACKGROUND-REPEAT: repeat-x; BACKGROUND-COLOR: #2D2820
+}
+.menu2 {
+	BORDER-RIGHT: #5A573F 1px solid; BORDER-TOP: #000000 2px solid; BACKGROUND-IMAGE: url(../../../themes/XtratoVeil/images/input.gif); FONT: 11px Arial,Helvetica,sans-serif; BORDER-LEFT: #000000 2px solid; COLOR: #9E8D52; BORDER-BOTTOM: #5A573F 1px solid; BACKGROUND-REPEAT: repeat-x; BACKGROUND-COLOR: #2D2820
+}
+.menu3 {
+	BORDER-RIGHT: #5A573F 1px solid; BORDER-TOP: #000000 2px solid; BACKGROUND-IMAGE: url(../../../themes/XtratoVeil/images/input.gif); FONT: 11px Arial,Helvetica,sans-serif; BORDER-LEFT: #000000 2px solid; COLOR: #9E8D52; BORDER-BOTTOM: #5A573F 1px solid; BACKGROUND-REPEAT: repeat-x; BACKGROUND-COLOR: #2D2820
+}
+.tableout {
+	BORDER-RIGHT: #5A573F 1px solid; BORDER-TOP: #000000 2px solid; BACKGROUND-IMAGE: url(../../../themes/XtratoVeil/images/input.gif); FONT: 11px Arial,Helvetica,sans-serif; BORDER-LEFT: #000000 2px solid; COLOR: #9E8D52; BORDER-BOTTOM: #5A573F 1px solid; BACKGROUND-REPEAT: repeat-x; BACKGROUND-COLOR: #2D2820
+}
+.forumline {
+	BORDER-RIGHT: #5A573F 1px solid; BORDER-TOP: #000000 0px solid; BACKGROUND: #2D2820; BORDER-LEFT: #000000 2px solid; BORDER-BOTTOM: #5A573F 0px solid
+}
+.forumline2 {
+	BORDER-RIGHT: #5A573F 1px solid; BORDER-TOP: #000000 2px solid; BACKGROUND-IMAGE: url(../../../themes/XtratoVeil/images/input.gif); FONT: 11px Arial,Helvetica,sans-serif; BORDER-LEFT: #000000 2px solid; COLOR: #9E8D52; BORDER-BOTTOM: #5A573F 0px solid; BACKGROUND-REPEAT: repeat-x; BACKGROUND-COLOR: #2D2820
+}
+.codetitle {
+	BORDER-RIGHT: #5A573F 1px solid; PADDING-RIGHT: 5px; BORDER-TOP: #000000 2px solid; MARGIN-TOP: 10px; PADDING-LEFT: 5px; BACKGROUND-IMAGE: url(../../../themes/XtratoVeil/images/input.gif); PADDING-BOTTOM: 5px; FONT: bold 11px Arial,Helvetica,sans-serif; BORDER-LEFT: #000000 2px solid; WIDTH: 80%; COLOR: #9E8D52; PADDING-TOP: 5px; BORDER-BOTTOM: #5A573F 1px solid; BACKGROUND-REPEAT: repeat-x; BACKGROUND-COLOR: #2D2820; TEXT-ALIGN: left
+}
+.codediv {
+	BORDER-RIGHT: #303030 1px solid; PADDING-RIGHT: 5px; BORDER-TOP: #000000 2px solid; PADDING-LEFT: 5px; BACKGROUND-IMAGE: url(../../../themes/XtratoVeil/images/input2.gif); PADDING-BOTTOM: 5px; FONT: 12px Courier,"Courier New",sans-serif; OVERFLOW: auto; BORDER-LEFT: #000000 2px solid; WIDTH: 80%; COLOR: #9E8D52; PADDING-TOP: 5px; BORDER-BOTTOM: #303030 1px solid; BACKGROUND-REPEAT: repeat-x; HEIGHT: 50px; BACKGROUND-COLOR: #202020; TEXT-ALIGN: left
+}
+TD.row1 {
+	BORDER-RIGHT: #5A573F 1px solid; BORDER-TOP: #000000 2px solid; BACKGROUND-IMAGE: url(../../../themes/XtratoVeil/images/input.gif); BORDER-LEFT: #000000 2px solid; BORDER-BOTTOM: #5A573F 1px solid; BACKGROUND-REPEAT: repeat-x; BACKGROUND-COLOR: #2D2820
+}
+TD.row2 {
+	BORDER-RIGHT: #5A573F 1px solid; BORDER-TOP: #000000 2px solid; BORDER-LEFT: #000000 2px solid; BORDER-BOTTOM: #5A573F 1px solid; BACKGROUND-IMAGE: url(../../../themes/XtratoVeil/images/Ftbs/mainz.gif); 
+}
+TD.row3 {
+	BORDER-RIGHT: #5A573F 1px solid; BORDER-TOP: #000000 2px solid; BACKGROUND-IMAGE: url(../../../themes/XtratoVeil/images/input.gif); BORDER-LEFT: #000000 2px solid; BORDER-BOTTOM: #5A573F 1px solid; BACKGROUND-REPEAT: repeat-x; BACKGROUND-COLOR: #2D2820
+}
+TD.row4 {
+	BORDER-RIGHT: #5A573F 1px solid; BORDER-TOP: #000000 2px solid; BACKGROUND-IMAGE: url(../../../themes/XtratoVeil/images/input.gif); BORDER-LEFT: #000000 2px solid; BORDER-BOTTOM: #5A573F 1px solid; BACKGROUND-REPEAT: repeat-x; BACKGROUND-COLOR: #2D2820
+}
+TD.rowpic {
+	BORDER-RIGHT: #303030 1px solid; BORDER-TOP: #000000 2px solid; BACKGROUND-IMAGE: url(../../../themes/XtratoVeil/images/input2.gif); BORDER-LEFT: #000000 2px solid; BORDER-BOTTOM: #303030 1px solid; BACKGROUND-REPEAT: repeat-x; BACKGROUND-COLOR: #202020
+}
+TD.pic {
+	BORDER-RIGHT: #303030 1px solid; BORDER-TOP: #000000 2px solid; FONT-WEIGHT: bold; FONT-SIZE: 11px; BORDER-LEFT: #000000 2px solid; COLOR: #9E8D52; BORDER-BOTTOM: #303030 1px solid; HEIGHT: 25px;  BACKGROUND-IMAGE: url(../../../themes/XtratoVeil/images/Ftbs/row2z.gif)
+}
+TH {
+	BORDER-RIGHT: #303030 1px solid; BORDER-TOP: #000000 2px solid; FONT-WEIGHT: bold; FONT-SIZE: 11px; BACKGROUND-IMAGE: url(../../../themes/XtratoVeil/images/input2.gif); BORDER-LEFT: #000000 2px solid; COLOR: #9E8D52; BORDER-BOTTOM: #303030 1px solid; BACKGROUND-REPEAT: repeat-x; HEIGHT: 20px; BACKGROUND-COLOR: #202020
+}
+TH.1 {
+	BORDER-RIGHT: #303030 1px solid; BORDER-TOP: #000000 2px solid; FONT-WEIGHT: bold; FONT-SIZE: 11px; BACKGROUND-IMAGE: url(../../../themes/XtratoVeil/images/input2.gif); BORDER-LEFT: #000000 2px solid; COLOR: #9E8D52; BORDER-BOTTOM: #303030 1px solid; BACKGROUND-REPEAT: repeat-x; HEIGHT: 25px; BACKGROUND-COLOR: #202020
+}
+TH.2 {
+	BORDER-RIGHT: #303030 0px solid; BORDER-TOP: #000000 0px solid; FONT-WEIGHT: bold; FONT-SIZE: 11px; BORDER-LEFT: #000000 0px solid; COLOR: #9E8D52; BORDER-BOTTOM: #303030 0px solid; BACKGROUND-COLOR: #202020
+}
+TD.cat {
+	BORDER-RIGHT: #5A573F 1px solid; BORDER-TOP: #000000 2px solid; BORDER-LEFT: #000000 2px solid; BORDER-BOTTOM: #5A573F 1px solid; HEIGHT: 28px; BACKGROUND-COLOR: #2D2820
+}
+TD.catHead {
+	BORDER-RIGHT: #5A573F 1px solid; BORDER-TOP: #000000 2px solid; BORDER-LEFT: #000000 2px solid; BORDER-BOTTOM: #5A573F 1px solid; HEIGHT: 28px; BACKGROUND-COLOR: #2D2820
+}
+TD.catSides {
+	BORDER-RIGHT: #5A573F 1px solid; BORDER-TOP: #000000 2px solid; BORDER-LEFT: #000000 2px solid; BORDER-BOTTOM: #5A573F 1px solid; HEIGHT: 28px; BACKGROUND-COLOR: #2D2820
+}
+TD.catLeft {
+	BORDER-RIGHT: #5A573F 1px solid; BORDER-TOP: #000000 2px solid; BORDER-LEFT: #000000 2px solid; BORDER-BOTTOM: #5A573F 1px solid; HEIGHT: 28px; BACKGROUND-COLOR: #2D2820
+}
+TD.catRight {
+	BORDER-RIGHT: #5A573F 1px solid; BORDER-TOP: #000000 2px solid; BORDER-LEFT: #000000 2px solid; BORDER-BOTTOM: #5A573F 1px solid; HEIGHT: 28px; BACKGROUND-COLOR: #2D2820
+}
+TD.catBottom {
+	BORDER-RIGHT: #5A573F 1px solid; BORDER-TOP: #000000 2px solid; BORDER-LEFT: #000000 2px solid; BORDER-BOTTOM: #5A573F 1px solid; HEIGHT: 28px; BACKGROUND-COLOR: #2D2820
+}
+TH.thHead {
+	BORDER-RIGHT: #5A573F 1px solid; BORDER-TOP: #000000 2px solid; FONT-WEIGHT: bold; BORDER-LEFT: #000000 2px solid; BORDER-BOTTOM: #5A573F 1px solid; HEIGHT: 28px
+}
+TH.thSides {
+	BORDER-RIGHT: #5A573F 1px solid; BORDER-TOP: #000000 2px solid; FONT-WEIGHT: bold; BORDER-LEFT: #000000 2px solid; BORDER-BOTTOM: #5A573F 1px solid; HEIGHT: 28px
+}
+TH.thTop {
+	BORDER-RIGHT: #5A573F 1px solid; BORDER-TOP: #000000 2px solid; FONT-WEIGHT: bold; BORDER-LEFT: #000000 2px solid; BORDER-BOTTOM: #5A573F 1px solid; HEIGHT: 28px
+}
+TH.thLeft {
+	BORDER-RIGHT: #5A573F 1px solid; BORDER-TOP: #000000 2px solid; FONT-WEIGHT: bold; BORDER-LEFT: #000000 2px solid; BORDER-BOTTOM: #5A573F 1px solid; HEIGHT: 28px
+}
+TH.thRight {
+	BORDER-RIGHT: #5A573F 1px solid; BORDER-TOP: #000000 2px solid; FONT-WEIGHT: bold; BORDER-LEFT: #000000 2px solid; BORDER-BOTTOM: #5A573F 1px solid; HEIGHT: 28px
+}
+TH.thBottom {
+	BORDER-RIGHT: #5A573F 1px solid; BORDER-TOP: #000000 2px solid; FONT-WEIGHT: bold; BORDER-LEFT: #000000 2px solid; BORDER-BOTTOM: #5A573F 1px solid; HEIGHT: 28px
+}
+TH.thCornerL {
+	BORDER-RIGHT: #5A573F 1px solid; BORDER-TOP: #000000 2px solid; FONT-WEIGHT: bold; BORDER-LEFT: #000000 2px solid; BORDER-BOTTOM: #5A573F 1px solid; HEIGHT: 28px
+}
+TH.thCornerR {
+	BORDER-RIGHT: #5A573F 1px solid; BORDER-TOP: #000000 2px solid; FONT-WEIGHT: bold; BORDER-LEFT: #000000 2px solid; BORDER-BOTTOM: #5A573F 1px solid; HEIGHT: 28px
+}
+TD.row3Right {
+	BORDER-RIGHT: #5A573F 1px solid; BORDER-TOP: #000000 2px solid; BORDER-LEFT: #000000 2px solid; BORDER-BOTTOM: #5A573F 1px solid; BACKGROUND-COLOR: #2D2820
+}
+TD.spaceRow {
+	BORDER-RIGHT: #5A573F 1px solid; BORDER-TOP: #000000 2px solid; BORDER-LEFT: #000000 2px solid; BORDER-BOTTOM: #5A573F 1px solid; BACKGROUND-COLOR: #2D2820
+}
+.maintitle {
+	FONT-WEIGHT: bold; FONT-SIZE: 18px; COLOR: #808080; LINE-HEIGHT: 120%; FONT-FAMILY: Arial, Helvetica, sans-serif; TEXT-DECORATION: none
+}
+H1 {
+	FONT-WEIGHT: bold; FONT-SIZE: 18px; COLOR: #808080; LINE-HEIGHT: 120%; FONT-FAMILY: Arial, Helvetica, sans-serif; TEXT-DECORATION: none
+}
+H2 {
+	FONT-WEIGHT: bold; FONT-SIZE: 18px; COLOR: #808080; LINE-HEIGHT: 120%; FONT-FAMILY: Arial, Helvetica, sans-serif; TEXT-DECORATION: none
+}
+A.maintitle:link {
+	FONT-SIZE: 18px; COLOR: #808080; TEXT-DECORATION: none
+}
+A.maintitle:visited {
+	FONT-SIZE: 18px; COLOR: #808080; TEXT-DECORATION: none
+}
+A.maintitle:hover {
+	FONT-SIZE: 18px; COLOR: #9E8D52; TEXT-DECORATION: none
+}
+.gen {
+	FONT-SIZE: 12px; COLOR: #c4c4c4
+}
+.genmed {
+	FONT-SIZE: 11px
+}
+.gensmall {
+	FONT-SIZE: 10px
+}
+.gen {
+	COLOR: #c4c4c4
+}
+.genmed {
+	COLOR: #c4c4c4
+}
+.gensmall {
+	COLOR: #c4c4c4
+}
+A.gen {
+	COLOR: #9E8D52; TEXT-DECORATION: none
+}
+A.genmed {
+	COLOR: #9E8D52; TEXT-DECORATION: none
+}
+A.gensmall {
+	COLOR: #9E8D52; TEXT-DECORATION: none
+}
+A.gen:hover {
+	COLOR: #545863; TEXT-DECORATION: none
+}
+A.genmed:hover {
+	COLOR: #545863; TEXT-DECORATION: none
+}
+A.gensmall:hover {
+	COLOR: #545863; TEXT-DECORATION: none
+}
+.mainmenu {
+	FONT-SIZE: 11px; COLOR: #9E8D52
+}
+A.mainmenu {
+	COLOR: #9E8D52; TEXT-DECORATION: none
+}
+A.mainmenu:hover {
+	COLOR: #545863; TEXT-DECORATION: none
+}
+.cattitle {
+	FONT-WEIGHT: bold; FONT-SIZE: 12px; COLOR: #9E8D52; LETTER-SPACING: 0px
+}
+A.cattitle {
+	COLOR: #9E8D52; TEXT-DECORATION: none
+}
+A.cattitle:hover {
+	COLOR: #545863; TEXT-DECORATION: none
+}
+.forumlink {
+	FONT-WEIGHT: bold; FONT-SIZE: 12px; COLOR: #9E8D52
+}
+A.forumlink {
+	COLOR: #9E8D52; TEXT-DECORATION: none
+}
+A.forumlink:hover {
+	COLOR: #545863; TEXT-DECORATION: none
+}
+.nav {
+	FONT-WEIGHT: bold; FONT-SIZE: 11px; COLOR: #9E8D52
+}
+A.nav {
+	COLOR: #9E8D52; TEXT-DECORATION: none
+}
+A.nav:hover {
+	COLOR: #545863; TEXT-DECORATION: none
+}
+.topictitle {
+	FONT-WEIGHT: bold; FONT-SIZE: 11px; COLOR: #9E8D52
+}
+A.topictitle:link {
+	COLOR: #9E8D52; TEXT-DECORATION: none
+}
+A.topictitle:visited {
+	COLOR: #9E8D52; TEXT-DECORATION: none
+}
+A.topictitle:hover {
+	COLOR: #545863; TEXT-DECORATION: none
+}
+.name {
+	FONT-SIZE: 11px; COLOR: #9E8D52
+}
+.postdetails {
+	FONT-SIZE: 10px; COLOR: #c4c4c4
+}
+.postbody {
+	FONT-SIZE: 12px; COLOR: #d8d8d8
+}
+A.postlink:link {
+	COLOR: #d8d8d8; TEXT-DECORATION: none
+}
+A.postlink:visited {
+	COLOR: #d8d8d8; TEXT-DECORATION: none
+}
+A.postlink:hover {
+	COLOR: #9E8D52; TEXT-DECORATION: none
+}
+.code {
+	BORDER-RIGHT: #ebeced 1px solid; BORDER-TOP: #9E8D52 1px solid; FONT-SIZE: 11px; BORDER-LEFT: #9E8D52 1px solid; COLOR: #23315f; BORDER-BOTTOM: #ebeced 1px solid; FONT-FAMILY: Courier, 'Courier New', sans-serif; BACKGROUND-COLOR: #cad5dd
+}
+.quote {
+	BORDER-RIGHT: #303030 1px solid; BORDER-TOP: #000000 2px solid; FONT-SIZE: 12px; BACKGROUND-IMAGE: url(../../../themes/XtratoVeil/images/input2.gif); BORDER-LEFT: #000000 2px solid; COLOR: #9E8D52; BORDER-BOTTOM: #303030 1px solid; BACKGROUND-REPEAT: repeat-x; FONT-FAMILY: arial, 'tahoma', sans-serif; BACKGROUND-COLOR: #202020
+}
+.copyright {
+	FONT-WEIGHT: bold; FONT-SIZE: 10px; COLOR: #9E8D52; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif; LETTER-SPACING: 0px
+}
+A.copyright {
+	COLOR: #9E8D52; TEXT-DECORATION: none
+}
+A.copyright:hover {
+	COLOR: #808080; TEXT-DECORATION: none
+}
+INPUT.sub {
+	BORDER-RIGHT: #303030 1px solid; BORDER-TOP: #000000 2px solid; BACKGROUND-IMAGE: url(../../../themes/XtratoVeil/images/input2.gif); FONT: 11px Arial,Helvetica,sans-serif; BORDER-LEFT: #000000 2px solid; COLOR: #ffffff; BORDER-BOTTOM: #303030 1px solid; BACKGROUND-REPEAT: repeat-x; BACKGROUND-COLOR: #202020
+}
+INPUT.post {
+	BACKGROUND-COLOR: #2D2820
+}
+TEXTAREA.post {
+	BACKGROUND-COLOR: #2D2820
+}
+INPUT.button {
+	BORDER-RIGHT: #303030 1px solid; BORDER-TOP: #000000 2px solid; BACKGROUND-IMAGE: url(../../../themes/XtratoVeil/images/input2.gif); BORDER-LEFT: #000000 2px solid; COLOR: #9E8D52; BORDER-BOTTOM: #303030 1px solid; BACKGROUND-REPEAT: repeat-x; BACKGROUND-COLOR: #202020
+}
+INPUT.mainoption {
+	BORDER-RIGHT: #303030 1px solid; BORDER-TOP: #000000 2px solid; BACKGROUND-IMAGE: url(../../../themes/XtratoVeil/images/input2.gif); BORDER-LEFT: #000000 2px solid; COLOR: #9E8D52; BORDER-BOTTOM: #303030 1px solid; BACKGROUND-REPEAT: repeat-x; BACKGROUND-COLOR: #202020
+}
+INPUT.liteoption {
+	BORDER-RIGHT: #303030 1px solid; BORDER-TOP: #000000 2px solid; BACKGROUND-IMAGE: url(../../../themes/XtratoVeil/images/input2.gif); BORDER-LEFT: #000000 2px solid; COLOR: #9E8D52; BORDER-BOTTOM: #303030 1px solid; BACKGROUND-REPEAT: repeat-x; BACKGROUND-COLOR: #202020
+}
+INPUT.liteoption1 {
+	BORDER-RIGHT: #ffffff 0px solid; BORDER-TOP: #5d5d5d 0px solid; BACKGROUND: none transparent scroll repeat 0% 0%; FONT: 11px Arial,Helvetica,sans-serif; BORDER-LEFT: #5d5d5d 0px solid; COLOR: #ffffff; BORDER-BOTTOM: #ffffff 0px solid
+}
+INPUT.liteoption2 {
+	BORDER-RIGHT: #ffffff 0px solid; BORDER-TOP: #5d5d5d 0px solid; FONT: 11px Arial,Helvetica,sans-serif; BORDER-LEFT: #5d5d5d 0px solid; COLOR: #9E8D52; BORDER-BOTTOM: #ffffff 0px solid
+}
+.helpline {
+	BORDER-RIGHT: #5A573F 1px solid; BORDER-TOP: #000000 2px solid; BACKGROUND-IMAGE: url(../../../themes/XtratoVeil/images/input.gif); FONT: 11px Arial,Helvetica,sans-serif; BORDER-LEFT: #000000 2px solid; COLOR: #9E8D52; BORDER-BOTTOM: #5A573F 1px solid; BACKGROUND-REPEAT: repeat-x; BACKGROUND-COLOR: #2D2820
+}
+
+FONT.header {
+	COLOR: #FFFFFF; FONT-FAMILY: Verdana, Arial,Helvetica,sans-serif; FONT-SIZE: 10pt; FONT-WEIGHT: bold; TEXT-DECORATION: none }
+
+FONT.target_name {
+	COLOR: #FFFFFF; FONT-FAMILY: Verdana, Arial,Helvetica,sans-serif; FONT-SIZE: 12pt; FONT-WEIGHT: bold; TEXT-DECORATION: none; TEXT-TRANSFORM: uppercase; }
+
+FONT.sub_name {
+	COLOR: #FFFFFF; FONT-FAMILY: Verdana, Arial,Helvetica,sans-serif; FONT-SIZE: 12pt; FONT-WEIGHT: bold; TEXT-DECORATION: none; TEXT-TRANSFORM: uppercase; }
+
+FONT.content {
+	COLOR: #9E8E52; FONT-FAMILY: Verdana, Arial,Helvetica,sans-serif; FONT-SIZE: 14pt; FONT-WEIGHT: bold; TEXT-DECORATION: none; }
+
+FONT.text_11 {
+	COLOR: #9E8D52; FONT-FAMILY: Verdana, Arial,Helvetica,sans-serif; FONT-SIZE: 10pt; FONT-WEIGHT: bold; TEXT-DECORATION: none; }
+
+TD.but_col {
+	FONT-SIZE: 12px; COLOR: #297c57; BACKGROUND-COLOR: #297c57; TEXT-DECORATION: none; }
+
+A.menu {
+	FONT-SIZE: 12px; FONT-WEIGHT: bold; COLOR: #ffffff; FONT-FAMILY: arial, helvetica, verdana, sans-serif; TEXT-DECORATION: none
+}
+
+A.menu:hover {
+	FONT-SIZE: 12px; COLOR: #737475; FONT-FAMILY: arial, helvetica, verdana, sans-serif; TEXT-DECORATION: none
+}
+
+TD.button { BACKGROUND-COLOR: #gggggg; }
+
+TABLE {
+	FONT-SIZE: 12px; COLOR: #9E8D52; BORDER: 0px solid; FONT-FAMILY: arial, helvetica, verdana, sans-serif;  TEXT-DECORATION: none
+}
+TABLE.text {
+	FONT-SIZE: 12px; COLOR: #9E8D52; BORDER: 1px gray; FONT-FAMILY: arial, helvetica, verdana, sans-serif; TEXT-DECORATION: none
+}
+TD { border: 1px gray; }
+
+SELECT {
+	BORDER-STYLE: solid; SCROLLBAR-FACE-COLOR: #ff0000; PADDING-RIGHT: #5A573F 0px; PADDING-BOTTOM: #5A573F 0px; BORDER-WIDTH: 0px; BORDER-BOTTOM-WIDTH: 0px; BORDER-RIGHT: #5A573F 1px; BORDER-TOP: #000000 1px solid; FONT-SIZE: 11px; BORDER-LEFT: #000000 1px solid; COLOR: #9E8D52; BORDER-BOTTOM: #5A573F 0px; FONT-FAMILY: arial, helvetica, verdana, sans-serif; BACKGROUND-COLOR: #272B22; TEXT-DECORATION: none
+}
+
+.select_fix_width { font-family: Arial,Times New Roman; font-size: 10pt; background-color: #FFFFFF;  color: #000066; font-weight: normal; position: relative; border: 1 solid #7F9DB9; padding: 0; background-position: left; BORDER-BOTTOM-COLOR: #000000; BORDER-LEFT-COLOR: #000000; BORDER-RIGHT-COLOR: #000000; BORDER-TOP-COLOR: #000000;}
+
+RADIO {
+	BORDER-STYLE: solid; SCROLLBAR-FACE-COLOR: #ff0000; PADDING-RIGHT: #5A573F 0px; PADDING-BOTTOM: #5A573F 0px; BORDER-WIDTH: 0px; BORDER-BOTTOM-WIDTH: 0px; BORDER-RIGHT: #5A573F 1px; BORDER-TOP: #000000 1px solid; FONT-SIZE: 11px; BORDER-LEFT: #000000 1px solid; COLOR: #9E8D52; BORDER-BOTTOM: #5A573F 0px; FONT-FAMILY: arial, helvetica, verdana, sans-serif; BACKGROUND-COLOR: #272B22; TEXT-DECORATION: none
+}
+
+INPUT {
+	BORDER-RIGHT: #5A573F 1px solid; BORDER-TOP: #000000 2px solid; FONT: 11px Arial,Helvetica,sans-serif; BORDER-LEFT: #000000 2px solid; COLOR: #9E8D52; BORDER-BOTTOM: #5A573F 1px solid; BACKGROUND-REPEAT: repeat-x; BACKGROUND-COLOR: #2D2820
+}
+
+THEAD { background-color: none; COLOR: #b2A423; FONT-FAMILY: "MS Sans Serif", Geneva, sans-serif; FONT-SIZE: 10pt; FONT-WEIGHT: bold;} 
+
+TD.light { background-color: #FFFCCF; COLOR: #b20000; FONT-FAMILY: "MS Sans Serif", Geneva, sans-serif; FONT-WEIGHT: bold;}
