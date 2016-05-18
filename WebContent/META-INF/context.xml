@@ -1,0 +1,20 @@
+<!--
+
+    Context configuration file for the ASU Abiturient J2EE Application
+
+    $Id: umu.xml 2009-04-14 17:28:35   $
+MF@'.Fa]Skp[9RNUEQrZSb
+-->
+
+<Context path="/abiturient" debug="5" reloadable="true" override="true" crossContext="true">
+  <Resource name="jdbc/sqlx" auth="Container" type="javax.sql.DataSource"
+               maxActive="128" maxIdle="30" maxWait="10000"
+                 username="abiturient" password="ilovejava" driverClassName="com.microsoft.sqlserver.jdbc.SQLServerDriver"
+               url="jdbc:sqlserver://localhost:1433"></Resource>
+              
+                <Resource name="jdbc/sqlo" auth="Container" type="javax.sql.DataSource"
+               maxActive="128" maxIdle="30" maxWait="10000"
+                 username="abitonline" password="dreamlord88" driverClassName="com.microsoft.sqlserver.jdbc.SQLServerDriver"
+               url="jdbc:sqlserver://localhost:1433"></Resource> 
+</Context>
+

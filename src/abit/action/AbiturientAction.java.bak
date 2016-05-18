@@ -1,0 +1,1780 @@
+package abit.action;
+
+import java.io.*;
+import java.util.Enumeration;
+import java.util.ArrayList;
+import java.util.Locale;
+import java.sql.*;
+import java.lang.*;
+import javax.servlet.*;
+import javax.servlet.http.*;
+import org.apache.struts.action.*;
+import javax.naming.*;
+import javax.sql.*;
+import abit.bean.*;
+import abit.Constants;
+import abit.util.*;
+import abit.sql.*; 
+
+public class AbiturientAction extends Action {
+
+    public ActionForward perform ( ActionMapping        mapping,
+                                   ActionForm           actionForm,
+                                   HttpServletRequest   request,
+                                   HttpServletResponse  response )
+
+    throws IOException, ServletException
+    {   
+        HttpSession       session       = request.getSession();
+        Connection        conn          = null;
+        PreparedStatement stmt          = null;
+        ResultSet         rs            = null;
+        ActionErrors      errors        = new ActionErrors();
+        ActionError       msg           = null;
+        AbiturientForm    form          = (AbiturientForm) actionForm;
+        AbiturientBean    abit_A        = form.getBean(request, errors);
+        MessageBean       mess          = new MessageBean();
+        boolean           error         = false;
+        boolean           re_enter      = false;
+        ActionForward     f             = null;
+        int               kPunkta       = 1;
+        int               kRajona       = 1;
+        int               kOblasti      = 1;
+        int               kZavedenija   = 1;
+        int               kAbiturienta  = 1;
+        int               Col_Specs     = 0;
+        double 				summa = 0;
+        String            kFormy_Ob     = "1";
+        String            kOsnovy_Ob    = "1";
+        String            kSpec         = "0";
+        String            kFak          = "0";
+int pp=0;
+        String            Abbr_Spec     = new String();
+        String            Abbr_Spec2    = new String();
+        String            Tip_Spec      = new String();
+        String            Tip_Spec2     = new String();
+        String            nld           = new String();
+        String            nomer_ab      = new String();
+        String            ordr_ab       = new String();
+        String            shifr_Fak     = new String();
+        String            two_t_names[] = {"Konkurs","Kontrol_Kon"};
+        String            s_okso_1      = "";
+        String            s_okso_2      = "";
+        String            s_okso_3      = "";
+        String            s_okso_4      = "";
+        String            s_okso_5      = "";
+        String            s_okso_6      = "";
+        ArrayList         abits_A       = new ArrayList();
+        ArrayList         abit_forms    = new ArrayList();
+        ArrayList         abit_osnovs   = new ArrayList();
+        ArrayList         abit_A_S1     = new ArrayList();
+        ArrayList         abit_A_S4     = new ArrayList();
+        ArrayList         abit_A_S5     = new ArrayList();
+        ArrayList         abit_A_S6     = new ArrayList();
+        ArrayList         abit_A_S7     = new ArrayList();
+        ArrayList         abit_A_S8     = new ArrayList();
+        ArrayList         abit_A_S9     = new ArrayList();
+        ArrayList         abit_A_S10     = new ArrayList();
+        ArrayList         abit_A_S11     = new ArrayList();
+        ArrayList		  nationalityList = new ArrayList();
+        UserBean          user          = (UserBean)session.getAttribute("user");
+
+        if (user==null || user.getGroup()==null || !(user.getGroup().getTypeId()==1 || user.getGroup().getTypeId()==3)) {
+            msg = new ActionError( "logon.must" );
+            errors.add( "logon.login", msg );
+        }
+
+        if ( errors.empty() ) {
+
+        request.setAttribute( "abiturientAction", new Boolean(true) );
+        Locale locale = new Locale("ru","RU");
+        session.setAttribute( Action.LOCALE_KEY, locale );
+
+        try {
+
+/**********************************************************************/
+/*********  Получение соединения с БД и ведение статистики  ***********/
+
+          UserConn us = new UserConn(request, mapping);
+          conn = us.getConn(user.getSid());
+          request.setAttribute( "abiturientForm", form );
+
+/*****************  Возврат к предыдущей странице   *******************/
+          if(us.quit("exit")) return mapping.findForward("back");
+/**********************************************************************/
+
+          if ( form.getAction() == null ) {
+
+             form.setAction(us.getClientIntName("new","init"));
+
+            }
+
+/********************** Подготовка данных для ввода с помощью селекторов ************************/
+
+            stmt = conn.prepareStatement("SELECT DISTINCT KodLgot,ShifrLgot FROM Lgoty WHERE KodVuza LIKE ? ORDER BY 1 ASC");
+            stmt.setObject(1,session.getAttribute("kVuza"),Types.INTEGER);
+            rs = stmt.executeQuery();
+            while (rs.next()) {
+              AbiturientBean abit_TMP = new AbiturientBean();
+              abit_TMP.setKodLgot(new Integer(rs.getInt(1)));
+              abit_TMP.setShifrLgot(rs.getString(2));
+              abit_A_S4.add(abit_TMP);
+            }
+
+            stmt = conn.prepareStatement("SELECT DISTINCT KodKursov,ShifrKursov FROM Kursy WHERE KodVuza LIKE ? ORDER BY 1 ASC");
+            stmt.setObject(1,session.getAttribute("kVuza"),Types.INTEGER);
+            rs = stmt.executeQuery();
+            while (rs.next()) {
+              AbiturientBean abit_TMP = new AbiturientBean();
+              abit_TMP.setKodKursov(new Integer(rs.getInt(1)));
+              abit_TMP.setShifrKursov(rs.getString(2));
+              abit_A_S5.add(abit_TMP);
+            }
+
+            stmt = conn.prepareStatement("SELECT DISTINCT KodMedali,ShifrMedali FROM Medali WHERE KodVuza LIKE ? ORDER BY 1 ASC");
+            stmt.setObject(1,session.getAttribute("kVuza"),Types.INTEGER);
+            rs = stmt.executeQuery();
+            while (rs.next()) {
+              AbiturientBean abit_TMP = new AbiturientBean();
+              abit_TMP.setKodMedali(new Integer(rs.getInt(1)));
+              abit_TMP.setShifrMedali(rs.getString(2));
+              abit_A_S6.add(abit_TMP);
+            }
+
+            abit_A.setSpecial1("");
+            stmt = conn.prepareStatement("SELECT DISTINCT KodPredmeta,Sokr FROM NazvanijaPredmetov WHERE KodVuza LIKE ? ORDER BY KodPredmeta ASC");
+            stmt.setObject(1,session.getAttribute("kVuza"),Types.INTEGER);
+            rs = stmt.executeQuery();
+            while (rs.next()) {
+              AbiturientBean abit_TMP = new AbiturientBean();
+              abit_TMP.setKodPredmeta(new Integer(rs.getInt(1)));
+              abit_A.setSpecial1(abit_A.getSpecial1()+"%"+rs.getString(1));
+              abit_TMP.setPredmet((rs.getString(2)).substring(0,1).toUpperCase()+(rs.getString(2)).substring(1));
+              abit_A_S7.add(abit_TMP);
+            }
+            
+            stmt = conn.prepareStatement("SELECT DISTINCT KodPredmeta,Sokr FROM NazvanijaPredmetov WHERE KodVuza LIKE ? and  (KodPredmeta = 3 or KodPredmeta = 10 or KodPredmeta = 5 or KodPredmeta = 1 or KodPredmeta = 8 or KodPredmeta = 4 or KodPredmeta = 9 or KodPredmeta = 2) ORDER BY KodPredmeta ASC");
+            stmt.setObject(1,session.getAttribute("kVuza"),Types.INTEGER);
+            rs = stmt.executeQuery();
+            while (rs.next()) {
+              AbiturientBean abit_TMP = new AbiturientBean();
+              abit_TMP.setKodPredmeta(new Integer(rs.getInt(1)));
+             // abit_A.setSpecial1(abit_A.getSpecial1()+"%"+rs.getString(1));
+              abit_TMP.setPredmet((rs.getString(2)).substring(0,1).toUpperCase()+(rs.getString(2)).substring(1));
+              abit_A_S10.add(abit_TMP);
+            }
+
+            stmt = conn.prepareStatement("SELECT DISTINCT Sokr,KodZavedenija,Ordr FROM Zavedenija WHERE KodVuza LIKE ? ORDER BY Ordr,Sokr ASC");
+            stmt.setObject(1,session.getAttribute("kVuza"),Types.INTEGER);
+            rs = stmt.executeQuery();
+            while (rs.next()) {
+              AbiturientBean abit_TMP = new AbiturientBean();
+              abit_TMP.setSokr(rs.getString(1));
+              abit_TMP.setKodZavedenija(new Integer(rs.getInt(2)));
+              abit_A_S8.add(abit_TMP);
+            }
+            
+            
+            /*Пушкарев добавление классификатора Национальностей 20 03 2014*/
+            stmt = conn.prepareStatement("SELECT DISTINCT ID, name from DictionaryCode21");
+            rs = stmt.executeQuery();
+            while (rs.next()) {
+            NationalityBean nationalityBean = new NationalityBean();
+            nationalityBean.setId((Integer)rs.getInt(1));
+            nationalityBean.setName(rs.getString(2));
+            nationalityList.add(nationalityBean);
+            /*
+              AbiturientBean abit_TMP = new AbiturientBean();
+              abit_TMP.setSokr(rs.getString(1));
+              abit_TMP.setKodZavedenija(new Integer(rs.getInt(2)));
+              abit_A_S8.add(abit_TMP);*/
+            
+            }
+
+            stmt = conn.prepareStatement("SELECT DISTINCT KodTselevogoPriema,ShifrPriema FROM TselevojPriem WHERE KodVuza LIKE ? ORDER BY 1 ASC");
+            stmt.setObject(1,session.getAttribute("kVuza"),Types.INTEGER);
+            rs = stmt.executeQuery();
+            while (rs.next()) {
+              AbiturientBean abit_TMP = new AbiturientBean();
+              abit_TMP.setKodTselevogoPriema(new Integer(rs.getInt(1)));
+              abit_TMP.setShifrPriema(rs.getString(2));
+              abit_A_S9.add(abit_TMP);
+            }
+
+/************************************************************************************************/
+/************************************** Создание записи *****************************************/
+/************************************************************************************************/
+
+   if ( form.getAction().equals("create") ) {
+
+/************************************************************************************************/
+/*************************** Подготовка вспомогательных переменных ******************************/
+/************************************************************************************************/
+
+// Начало транзакции
+
+     conn.setAutoCommit(false);
+
+// Проверка на уникальность по паспортным данным
+
+     stmt = conn.prepareStatement("SELECT KodAbiturienta FROM Abiturient WHERE SeriaDokumenta LIKE ? AND NomerDokumenta LIKE ?");
+     stmt.setObject(1,abit_A.getSeriaDokumenta(),Types.VARCHAR);
+     stmt.setObject(2,abit_A.getNomerDokumenta(),Types.VARCHAR);
+     rs = stmt.executeQuery();
+     if(rs.next()) {
+       mess.setStatus("Ошибка!");
+       mess.setMessage("Заявление абитуриента с указанными паспортными данными уже существует в базе данных!");
+       re_enter = true;
+     }
+
+// Проверка на уникальность по номеру сертификата ЕГЭ
+
+//     stmt = conn.prepareStatement("SELECT KodAbiturienta FROM Abiturient WHERE NomerSertifikata LIKE ? AND NomerSertifikata NOT LIKE '-'");
+//     stmt.setObject(1,abit_A.getNomerSertifikata(),Types.VARCHAR);
+//     rs = stmt.executeQuery();
+//     if(rs.next()) {
+//       mess.setStatus("Ошибка!");
+//       mess.setMessage("Заявление абитуриента с указанным номером сертификата ЕГЭ уже существует в базе данных!");
+//       re_enter = true;
+//     }
+
+// Проверка на уникальность по серии и номеру аттестата
+
+     stmt = conn.prepareStatement("SELECT KodAbiturienta FROM Abiturient WHERE SeriaAtt LIKE ? AND NomerAtt LIKE ? AND VidDokSredObraz LIKE ?");
+     stmt.setObject(1,abit_A.getSeriaAtt(),Types.VARCHAR);
+     stmt.setObject(2,abit_A.getNomerAtt(),Types.VARCHAR);
+     stmt.setObject(3,abit_A.getVidDokSredObraz(),Types.VARCHAR);
+     rs = stmt.executeQuery();
+     if(rs.next()) {
+       mess.setStatus("Ошибка!");
+       mess.setMessage("Заявление абитуриента с указанными серией и номером номером аттестата уже существует в БД!");
+       re_enter = true;
+     }
+
+// Проверка на подлинность аттестата (диплома)
+
+     stmt = conn.prepareStatement("SELECT KodZapisi FROM Bad_Attestat WHERE Seria LIKE ? AND Nomer LIKE ?");
+     stmt.setObject(1,abit_A.getSeriaAtt(),Types.VARCHAR);
+     stmt.setObject(2,abit_A.getNomerAtt(),Types.VARCHAR);
+     rs = stmt.executeQuery();
+     if(rs.next()) {
+       mess.setStatus("Тревога!");
+       mess.setMessage("Предоставленный абитуриентом документ об образовании является недействительным!");
+       re_enter = true;
+     }
+
+// Установка значения кода основы обучения
+
+     if(abit_A.getBud_1() != null && abit_A.getBud_1().equals("on"))
+       stmt = conn.prepareStatement("SELECT KodOsnovyOb FROM Osnova_Obuch WHERE Sokr LIKE '%бюдж%'");
+     else
+       stmt = conn.prepareStatement("SELECT KodOsnovyOb FROM Osnova_Obuch WHERE Sokr LIKE '%дог%'");
+     rs = stmt.executeQuery();
+     if(rs.next()) kOsnovy_Ob = rs.getString(1);
+
+// Код Абитуриента
+
+     stmt = conn.prepareStatement("SELECT MAX(KodAbiturienta) FROM Abiturient");
+     rs = stmt.executeQuery();
+     if(rs.next()) kAbiturienta = rs.getInt(1)+1;
+     else kAbiturienta = 2;
+
+// Код основной Специальности и аббревиатура
+
+// Приоритетная специальность
+
+     System.out.println("Определяем приоритетную специальность");
+     System.out.println(abit_A.getS_okso_1());
+     if(abit_A.getS_okso_1() != null && abit_A.getS_okso_1().length() >= 6) {
+
+       if(abit_A.getS_okso_1().length() == 6 ) {
+
+         Tip_Spec = "о";
+
+       } else {
+
+         if(abit_A.getS_okso_1().length() < 9) {
+
+           Tip_Spec = abit_A.getS_okso_1().substring(6);
+           s_okso_1 = abit_A.getS_okso_1().substring(0,6);
+
+         } 
+         else  if (abit_A.getS_okso_1().length() > 11)
+         {
+        	 Tip_Spec = abit_A.getS_okso_1().substring(11);
+             s_okso_1 = abit_A.getS_okso_1().substring(0,11);
+         }
+         
+         else {
+
+           Tip_Spec = abit_A.getS_okso_1().substring(8);
+           s_okso_1 = abit_A.getS_okso_1().substring(0,8);
+         }
+         // пушкарев 18062013 пед профили
+        
+         
+       }
+       
+       System.out.println("SOkso"+s_okso_1+" TIP_SPEC_selected="+Tip_Spec);
+       stmt = conn.prepareStatement("SELECT s.KodSpetsialnosti,s.KodFakulteta,s.Abbreviatura,f.ShifrFakulteta FROM Spetsialnosti s,Fakultety f WHERE s.KodFakulteta=f.KodFakulteta AND s.ShifrSpetsialnosti LIKE ? AND s.Tip_Spec LIKE ?");
+       stmt.setObject(1,s_okso_1,Types.VARCHAR);
+       stmt.setObject(2,Tip_Spec,Types.VARCHAR);
+
+       rs = stmt.executeQuery();
+       
+       if(rs.next()) {
+//    	 System.out.println("есть такая специальность");
+         kSpec = rs.getString(1);
+         kFak = rs.getString(2);
+         Abbr_Spec = rs.getString(3);
+         shifr_Fak = rs.getString(4);
+
+// Получение кода формы обучения для наиболее приоритетной специальности
+
+         String Sokr = new String();
+
+         if(Tip_Spec.equals("о") || Tip_Spec.equals("м") || Tip_Spec.equals("ф") || Tip_Spec.equals("ю") || Tip_Spec.equals("п")) Sokr = "очная";
+
+         else if((Tip_Spec.equals("у") && shifr_Fak.equals("з")) || (abit_A.getThree_1() != null && shifr_Fak.equals("з")) || (Tip_Spec.equals("у") && shifr_Fak.equals("г"))) Sokr = "заочно-уск";
+
+         else if(Tip_Spec.equals("з")) Sokr = "заочная";
+
+         else if(Tip_Spec.equals("в")) Sokr = "очно-заочная";
+
+         else if(Tip_Spec.equals("у")) Sokr = "очно-уск";
+
+         else if(Tip_Spec.equals("д")) Sokr = "дист";
+
+         else Tip_Spec = "-";
+
+         stmt = conn.prepareStatement("SELECT KodFormyOb FROM Forma_Obuch WHERE Sokr LIKE ?");
+         stmt.setObject(1,Sokr,Types.VARCHAR);
+         rs = stmt.executeQuery();
+         if(rs.next()) kFormy_Ob = rs.getString(1);
+
+       } else {
+
+// Введенная в карточку приоритетная специальность не найдена в БД
+
+         mess.setStatus("Ошибка!");
+
+         mess.setMessage("Шифр приоритетной специальности ("+abit_A.getS_okso_1()+") указан неверно!");
+
+         form.setAction(us.getClientIntName("re_new","error"));
+
+         re_enter = true;
+       }
+     }else {
+
+    	// Введенная в карточку приоритетная специальность не найдена в БД
+
+    	         mess.setStatus("Ошибка!");
+
+    	         mess.setMessage("Шифр приоритетной специальности ("+abit_A.getS_okso_1()+") указан неверно!");
+
+    	         form.setAction(us.getClientIntName("re_new","error"));
+
+    	         re_enter = true;
+    	       }
+
+// Выборка номера личного дела из БД
+
+     stmt = conn.prepareStatement("SELECT DISTINCT Ordr FROM Abiturient WHERE KodVuza LIKE ? ORDER BY Ordr DESC");
+     stmt.setObject(1,session.getAttribute("kVuza"),Types.INTEGER);
+     rs = stmt.executeQuery();
+     if(rs.next()) {
+
+// Хотя бы один абитуриент существует в БД
+
+       if(rs.getInt(1) < 10) nomer_ab = "000"+(rs.getInt(1)+1);
+       else if((rs.getInt(1) >= 10) && (rs.getInt(1) < 100)) nomer_ab = "00"+(rs.getInt(1)+1);
+       else if((rs.getInt(1) >= 100) && (rs.getInt(1) < 1000)) nomer_ab = "0"+(rs.getInt(1)+1);
+       else if((rs.getInt(1) >= 1000) && (rs.getInt(1) < 10000)) nomer_ab = ""+(rs.getInt(1)+1);
+
+       ordr_ab = ""+(rs.getInt(1)+1);
+
+     } else {
+
+       nomer_ab = "0000";
+
+       ordr_ab = "0";
+     }
+
+     if(!re_enter) {
+
+/**********************************/
+/***********   Область   **********/
+/**********************************/
+
+       if(abit_A.getNazvanieOblasti()!=null) {
+         stmt = conn.prepareStatement("SELECT KodOblasti FROM Oblasti WHERE NazvanieOblasti LIKE ? AND KodVuza LIKE ?");
+         stmt.setObject(1, abit_A.getNazvanieOblasti(),Types.VARCHAR);
+         stmt.setObject(2,session.getAttribute("kVuza"),Types.INTEGER);
+         rs = stmt.executeQuery();
+         if(rs.next()) kOblasti = rs.getInt(1);
+         else {
+             stmt = conn.prepareStatement("SELECT MAX(KodOblasti) FROM Oblasti WHERE KodVuza LIKE ?");
+             stmt.setObject(1,session.getAttribute("kVuza"),Types.INTEGER);
+             rs = stmt.executeQuery();
+             if(rs.next()) kOblasti = rs.getInt(1) + 1;
+             else kOblasti = 1;
+
+             stmt = conn.prepareStatement("INSERT Oblasti(KodOblasti,NazvanieOblasti,KodVuza) VALUES(?,?,?)");
+             stmt.setObject(1, new Integer(""+kOblasti),Types.INTEGER);
+             stmt.setObject(2, abit_A.getNazvanieOblasti(),Types.VARCHAR);
+             stmt.setObject(3, session.getAttribute("kVuza"),Types.INTEGER);
+             stmt.executeUpdate();
+         }
+       }
+       else {
+           stmt = conn.prepareStatement("SELECT KodOblasti FROM Oblasti WHERE NazvanieOblasti IS NULL AND KodVuza LIKE ?");
+           stmt.setObject(1,session.getAttribute("kVuza"),Types.INTEGER);
+           rs = stmt.executeQuery();
+           if(rs.next()) kOblasti = rs.getInt(1);
+           else {
+               stmt = conn.prepareStatement("SELECT MAX(KodOblasti) FROM Oblasti WHERE KodVuza LIKE ?");
+               stmt.setObject(1,session.getAttribute("kVuza"),Types.INTEGER);
+               rs = stmt.executeQuery();
+               if(rs.next()) kOblasti = rs.getInt(1) + 1;
+               else kOblasti = 1;
+
+               stmt = conn.prepareStatement("INSERT Oblasti(KodOblasti,NazvanieOblasti,KodVuza) VALUES(?,?,?)");
+               stmt.setObject(1, new Integer(""+kOblasti),Types.INTEGER);
+               stmt.setObject(2, abit_A.getNazvanieOblasti(),Types.VARCHAR);
+               stmt.setObject(3, session.getAttribute("kVuza"),Types.INTEGER);
+               stmt.executeUpdate();
+           }
+       }
+
+/**********************************/
+/***********    Район    **********/
+/**********************************/
+
+       if(abit_A.getNazvanieRajona()!=null) {
+         stmt = conn.prepareStatement("SELECT KodRajona FROM Rajony WHERE NazvanieRajona LIKE ? AND KodVuza LIKE ?");
+         stmt.setObject(1, abit_A.getNazvanieRajona(),Types.VARCHAR);
+         stmt.setObject(2, session.getAttribute("kVuza"),Types.INTEGER);
+         rs = stmt.executeQuery();
+         if(rs.next()) kRajona = rs.getInt(1);
+         else {
+             stmt = conn.prepareStatement("SELECT MAX(KodRajona) FROM Rajony WHERE KodVuza LIKE ?");
+             stmt.setObject(1,session.getAttribute("kVuza"),Types.INTEGER);
+             rs = stmt.executeQuery();
+             if(rs.next()) kRajona = rs.getInt(1) + 1;
+             else kRajona = 1;
+
+             stmt = conn.prepareStatement("INSERT Rajony(KodRajona,NazvanieRajona,KodVuza) VALUES(?,?,?)");
+             stmt.setObject(1, new Integer(""+kRajona),Types.INTEGER);
+             stmt.setObject(2, abit_A.getNazvanieRajona(),Types.VARCHAR);
+             stmt.setObject(3, session.getAttribute("kVuza"),Types.INTEGER);
+             stmt.executeUpdate();                    
+         }
+       }
+       else {
+           stmt = conn.prepareStatement("SELECT KodRajona FROM Rajony WHERE (NazvanieRajona IS NULL OR NazvanieRajona LIKE '') AND KodVuza LIKE ?");
+           stmt.setObject(1, session.getAttribute("kVuza"),Types.INTEGER);
+           rs = stmt.executeQuery();
+           if(rs.next()) kRajona = rs.getInt(1);
+           else {
+               stmt = conn.prepareStatement("SELECT MAX(KodRajona) FROM Rajony WHERE KodVuza LIKE ?");
+               stmt.setObject(1, session.getAttribute("kVuza"),Types.INTEGER);
+               rs = stmt.executeQuery();
+               if(rs.next()) kRajona = rs.getInt(1) + 1;
+               else kRajona = 1;
+
+               stmt = conn.prepareStatement("INSERT Rajony(KodRajona,NazvanieRajona,KodVuza) VALUES(?,?,?)");
+               stmt.setObject(1, new Integer(""+kRajona),Types.INTEGER);
+               stmt.setObject(2, abit_A.getNazvanieRajona(),Types.VARCHAR);
+               stmt.setObject(3, session.getAttribute("kVuza"),Types.INTEGER);
+               stmt.executeUpdate();
+           }
+       }
+
+/**********************************/
+/***********    Пункт    **********/
+/**********************************/
+
+       if(abit_A.getNazvanie()!=null) {
+         stmt = conn.prepareStatement("SELECT KodPunkta FROM Punkty WHERE Nazvanie LIKE ? AND KodVuza LIKE ?");
+         stmt.setObject(1, abit_A.getNazvanie(),Types.VARCHAR);
+         stmt.setObject(2, session.getAttribute("kVuza"),Types.INTEGER);
+         rs = stmt.executeQuery();
+         if(rs.next()) kPunkta = rs.getInt(1);
+         else {
+             stmt = conn.prepareStatement("SELECT MAX(KodPunkta) FROM Punkty WHERE KodVuza LIKE ?");
+             stmt.setObject(1, session.getAttribute("kVuza"),Types.INTEGER);
+             rs = stmt.executeQuery();
+             if(rs.next()) kPunkta = rs.getInt(1) + 1;
+             else kPunkta = 1;
+
+             stmt = conn.prepareStatement("INSERT Punkty(KodPunkta,Nazvanie,KodVuza) VALUES(?,?,?)");
+             stmt.setObject(1, new Integer(""+kPunkta),Types.INTEGER);
+             stmt.setObject(2, abit_A.getNazvanie(),Types.VARCHAR);
+             stmt.setObject(3, session.getAttribute("kVuza"),Types.INTEGER);
+             stmt.executeUpdate();
+         }
+       }
+       else {
+           stmt = conn.prepareStatement("SELECT KodPunkta FROM Punkty WHERE Nazvanie IS NULL AND KodVuza LIKE ?");
+           stmt.setObject(1,session.getAttribute("kVuza"),Types.INTEGER);
+           rs = stmt.executeQuery();
+           if(rs.next()) kPunkta = rs.getInt(1);
+           else {
+               stmt = conn.prepareStatement("SELECT MAX(KodPunkta) FROM Punkty WHERE KodVuza LIKE ?");
+               stmt.setObject(1,session.getAttribute("kVuza"),Types.INTEGER);
+               rs = stmt.executeQuery();
+               if(rs.next()) kPunkta = rs.getInt(1) + 1;
+               else kPunkta = 1;
+
+               stmt = conn.prepareStatement("INSERT Punkty(KodPunkta,Nazvanie,KodVuza) VALUES(?,?,?)");
+               stmt.setObject(1,new Integer(""+kPunkta),Types.INTEGER);
+               stmt.setObject(2, abit_A.getNazvanie(),Types.VARCHAR);
+               stmt.setObject(3, session.getAttribute("kVuza"),Types.INTEGER);
+               stmt.executeUpdate();
+           }
+       }
+
+/**********************************/
+/***********  Заведение  **********/
+/**********************************/
+
+       if(abit_A.getPolnoeNaimenovanieZavedenija() !=null) {
+         stmt = conn.prepareStatement("SELECT KodZavedenija FROM Zavedenija WHERE PolnoeNaimenovanieZavedenija LIKE ?");
+         stmt.setObject(1, abit_A.getPolnoeNaimenovanieZavedenija(),Types.VARCHAR);
+         rs = stmt.executeQuery();
+         if(rs.next()) kZavedenija = rs.getInt(1);
+         else {
+             stmt = conn.prepareStatement("SELECT MAX(KodZavedenija) FROM Zavedenija");
+           // stmt.setObject(1, session.getAttribute("kVuza"),Types.INTEGER);
+             rs = stmt.executeQuery();
+             if(rs.next()) kZavedenija = rs.getInt(1) + 1;
+             else kZavedenija = 1;
+
+             stmt = conn.prepareStatement("INSERT Zavedenija(PolnoeNaimenovanieZavedenija,Sokr,KodVuza,Kodzavedenija) VALUES(?,?,?,?)");
+             stmt.setObject(1, abit_A.getPolnoeNaimenovanieZavedenija(),Types.VARCHAR);
+
+             if((abit_A.getPolnoeNaimenovanieZavedenija()).length()>25)
+               stmt.setObject(2, (abit_A.getPolnoeNaimenovanieZavedenija()).substring(0,25),Types.VARCHAR);
+             else
+               stmt.setObject(2, abit_A.getPolnoeNaimenovanieZavedenija(),Types.VARCHAR);
+
+             stmt.setObject(3,9999,Types.INTEGER);
+             stmt.setObject(4,new Integer(""+kZavedenija),Types.INTEGER);
+             stmt.executeUpdate();
+         }
+
+       } else kZavedenija = StringUtil.toInt(""+abit_A.getKodZavedenija(),1);
+
+/**********************************/
+/**********  Абитуриент  **********/
+/**********************************/
+
+// Формирование НЛД для наиболее приоритетной специальности
+
+       stmt = conn.prepareStatement("INSERT Abiturient(KodVuza,DokumentyHranjatsja,KodSpetsialnosti,NomerLichnogoDela,Familija,Imja,Otchestvo,TipDokumenta,NomerDokumenta,SeriaDokumenta,DataVydDokumenta,KemVydDokument,MestoRojdenija,TipDokSredObraz,VidDokSredObraz,DataRojdenija,Pol,Grajdanstvo,GodOkonchanijaSrObrazovanija,GdePoluchilSrObrazovanie,TipOkonchennogoZavedenija,NomerShkoly,KodZavedenija,KodMedali,TrudovajaDejatelnost,NapravlenieOtPredprijatija,KodLgot,KodKursov,InostrannyjJazyk,NujdaetsjaVObschejitii,KodTselevogoPriema,KodOblasti,KodRajona,KodPunkta,SeriaAtt,NomerAtt,Ordr,Gorod_Prop,Ulica_Prop,Dom_Prop,Kvart_Prop,Stepen_Mag,Need_Spo,Exists_st_Mag,Tel,NomerPlatnogoDogovora,KodFormyOb,KodOsnovyOb,DataInput,DataModify,UdostoverenieLgoty,DiplomOtlichija,KodAbiturienta,PostgraduateStudies,Traineeship,Internship) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+       stmt.setObject(1, session.getAttribute("kVuza"), Types.INTEGER);
+       stmt.setObject(2, abit_A.getDokumentyHranjatsja(), Types.VARCHAR);
+       stmt.setObject(3, kSpec, Types.VARCHAR);
+
+       stmt.setObject(4, Abbr_Spec+nomer_ab+"-1", Types.VARCHAR); // NLD
+
+       stmt.setObject(5, (abit_A.getFamilija()).substring(0,1).toUpperCase()+(abit_A.getFamilija()).substring(1), Types.VARCHAR);
+       stmt.setObject(6, (abit_A.getImja()).substring(0,1).toUpperCase()+(abit_A.getImja()).substring(1), Types.VARCHAR);
+       stmt.setObject(7, (abit_A.getOtchestvo()).substring(0,1).toUpperCase()+(abit_A.getOtchestvo()).substring(1), Types.VARCHAR);
+       stmt.setObject(8, abit_A.getTipDokumenta(), Types.VARCHAR);
+       stmt.setObject(9, abit_A.getNomerDokumenta(), Types.VARCHAR);
+       stmt.setObject(10, abit_A.getSeriaDokumenta(), Types.VARCHAR);
+       stmt.setObject(11, StringUtil.DataConverter(abit_A.getDataVydDokumenta()), Types.VARCHAR);
+       stmt.setObject(12, abit_A.getKemVydDokument(), Types.VARCHAR);
+       stmt.setObject(13, abit_A.getMestoRojdenija(), Types.VARCHAR);
+       stmt.setObject(14, abit_A.getTipDokSredObraz(), Types.VARCHAR);
+       stmt.setObject(15, abit_A.getVidDokSredObraz(), Types.VARCHAR);
+       stmt.setObject(16, StringUtil.DataConverter(abit_A.getDataRojdenija()), Types.VARCHAR);
+       stmt.setObject(17, abit_A.getPol(), Types.VARCHAR);
+//       stmt.setObject(18, abit_A.getNomerSertifikata(), Types.VARCHAR);
+//       stmt.setObject(19, abit_A.getKopijaSertifikata(), Types.VARCHAR);
+       stmt.setObject(18, abit_A.getGrajdanstvo(), Types.VARCHAR);
+       stmt.setObject(19, ""+abit_A.getGodOkonchanijaSrObrazovanija(), Types.VARCHAR);
+       stmt.setObject(20, abit_A.getGdePoluchilSrObrazovanie(), Types.VARCHAR);
+       stmt.setObject(21, abit_A.getTipOkonchennogoZavedenija(), Types.VARCHAR);
+       stmt.setObject(22, abit_A.getNomerShkoly(), Types.VARCHAR);
+       stmt.setObject(23, new Integer(""+kZavedenija), Types.INTEGER);
+       stmt.setObject(24, abit_A.getKodMedali(), Types.INTEGER);
+       stmt.setObject(25, abit_A.getTrudovajaDejatelnost(), Types.VARCHAR);
+       stmt.setObject(26, abit_A.getNapravlenieOtPredprijatija(), Types.VARCHAR);
+       stmt.setObject(27, abit_A.getKodLgot(), Types.INTEGER);
+      // stmt.setObject(30, abit_A.getKodKursov(), Types.INTEGER);
+       Integer kKurs = 1;
+       stmt.setObject(28, kKurs, Types.INTEGER);
+       stmt.setObject(29, abit_A.getInostrannyjJazyk(), Types.VARCHAR);
+       stmt.setObject(30, abit_A.getNujdaetsjaVObschejitii(), Types.VARCHAR);
+       stmt.setObject(31, abit_A.getKodTselevogoPriema(), Types.INTEGER);
+       stmt.setObject(32, new Integer(""+kOblasti), Types.INTEGER);
+       stmt.setObject(33, new Integer(""+kRajona), Types.INTEGER);
+       stmt.setObject(34, new Integer(""+kPunkta), Types.INTEGER);
+       stmt.setObject(35, abit_A.getSeriaAtt(), Types.VARCHAR);
+       stmt.setObject(36, abit_A.getNomerAtt(), Types.VARCHAR);
+       stmt.setObject(37, ordr_ab, Types.VARCHAR);
+       stmt.setObject(38, abit_A.getGorod_Prop(), Types.VARCHAR);
+       stmt.setObject(39, abit_A.getUlica_Prop(), Types.VARCHAR);
+       stmt.setObject(40, abit_A.getDom_Prop(), Types.VARCHAR);
+       stmt.setObject(41, abit_A.getKvart_Prop(), Types.VARCHAR);
+       stmt.setObject(42, abit_A.getStepen_Mag(), Types.VARCHAR);
+       stmt.setObject(43, abit_A.getNeed_Spo(), Types.VARCHAR);
+       stmt.setNull(44, Types.VARCHAR); //Exists_st_Mag
+       stmt.setObject(45, abit_A.getTel(), Types.VARCHAR);
+       stmt.setObject(46, abit_A.getNomerPlatnogoDogovora(), Types.VARCHAR);
+       stmt.setObject(47, kFormy_Ob, Types.INTEGER);  //KodFormyOb
+       stmt.setObject(48, kOsnovy_Ob, Types.INTEGER); //KodOsnovyOb
+       stmt.setObject(49, StringUtil.CurrDate("."), Types.VARCHAR); //DataInput
+       stmt.setObject(50, StringUtil.CurrDate("."), Types.VARCHAR); //DataModify = DataInput
+       stmt.setObject(51, abit_A.getUdostoverenieLgoty(), Types.VARCHAR);
+       stmt.setObject(52, abit_A.getDiplomOtlichija(), Types.VARCHAR);
+       stmt.setObject(53, new Integer(""+kAbiturienta), Types.INTEGER);
+       stmt.setObject(54, abit_A.getPostgraduateStudies(), Types.VARCHAR);
+       stmt.setObject(55, abit_A.getTraineeship(), Types.VARCHAR);
+       stmt.setObject(56, abit_A.getInternship(), Types.VARCHAR);
+       stmt.executeUpdate();
+
+/* Создание пустых записей в таблице Оценки */
+       stmt = conn.prepareStatement("INSERT INTO Otsenki(KodAbiturienta,KodPredmeta) SELECT DISTINCT ?,KodPredmeta FROM NazvanijaPredmetov ORDER BY KodPredmeta");
+       stmt.setObject(1,new Integer(kAbiturienta+""),Types.INTEGER);
+       stmt.executeUpdate();
+       
+       if(abit_A.getPodtverjdenieMedSpravki().equals("d")){
+       
+	       stmt = conn.prepareStatement("INSERT INTO medSpravka(kodAbiturienta, nomerSpravki) VALUES(?,?)");
+	       stmt.setObject(1,new Integer(kAbiturienta),Types.INTEGER);
+	       stmt.setObject(2, form.getMedSpravka(),Types.VARCHAR);
+	       stmt.executeUpdate();
+       }
+       
+       /* Создание пустых записей в таблице Оa */
+       stmt = conn.prepareStatement("INSERT INTO Oa(KodAbiturienta,KodPredmeta) SELECT DISTINCT ?,KodPredmeta FROM NazvanijaPredmetov ORDER BY KodPredmeta");
+       stmt.setObject(1,new Integer(kAbiturienta+""),Types.INTEGER);
+       stmt.executeUpdate();
+       
+       stmt = conn.prepareStatement("INSERT INTO Os(KodAbiturienta) SELECT DISTINCT ?");
+       stmt.setObject(1,new Integer(kAbiturienta+""),Types.INTEGER);
+       stmt.executeUpdate();
+
+/* Создание пустых записей в таблице Заявленные Школьные Оценки */
+       stmt = conn.prepareStatement("INSERT INTO ZajavlennyeShkolnyeOtsenki(KodAbiturienta,KodPredmeta) SELECT DISTINCT ?,KodPredmeta FROM NazvanijaPredmetov ORDER BY KodPredmeta");
+       stmt.setObject(1,new Integer(kAbiturienta+""),Types.INTEGER);
+       stmt.executeUpdate();
+
+/* Создание пустых записей в контрольной таблице */
+       stmt = conn.prepareStatement("INSERT INTO Kontrol_ZSO(KodAbiturienta,KodPredmeta) SELECT DISTINCT ?,KodPredmeta FROM NazvanijaPredmetov ORDER BY KodPredmeta");
+       stmt.setObject(1,new Integer(kAbiturienta+""),Types.INTEGER);
+       stmt.executeUpdate();
+
+  /* Создание пустых записей в таблице дополнительной информации об абитуриентах*/
+       stmt = conn.prepareStatement("INSERT INTO AbitDopInf(KodAbiturienta, abitEmail, Address, ProvidingSpecialConditions, ReturnDocument) VALUES(?,?,?,?,?)");
+       stmt.setObject(1,new Integer(kAbiturienta+""),Types.INTEGER);
+       stmt.setObject(2,abit_A.getAbitEmail() ,Types.VARCHAR);
+       stmt.setObject(3,abit_A.getDopAddress(),Types.VARCHAR);
+       stmt.setObject(4,abit_A.getProvidingSpecialCondition(),Types.VARCHAR);
+       stmt.setObject(5,abit_A.getReturnDocument(),Types.VARCHAR);
+       stmt.executeUpdate();
+       
+       stmt = conn.prepareStatement("INSERT INTO PR(KodAbiturienta, PreemptiveRight, pr) VALUES(?,?,?)");
+       stmt.setObject(1,new Integer(kAbiturienta+""),Types.INTEGER);
+       stmt.setObject(2,abit_A.getPreemptiveRight() ,Types.VARCHAR);
+       if(abit_A.getPreemptiveRight().equals("д")){
+    	   stmt.setObject(3, 1,Types.INTEGER);
+       }else{
+    	   stmt.setObject(3, 0,Types.INTEGER); 
+       }
+       stmt.executeUpdate();
+       
+/* Добавление заявленных оценок, оценок ЕГЭ и оценок аттестата*/
+       Enumeration paramNames = request.getParameterNames();
+
+       while(paramNames.hasMoreElements()) {
+
+          String paramName = (String)paramNames.nextElement();
+          String paramValue[] = request.getParameterValues(paramName);
+
+// Оценки ЕГЭ 
+
+          if(paramName.indexOf("Ege_note") != -1 && paramValue[0].length() != 0) {
+
+            stmt = conn.prepareStatement("UPDATE ZajavlennyeShkolnyeOtsenki SET OtsenkaEge=? WHERE KodAbiturienta=? AND KodPredmeta=?");
+            stmt.setObject(1,new Integer(paramValue[0]),Types.INTEGER);            // Оценка
+            stmt.setObject(2, new Integer(""+kAbiturienta),Types.INTEGER);         // Код абитуриента
+            stmt.setObject(3, new Integer(paramName.substring(8)),Types.INTEGER);  // Код предмета
+            stmt.executeUpdate();
+
+            stmt = conn.prepareStatement("UPDATE Kontrol_ZSO SET OtsenkaEge=? WHERE KodAbiturienta=? AND KodPredmeta=?");
+            stmt.setObject(1,new Integer(paramValue[0]),Types.INTEGER);            // Оценка
+            stmt.setObject(2, new Integer(""+kAbiturienta),Types.INTEGER);         // Код абитуриента
+            stmt.setObject(3, new Integer(paramName.substring(8)),Types.INTEGER);  // Код предмета
+            stmt.executeUpdate();
+          }
+          
+          if(paramName.indexOf("Attestat") != -1 && paramValue[0].length() != 0) {
+        	  	int ba=new Integer(paramValue[0]);
+        	  	summa=summa+ba;
+        	  	System.out.println("summa"+summa);
+        	
+              stmt = conn.prepareStatement("UPDATE Oa SET OtsenkaAtt=? WHERE KodAbiturienta=? AND KodPredmeta=?");
+              stmt.setObject(1,new Integer(paramValue[0]),Types.INTEGER);            // Оценка
+              stmt.setObject(2, new Integer(""+kAbiturienta),Types.INTEGER);         // Код абитуриента
+              stmt.setObject(3, new Integer(paramName.substring(8)),Types.INTEGER);  // Код предмета
+              stmt.executeUpdate();
+
+            }
+
+// Признак экзамена (в формате ВУЗа или в формате ЕГЭ)
+
+          if(paramName.indexOf("Examen") != -1 && paramValue[0].length() != 0) {
+
+            stmt = conn.prepareStatement("UPDATE ZajavlennyeShkolnyeOtsenki SET Examen=? WHERE KodAbiturienta=? AND KodPredmeta=?");
+            stmt.setObject(1, StringUtil.toDB(paramValue[0]),Types.VARCHAR);           // Признак внутреннего экзамена
+            stmt.setObject(2, new Integer(""+kAbiturienta),Types.INTEGER);             // Код абитуриента
+            stmt.setObject(3, new Integer(paramName.substring(6)),Types.INTEGER);      // Код предмета
+            stmt.executeUpdate();
+
+            stmt = conn.prepareStatement("UPDATE Kontrol_ZSO SET Examen=? WHERE KodAbiturienta=? AND KodPredmeta=?");
+            stmt.setObject(1, StringUtil.toDB(paramValue[0]),Types.VARCHAR);           // Признак внутреннего экзамена
+            stmt.setObject(2, new Integer(""+kAbiturienta),Types.INTEGER);             // Код абитуриента
+            stmt.setObject(3, new Integer(paramName.substring(6)),Types.INTEGER);      // Код предмета
+            stmt.executeUpdate();
+          }
+       }
+       summa=summa/8;
+       System.out.println("summa"+summa);
+       stmt = conn.prepareStatement("UPDATE Os SET Summ=? WHERE KodAbiturienta=?");
+       stmt.setObject(1, summa,Types.FLOAT);            // Оценка
+       stmt.setObject(2, new Integer(""+kAbiturienta),Types.INTEGER);      
+       stmt.executeUpdate();
+/**********************************/
+/**********   Конкурс   ***********/
+/**********************************/
+
+// Проверка - разные ли специальности планируются ко вводу
+
+   String spc1 = new String("X1Y1Z1");
+   String spc2 = new String("X2Y2Z2");
+   String spc3 = new String("X3Y3Z3");
+   String spc4 = new String("X4Y4Z4");
+   String spc5 = new String("X5Y5Z5");
+   String spc6 = new String("X6Y6Z6");
+
+   if(abit_A.getS_okso_1() != null) spc1 = abit_A.getS_okso_1();
+   if(abit_A.getS_okso_2() != null) spc2 = abit_A.getS_okso_2();
+   if(abit_A.getS_okso_3() != null) spc3 = abit_A.getS_okso_3();
+   if(abit_A.getS_okso_4() != null) spc4 = abit_A.getS_okso_4();
+   if(abit_A.getS_okso_5() != null) spc5 = abit_A.getS_okso_5();
+   if(abit_A.getS_okso_6() != null) spc6 = abit_A.getS_okso_6();
+
+   if(spc1.equals(spc2) || spc1.equals(spc3) || spc1.equals(spc4) || spc1.equals(spc5) || spc1.equals(spc6) || spc2.equals(spc3) || 
+      spc2.equals(spc4) || spc2.equals(spc5) || spc2.equals(spc6) || spc3.equals(spc4) || spc3.equals(spc5) || spc3.equals(spc6) || 
+      spc4.equals(spc5) || spc4.equals(spc6) || spc5.equals(spc6)) {
+
+          mess.setStatus("Ошибка!");
+          mess.setMessage("Нельзя указывать в конкурсе две одинаковые специальности!");
+          re_enter = true;
+   }
+
+/*****************************/
+/****** 1. Приоритетная ******/
+/*****************************/
+
+       if(abit_A.getS_okso_1() != null && abit_A.getS_okso_1().length() >= 6 && !re_enter) {
+
+// Определение типа специальности
+System.out.println("TipSpec=>"+abit_A.getS_okso_1()+" LEN="+abit_A.getS_okso_1().length());
+         if(abit_A.getS_okso_1().length() == 6) { 
+           Tip_Spec2 = "о";
+           s_okso_1 = abit_A.getS_okso_1().substring(0,6);
+         } else if(abit_A.getS_okso_1().length() < 9) {
+                  Tip_Spec2 = abit_A.getS_okso_1().substring(6);
+                  s_okso_1 = abit_A.getS_okso_1().substring(0,6);
+                }
+         else  if (abit_A.getS_okso_1().length() > 11)
+         {
+        	 Tip_Spec2 = abit_A.getS_okso_1().substring(11);
+             s_okso_1 = abit_A.getS_okso_1().substring(0,11);
+         }
+         
+         else {
+               Tip_Spec2 = abit_A.getS_okso_1().substring(8);
+               s_okso_1 = abit_A.getS_okso_1().substring(0,8);
+         }
+
+// Очных специальностей не должно быть больше 3х
+
+         kSpec = "-1";
+         Abbr_Spec2 = "X1Y1Z1";
+
+         if(Tip_Spec2.equals("о") || Tip_Spec2.equals("м") || Tip_Spec2.equals("ф") || Tip_Spec2.equals("ю") || Tip_Spec2.equals("п")) Col_Specs++;
+//System.out.println("SOKSO1>"+s_okso_1+"<");
+//System.out.println("Tip_Spec1="+StringUtil.toEng(Tip_Spec2));
+         stmt = conn.prepareStatement("SELECT KodSpetsialnosti,Abbreviatura,PlanPriema FROM Spetsialnosti WHERE ShifrSpetsialnosti LIKE ? AND Tip_Spec LIKE ?");
+         stmt.setObject(1,s_okso_1,Types.VARCHAR);
+         stmt.setObject(2,Tip_Spec2,Types.VARCHAR);
+         rs = stmt.executeQuery();
+         if(rs.next()) {
+           kSpec = rs.getString(1);
+           Abbr_Spec2 = rs.getString(2);
+           pp=rs.getInt(3);
+           if(abit_A.getBud_1() != null && pp==0){
+               mess.setStatus("Ошибка!");
+               mess.setMessage("Cпециальность "+abit_A.getS_okso_1()+" не предусматривает бюджетные места!");
+               re_enter = true;
+             }
+                    } else {
+
+// Шифр специальности не найден в БД
+           mess.setStatus("Ошибка!");
+           mess.setMessage("Шифр специальности: "+abit_A.getS_okso_1()+" не найден в базе данных!");
+           re_enter = true;
+         }
+         
+         
+System.out.println("SOKSO1>"+s_okso_1+"<");
+// Внесение данных в таблицу Konkurs и дублирующую таблицу Kontrol_Kon
+
+         for(int i=0; i<2; i++) {
+System.out.println("1>"+two_t_names[i]+"<kA>"+kAbiturienta+"<kSp>"+kSpec+"<Abbr_Spec>"+Abbr_Spec2+nomer_ab+"-2"+"<TipS>"+Tip_Spec2);
+           stmt = conn.prepareStatement("INSERT INTO "+two_t_names[i]+"(KodAbiturienta,KodSpetsialnosti,NomerLichnogoDela,Prioritet,Forma_Ob,Bud,Dog,Fito,Olimp,Target,Six,Three,Dog_Ok) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)");
+           stmt.setObject(1, new Integer(""+kAbiturienta), Types.INTEGER);
+           stmt.setObject(2, kSpec, Types.VARCHAR);
+           stmt.setObject(3, Abbr_Spec2+nomer_ab+"-1", Types.VARCHAR);
+           stmt.setObject(4, "1", Types.VARCHAR);
+           stmt.setObject(5, Tip_Spec2, Types.VARCHAR);
+           if(abit_A.getBud_1() != null && pp!=0)
+             stmt.setObject(6, "д", Types.VARCHAR);
+           else
+             stmt.setNull(6, Types.VARCHAR);
+           if(abit_A.getDog_1() != null)
+             stmt.setObject(7, "д", Types.VARCHAR);
+           else
+             stmt.setNull(7, Types.VARCHAR);
+           if(abit_A.getFito_1() != null)
+             stmt.setObject(8, "д", Types.VARCHAR);
+           else
+             stmt.setNull(8, Types.VARCHAR);
+           if(abit_A.getOlimp_1() != null)
+             stmt.setObject(9, "д", Types.VARCHAR);
+           else
+             stmt.setNull(9, Types.VARCHAR);
+           if(abit_A.getTarget_1() != null)
+             stmt.setObject(10, "д", Types.VARCHAR);
+           else
+             stmt.setNull(10, Types.VARCHAR);
+           if(abit_A.getSix_1() != null)
+             stmt.setObject(11, "д", Types.VARCHAR);
+           else
+             stmt.setNull(11, Types.VARCHAR);
+           if(abit_A.getThree_1() != null)
+             stmt.setObject(12, "д", Types.VARCHAR);
+           else
+             stmt.setNull(12, Types.VARCHAR);
+           if(abit_A.getDog_ok_1() != null)
+             stmt.setObject(13, "д", Types.VARCHAR);
+           else
+             stmt.setNull(13, Types.VARCHAR);
+
+           stmt.executeUpdate();
+         }
+
+       }
+
+/*********************/
+/****** 2.      ******/
+/*********************/
+
+       if(abit_A.getS_okso_2() != null && abit_A.getS_okso_2().length() >= 6 && !re_enter) {
+
+// Определение типа специальности
+
+         if(abit_A.getS_okso_2().length() == 6) { 
+           Tip_Spec2 = "о"; 
+           s_okso_2 = abit_A.getS_okso_2().substring(0,6);
+         } else if(abit_A.getS_okso_2().length() < 9) {
+                  Tip_Spec2 = abit_A.getS_okso_2().substring(6);
+                  s_okso_2 = abit_A.getS_okso_2().substring(0,6);
+                }
+         else  if (abit_A.getS_okso_2().length() > 11)
+         {
+        	 Tip_Spec2 = abit_A.getS_okso_2().substring(11);
+             s_okso_2 = abit_A.getS_okso_2().substring(0,11);
+         }
+         else {
+               Tip_Spec2 = abit_A.getS_okso_2().substring(8);
+               s_okso_2 = abit_A.getS_okso_2().substring(0,8);
+         }
+
+// Очных специальностей не должно быть больше 3х
+
+         kSpec = "-1";
+         Abbr_Spec2 = "X1Y1Z1";
+         int pp1=0;
+
+         if(Tip_Spec2.equals("о") || Tip_Spec2.equals("м") || Tip_Spec2.equals("ф") || Tip_Spec2.equals("ю") || Tip_Spec2.equals("п")) Col_Specs++;
+//System.out.println("SOKSO2>"+s_okso_2+"<");
+//System.out.println("Tip_Spec2="+StringUtil.toEng(Tip_Spec2));
+         stmt = conn.prepareStatement("SELECT KodSpetsialnosti,Abbreviatura,PlanPriema FROM Spetsialnosti WHERE ShifrSpetsialnosti LIKE ? AND Tip_Spec LIKE ?");
+         stmt.setObject(1,s_okso_2,Types.VARCHAR);
+         stmt.setObject(2,Tip_Spec2,Types.VARCHAR);
+         rs = stmt.executeQuery();
+         if(rs.next()) {
+           kSpec = rs.getString(1);
+           Abbr_Spec2 = rs.getString(2);
+           pp1=rs.getInt(3);
+           if(abit_A.getBud_2() != null && pp1==0){
+       	    mess.setStatus("Ошибка!");
+       	    mess.setMessage("Cпециальность "+abit_A.getS_okso_2()+" не предусматривает бюджетные места!");
+       	    re_enter = true;
+       	  }
+System.out.println(">>>>>>>>>>> Event 1");
+         } else {
+
+// Шифр специальности не найден в БД
+           mess.setStatus("Ошибка!");
+           mess.setMessage("Шифр специальности: "+abit_A.getS_okso_2()+" не найден в базе данных!");
+           re_enter = true;
+System.out.println(">>>>>>>>>>> Event 2");
+         }
+System.out.println("SOKSO2>"+s_okso_2+"<");
+// Внесение данных в таблицу Konkurs и дублирующую таблицу Kontrol_Kon
+	
+	
+         for(int i=0; i<2; i++) {
+System.out.println("2>"+two_t_names[i]+"<kA>"+kAbiturienta+"<kSp>"+kSpec+"<Abbr_Spec>"+Abbr_Spec2+nomer_ab+"-2"+"<TipS>"+Tip_Spec2);
+           stmt = conn.prepareStatement("INSERT INTO "+two_t_names[i]+"(KodAbiturienta,KodSpetsialnosti,NomerLichnogoDela,Prioritet,Forma_Ob,Bud,Dog,Fito,Olimp,Target,Six,Three,Dog_Ok) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)");
+           stmt.setObject(1, new Integer(""+kAbiturienta), Types.INTEGER);
+           stmt.setObject(2, kSpec, Types.VARCHAR);
+           stmt.setObject(3, Abbr_Spec2+nomer_ab+"-2", Types.VARCHAR);
+           stmt.setObject(4, "2", Types.VARCHAR);
+           stmt.setObject(5, Tip_Spec2, Types.VARCHAR);
+           if(abit_A.getBud_2() != null && pp1!=0)
+             stmt.setObject(6, "д", Types.VARCHAR);
+           else
+             stmt.setNull(6, Types.VARCHAR);
+           if(abit_A.getDog_2() != null)
+             stmt.setObject(7, "д", Types.VARCHAR);
+           else
+             stmt.setNull(7, Types.VARCHAR);
+           if(abit_A.getFito_2() != null)
+             stmt.setObject(8, "д", Types.VARCHAR);
+           else
+             stmt.setNull(8, Types.VARCHAR);
+           if(abit_A.getOlimp_2() != null)
+             stmt.setObject(9, "д", Types.VARCHAR);
+           else
+             stmt.setNull(9, Types.VARCHAR);
+           if(abit_A.getTarget_2() != null)
+             stmt.setObject(10, "д", Types.VARCHAR);
+           else
+             stmt.setNull(10, Types.VARCHAR);
+           if(abit_A.getSix_2() != null)
+             stmt.setObject(11, "д", Types.VARCHAR);
+           else
+             stmt.setNull(11, Types.VARCHAR);
+           if(abit_A.getThree_2() != null)
+             stmt.setObject(12, "д", Types.VARCHAR);
+           else
+             stmt.setNull(12, Types.VARCHAR);
+           if(abit_A.getDog_ok_2() != null)
+             stmt.setObject(13, "д", Types.VARCHAR);
+           else
+             stmt.setNull(13, Types.VARCHAR);
+
+           stmt.executeUpdate();
+         }
+       }
+
+/*********************/
+/****** 3.      ******/
+/*********************/
+
+       if(abit_A.getS_okso_3() != null && abit_A.getS_okso_3().length() >= 6 && !re_enter) {
+
+// Определение типа специальности
+
+         if(abit_A.getS_okso_3().length() == 6) { 
+           Tip_Spec2 = "о"; 
+           s_okso_3 = abit_A.getS_okso_3().substring(0,6);
+         } else if(abit_A.getS_okso_3().length() < 9) {
+                  Tip_Spec2 = abit_A.getS_okso_3().substring(6);
+                  s_okso_3 = abit_A.getS_okso_3().substring(0,6);
+                }
+         else  if (abit_A.getS_okso_3().length() > 11)
+         {
+        	 Tip_Spec2 = abit_A.getS_okso_3().substring(11);
+             s_okso_3 = abit_A.getS_okso_3().substring(0,11);
+         }
+         else {
+               Tip_Spec2 = abit_A.getS_okso_3().substring(8);
+               s_okso_3 = abit_A.getS_okso_3().substring(0,8);
+         }
+
+// Очных специальностей не должно быть больше 3х
+
+         kSpec = "-1";
+         Abbr_Spec2 = "X1Y1Z1";
+         int pp2=0;
+         if(Tip_Spec2.equals("о") || Tip_Spec2.equals("м") || Tip_Spec2.equals("ф") || Tip_Spec2.equals("ю") || Tip_Spec2.equals("п")) Col_Specs++;
+//System.out.println("SOKSO3>"+s_okso_3+"<");
+//System.out.println("Tip_Spec3="+StringUtil.toEng(Tip_Spec2));
+         stmt = conn.prepareStatement("SELECT KodSpetsialnosti,Abbreviatura,PlanPriema FROM Spetsialnosti WHERE ShifrSpetsialnosti LIKE ? AND Tip_Spec LIKE ?");
+         stmt.setObject(1,s_okso_3,Types.VARCHAR);
+         stmt.setObject(2,Tip_Spec2,Types.VARCHAR);
+         rs = stmt.executeQuery();
+         if(rs.next()) {
+           kSpec = rs.getString(1);
+           Abbr_Spec2 = rs.getString(2);
+           pp2=rs.getInt(3);
+           if(abit_A.getBud_3() != null && pp2==0){
+               mess.setStatus("Ошибка!");
+               mess.setMessage("Cпециальность "+abit_A.getS_okso_3()+" не предусматривает бюджетные места!");
+               re_enter = true;
+             }
+         } else {
+
+// Шифр специальности не найден в БД
+           mess.setStatus("Ошибка!");
+           mess.setMessage("Шифр специальности: "+abit_A.getS_okso_3()+" не найден в базе данных!");
+           re_enter = true;
+         }
+         
+// Внесение данных в таблицу Konkurs и дублирующую таблицу Kontrol_Kon
+
+         for(int i=0; i<2; i++) {
+System.out.println("3>"+two_t_names[i]+"<kA>"+kAbiturienta+"<kSp>"+kSpec+"<Abbr_Spec>"+Abbr_Spec2+nomer_ab+"-2"+"<TipS>"+Tip_Spec2);
+           stmt = conn.prepareStatement("INSERT INTO "+two_t_names[i]+"(KodAbiturienta,KodSpetsialnosti,NomerLichnogoDela,Prioritet,Forma_Ob,Bud,Dog,Fito,Olimp,Target,Six,Three,Dog_Ok) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)");
+           stmt.setObject(1, new Integer(""+kAbiturienta), Types.INTEGER);
+           stmt.setObject(2, kSpec, Types.VARCHAR);
+           stmt.setObject(3, Abbr_Spec2+nomer_ab+"-3", Types.VARCHAR);
+           stmt.setObject(4, "3", Types.VARCHAR);
+           stmt.setObject(5, Tip_Spec2, Types.VARCHAR);
+           if(abit_A.getBud_3() != null && pp2!=0)
+             stmt.setObject(6, "д", Types.VARCHAR);
+           else
+             stmt.setNull(6, Types.VARCHAR);
+           if(abit_A.getDog_3() != null)
+             stmt.setObject(7, "д", Types.VARCHAR);
+           else
+             stmt.setNull(7, Types.VARCHAR);
+           if(abit_A.getFito_3() != null)
+             stmt.setObject(8, "д", Types.VARCHAR);
+           else
+             stmt.setNull(8, Types.VARCHAR);
+           if(abit_A.getOlimp_3() != null)
+             stmt.setObject(9, "д", Types.VARCHAR);
+           else
+             stmt.setNull(9, Types.VARCHAR);
+           if(abit_A.getTarget_3() != null)
+             stmt.setObject(10, "д", Types.VARCHAR);
+           else
+             stmt.setNull(10, Types.VARCHAR);
+           if(abit_A.getSix_3() != null)
+             stmt.setObject(11, "д", Types.VARCHAR);
+           else
+             stmt.setNull(11, Types.VARCHAR);
+           if(abit_A.getThree_3() != null)
+             stmt.setObject(12, "д", Types.VARCHAR);
+           else
+             stmt.setNull(12, Types.VARCHAR);
+           if(abit_A.getDog_ok_3() != null)
+             stmt.setObject(13, "д", Types.VARCHAR);
+           else
+             stmt.setNull(13, Types.VARCHAR);
+
+           stmt.executeUpdate();
+         }
+       }
+
+/*********************/
+/***** 4.        *****/
+/*********************/
+
+       if(abit_A.getS_okso_4() != null && abit_A.getS_okso_4().length() >= 6 && !re_enter) {
+
+// Определение типа специальности
+
+         if(abit_A.getS_okso_4().length() == 6) { 
+           Tip_Spec2 = "о"; 
+           s_okso_4 = abit_A.getS_okso_4().substring(0,6);
+         } else if(abit_A.getS_okso_4().length() < 9) {
+                  Tip_Spec2 = abit_A.getS_okso_4().substring(6);
+                  s_okso_4 = abit_A.getS_okso_4().substring(0,6);
+                }
+         else if (abit_A.getS_okso_4().length() > 11)
+         {
+        	 Tip_Spec2 = abit_A.getS_okso_4().substring(11);
+             s_okso_4 = abit_A.getS_okso_4().substring(0,11);
+         }
+         else {
+               Tip_Spec2 = abit_A.getS_okso_4().substring(8);
+               s_okso_4 = abit_A.getS_okso_4().substring(0,8);
+         }
+
+// Очных специальностей не должно быть больше 3х
+
+         kSpec = "-1";
+         Abbr_Spec2 = "X1Y1Z1";
+         int pp3=0;
+
+         if(Tip_Spec2.equals("о") || Tip_Spec2.equals("м") || Tip_Spec2.equals("ф") || Tip_Spec2.equals("ю") || Tip_Spec2.equals("п")) Col_Specs++;
+//System.out.println("SOKSO4>"+s_okso_4+"<");
+//System.out.println("Tip_Spec4="+StringUtil.toEng(Tip_Spec2));
+         stmt = conn.prepareStatement("SELECT KodSpetsialnosti,Abbreviatura,PlanPriema FROM Spetsialnosti WHERE ShifrSpetsialnosti LIKE ? AND Tip_Spec LIKE ?");
+         stmt.setObject(1,s_okso_4,Types.VARCHAR);
+         stmt.setObject(2,Tip_Spec2,Types.VARCHAR);
+         rs = stmt.executeQuery();
+         if(rs.next()) {
+           kSpec = rs.getString(1);
+           Abbr_Spec2 = rs.getString(2);
+           pp3=rs.getInt(3);
+           if(abit_A.getBud_4() != null && pp3==0){
+               mess.setStatus("Ошибка!");
+               mess.setMessage("Cпециальность "+abit_A.getS_okso_4()+" не предусматривает бюджетные места!");
+               re_enter = true;
+             }
+         } else {
+
+// Шифр специальности не найден в БД
+           mess.setStatus("Ошибка!");
+           mess.setMessage("Шифр специальности: "+abit_A.getS_okso_4()+" не найден в базе данных!");
+           re_enter = true;
+         }
+
+// Внесение данных в таблицу Konkurs и дублирующую таблицу Kontrol_Kon
+         
+         for(int i=0; i<2; i++) {
+
+           stmt = conn.prepareStatement("INSERT INTO "+two_t_names[i]+"(KodAbiturienta,KodSpetsialnosti,NomerLichnogoDela,Prioritet,Forma_Ob,Bud,Dog,Fito,Olimp,Target,Six,Three,Dog_Ok) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)");
+           stmt.setObject(1, new Integer(""+kAbiturienta), Types.INTEGER);
+           stmt.setObject(2, kSpec, Types.VARCHAR);
+           stmt.setObject(3, Abbr_Spec2+nomer_ab+"-4", Types.VARCHAR);
+           stmt.setObject(4, "4", Types.VARCHAR);
+           stmt.setObject(5, Tip_Spec2, Types.VARCHAR);
+           if(abit_A.getBud_4() != null && pp3!=0)
+             stmt.setObject(6, "д", Types.VARCHAR);
+           else
+             stmt.setNull(6, Types.VARCHAR);
+           if(abit_A.getDog_4() != null)
+             stmt.setObject(7, "д", Types.VARCHAR);
+           else
+             stmt.setNull(7, Types.VARCHAR);
+           if(abit_A.getFito_4() != null)
+             stmt.setObject(8, "д", Types.VARCHAR);
+           else
+             stmt.setNull(8, Types.VARCHAR);
+           if(abit_A.getOlimp_4() != null)
+             stmt.setObject(9, "д", Types.VARCHAR);
+           else
+             stmt.setNull(9, Types.VARCHAR);
+           if(abit_A.getTarget_4() != null)
+             stmt.setObject(10, "д", Types.VARCHAR);
+           else
+             stmt.setNull(10, Types.VARCHAR);
+           if(abit_A.getSix_4() != null)
+             stmt.setObject(11, "д", Types.VARCHAR);
+           else
+             stmt.setNull(11, Types.VARCHAR);
+           if(abit_A.getThree_4() != null)
+             stmt.setObject(12, "д", Types.VARCHAR);
+           else
+             stmt.setNull(12, Types.VARCHAR);
+           if(abit_A.getDog_ok_4() != null)
+             stmt.setObject(13, "д", Types.VARCHAR);
+           else
+             stmt.setNull(13, Types.VARCHAR);
+
+           stmt.executeUpdate();
+         }
+       }
+
+/*********************/
+/***** 5.        *****/
+/*********************/
+
+       if(abit_A.getS_okso_5() != null && abit_A.getS_okso_5().length() >= 6 && !re_enter) {
+
+// Определение типа специальности
+
+         if(abit_A.getS_okso_5().length() == 6) { 
+           Tip_Spec2 = "о"; 
+           s_okso_5 = abit_A.getS_okso_5().substring(0,6);
+         } else if(abit_A.getS_okso_5().length() < 9) {
+                  Tip_Spec2 = abit_A.getS_okso_5().substring(6);
+                  s_okso_5 = abit_A.getS_okso_5().substring(0,6);
+                }
+         else if (abit_A.getS_okso_5().length() > 11)
+         {
+        	 Tip_Spec2 = abit_A.getS_okso_5().substring(11);
+             s_okso_5 = abit_A.getS_okso_5().substring(0,11);
+         }
+         else {
+               Tip_Spec2 = abit_A.getS_okso_5().substring(8);
+               s_okso_5 = abit_A.getS_okso_5().substring(0,8);
+         }
+
+// Очных специальностей не должно быть больше 3х
+
+         kSpec = "-1";
+         Abbr_Spec2 = "X1Y1Z1";
+         int pp4=0;
+
+         if(Tip_Spec2.equals("о") || Tip_Spec2.equals("м") || Tip_Spec2.equals("ф") || Tip_Spec2.equals("ю") || Tip_Spec2.equals("п")) Col_Specs++;
+//System.out.println("SOKSO5>"+s_okso_5+"<");
+//System.out.println("Tip_Spec5="+StringUtil.toEng(Tip_Spec2));
+         stmt = conn.prepareStatement("SELECT KodSpetsialnosti,Abbreviatura,PlanPriema FROM Spetsialnosti WHERE ShifrSpetsialnosti LIKE ? AND Tip_Spec LIKE ?");
+         stmt.setObject(1,s_okso_5,Types.VARCHAR);
+         stmt.setObject(2,Tip_Spec2,Types.VARCHAR);
+         rs = stmt.executeQuery();
+         if(rs.next()) {
+           kSpec = rs.getString(1);
+           Abbr_Spec2 = rs.getString(2);
+           pp4=rs.getInt(3);
+           if(abit_A.getBud_5() != null && pp4==0){
+               mess.setStatus("Ошибка!");
+               mess.setMessage("Cпециальность "+abit_A.getS_okso_5()+" не предусматривает бюджетные места!");
+               re_enter = true;
+             }
+         } else {
+
+// Шифр специальности не найден в БД
+           mess.setStatus("Ошибка!");
+           mess.setMessage("Шифр специальности: "+abit_A.getS_okso_5()+" не найден в базе данных!");
+           re_enter = true;
+         }
+
+// Внесение данных в таблицу Konkurs и дублирующую таблицу Kontrol_Kon
+         
+         for(int i=0; i<2; i++) {
+
+           stmt = conn.prepareStatement("INSERT INTO "+two_t_names[i]+"(KodAbiturienta,KodSpetsialnosti,NomerLichnogoDela,Prioritet,Forma_Ob,Bud,Dog,Fito,Olimp,Target,Six,Three,Dog_Ok) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)");
+           stmt.setObject(1, new Integer(""+kAbiturienta), Types.INTEGER);
+           stmt.setObject(2, kSpec, Types.VARCHAR);
+           stmt.setObject(3, Abbr_Spec2+nomer_ab+"-5", Types.VARCHAR);
+           stmt.setObject(4, "5", Types.VARCHAR);
+           stmt.setObject(5, Tip_Spec2, Types.VARCHAR);
+           if(abit_A.getBud_5() != null && pp4!=0)
+             stmt.setObject(6, "д", Types.VARCHAR);
+           else
+             stmt.setNull(6, Types.VARCHAR);
+           if(abit_A.getDog_5() != null)
+             stmt.setObject(7, "д", Types.VARCHAR);
+           else
+             stmt.setNull(7, Types.VARCHAR);
+           if(abit_A.getFito_5() != null)
+             stmt.setObject(8, "д", Types.VARCHAR);
+           else
+             stmt.setNull(8, Types.VARCHAR);
+           if(abit_A.getOlimp_5() != null)
+             stmt.setObject(9, "д", Types.VARCHAR);
+           else
+             stmt.setNull(9, Types.VARCHAR);
+           if(abit_A.getTarget_5() != null)
+             stmt.setObject(10, "д", Types.VARCHAR);
+           else
+             stmt.setNull(10, Types.VARCHAR);
+           if(abit_A.getSix_5() != null)
+             stmt.setObject(11, "д", Types.VARCHAR);
+           else
+             stmt.setNull(11, Types.VARCHAR);
+           if(abit_A.getThree_5() != null)
+             stmt.setObject(12, "д", Types.VARCHAR);
+           else
+             stmt.setNull(12, Types.VARCHAR);
+           if(abit_A.getDog_ok_5() != null)
+             stmt.setObject(13, "д", Types.VARCHAR);
+           else
+             stmt.setNull(13, Types.VARCHAR);
+
+           stmt.executeUpdate();
+         }
+       }
+
+
+/*********************/
+/***** 6.        *****/
+/*********************/
+
+       if(abit_A.getS_okso_6() != null && abit_A.getS_okso_6().length() >= 6 && !re_enter) {
+
+// Определение типа специальности
+
+         if(abit_A.getS_okso_6().length() == 6) { 
+           Tip_Spec2 = "о"; 
+           s_okso_6 = abit_A.getS_okso_6().substring(0,6);
+         } else if(abit_A.getS_okso_6().length() < 9) {
+                  Tip_Spec2 = abit_A.getS_okso_6().substring(6);
+                  s_okso_6 = abit_A.getS_okso_6().substring(0,6);
+                }
+         else if (abit_A.getS_okso_6().length() > 11)
+         {
+        	 Tip_Spec2 = abit_A.getS_okso_6().substring(11);
+             s_okso_6 = abit_A.getS_okso_6().substring(0,11);
+         }
+         else {
+               Tip_Spec2 = abit_A.getS_okso_6().substring(8);
+               s_okso_6 = abit_A.getS_okso_6().substring(0,8);
+         }
+
+// Очных специальностей не должно быть больше 3х
+
+         kSpec = "-1";
+         Abbr_Spec2 = "X1Y1Z1";
+         int pp5=0;
+
+         if(Tip_Spec2.equals("о") || Tip_Spec2.equals("м") || Tip_Spec2.equals("ф") || Tip_Spec2.equals("ю") || Tip_Spec2.equals("п")) Col_Specs++;
+//System.out.println("SOKSO6>"+s_okso_6+"<");
+//System.out.println("Tip_Spec6="+StringUtil.toEng(Tip_Spec2));
+         stmt = conn.prepareStatement("SELECT KodSpetsialnosti,Abbreviatura,PlanPriema FROM Spetsialnosti WHERE ShifrSpetsialnosti LIKE ? AND Tip_Spec LIKE ?");
+         stmt.setObject(1,s_okso_6,Types.VARCHAR);
+         stmt.setObject(2,Tip_Spec2,Types.VARCHAR);
+         rs = stmt.executeQuery();
+         if(rs.next()) {
+           kSpec = rs.getString(1);
+           Abbr_Spec2 = rs.getString(2);
+           pp5=rs.getInt(3);
+           if(abit_A.getBud_6() != null && pp5==0){
+               mess.setStatus("Ошибка!");
+               mess.setMessage("Cпециальность "+abit_A.getS_okso_6()+" не предусматривает бюджетные места!");
+               re_enter = true;
+             }
+         } else {
+
+// Шифр специальности не найден в БД
+           mess.setStatus("Ошибка!");
+           mess.setMessage("Шифр специальности: "+abit_A.getS_okso_6()+" не найден в базе данных!");
+           re_enter = true;
+         }
+
+// Внесение данных в таблицу Konkurs и дублирующую таблицу Kontrol_Kon
+         
+         for(int i=0; i<2; i++) {
+
+           stmt = conn.prepareStatement("INSERT INTO "+two_t_names[i]+"(KodAbiturienta,KodSpetsialnosti,NomerLichnogoDela,Prioritet,Forma_Ob,Bud,Dog,Fito,Olimp,Target,Six,Three,Dog_Ok) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)");
+           stmt.setObject(1, new Integer(""+kAbiturienta), Types.INTEGER);
+           stmt.setObject(2, kSpec, Types.VARCHAR);
+           stmt.setObject(3, Abbr_Spec2+nomer_ab+"-6", Types.VARCHAR);
+           stmt.setObject(4, "6", Types.VARCHAR);
+           stmt.setObject(5, Tip_Spec2, Types.VARCHAR);
+           if(abit_A.getBud_6() != null && pp5!=0)
+             stmt.setObject(6, "д", Types.VARCHAR);
+           else
+             stmt.setNull(6, Types.VARCHAR);
+           if(abit_A.getDog_6() != null)
+             stmt.setObject(7, "д", Types.VARCHAR);
+           else
+             stmt.setNull(7, Types.VARCHAR);
+           if(abit_A.getFito_6() != null)
+             stmt.setObject(8, "д", Types.VARCHAR);
+           else
+             stmt.setNull(8, Types.VARCHAR);
+           if(abit_A.getOlimp_6() != null)
+             stmt.setObject(9, "д", Types.VARCHAR);
+           else
+             stmt.setNull(9, Types.VARCHAR);
+           if(abit_A.getTarget_6() != null)
+             stmt.setObject(10, "д", Types.VARCHAR);
+           else
+             stmt.setNull(10, Types.VARCHAR);
+           if(abit_A.getSix_6() != null)
+             stmt.setObject(11, "д", Types.VARCHAR);
+           else
+             stmt.setNull(11, Types.VARCHAR);
+           if(abit_A.getThree_6() != null)
+             stmt.setObject(12, "д", Types.VARCHAR);
+           else
+             stmt.setNull(12, Types.VARCHAR);
+           if(abit_A.getDog_ok_6() != null)
+             stmt.setObject(13, "д", Types.VARCHAR);
+           else
+             stmt.setNull(13, Types.VARCHAR);
+
+           stmt.executeUpdate();
+         }
+       }
+
+// Проверка количества очных специальностей (их по правилам приема не больше 3х)
+
+       if(Col_Specs > 3) {
+           mess.setStatus("Ошибка!");
+           mess.setMessage("Количество специальностей(направлений) очной формы обучения должно быть не более трех!");
+           re_enter = true;
+       }
+
+       if(!re_enter) {
+
+// Закрепление транзакции
+
+         conn.setAutoCommit(true);
+
+         conn.commit();
+
+         abit_A.setKodAbiturienta(new Integer(""+kAbiturienta));
+
+         abit_A.setFamilija((abit_A.getFamilija()).substring(0,1).toUpperCase()+(abit_A.getFamilija()).substring(1));
+
+         abit_A.setImja((abit_A.getImja()).substring(0,1).toUpperCase()+(abit_A.getImja()).substring(1));
+
+         abit_A.setOtchestvo((abit_A.getOtchestvo()).substring(0,1).toUpperCase()+(abit_A.getOtchestvo()).substring(1));
+
+         form.setAction(us.getClientIntName("add_success","act-added"));
+
+       }
+
+     } //if no re_enter
+   }
+
+
+/************************************************************************************************/
+/*********************** Повторный ввод карточки абитуриента из-за ошибки ***********************/
+/************************************************************************************************/
+
+if( re_enter ){
+
+// Ошибка. Откат транзакции.
+
+    conn.setAutoCommit(false);
+
+    conn.rollback();
+
+    conn.setAutoCommit(true);
+
+    form.setAction(us.getClientIntName("re_new","error"));
+
+    abit_A.setKodAbiturienta(abit_A.getKodAbiturienta());
+    abit_A.setSpecial1(abit_A.getSpecial1());
+    abit_A.setFamilija((abit_A.getFamilija()).substring(0,1).toUpperCase()+(abit_A.getFamilija()).substring(1));
+    abit_A.setImja((abit_A.getImja()).substring(0,1).toUpperCase()+(abit_A.getImja()).substring(1));
+    abit_A.setOtchestvo((abit_A.getOtchestvo()).substring(0,1).toUpperCase()+(abit_A.getOtchestvo()).substring(1));
+    abit_A.setGrajdanstvo(abit_A.getGrajdanstvo());
+    abit_A.setPol(abit_A.getPol());
+    abit_A.setDataRojdenija(abit_A.getDataRojdenija());
+    abit_A.setTipDokumenta(abit_A.getTipDokumenta());
+    abit_A.setSeriaDokumenta(abit_A.getSeriaDokumenta());
+    abit_A.setNomerDokumenta(abit_A.getNomerDokumenta());
+    abit_A.setKemVydDokument(abit_A.getKemVydDokument());
+    abit_A.setMestoRojdenija(abit_A.getMestoRojdenija());
+    abit_A.setUdostoverenieLgoty(abit_A.getUdostoverenieLgoty());
+    abit_A.setDiplomOtlichija(abit_A.getDiplomOtlichija());
+    abit_A.setDataVydDokumenta(abit_A.getDataVydDokumenta());
+    abit_A.setGorod_Prop(abit_A.getGorod_Prop());
+    abit_A.setUlica_Prop(abit_A.getUlica_Prop());
+    abit_A.setDom_Prop(abit_A.getDom_Prop());
+    abit_A.setKvart_Prop(abit_A.getKvart_Prop());
+    abit_A.setGodOkonchanijaSrObrazovanija(abit_A.getGodOkonchanijaSrObrazovanija());
+    abit_A.setGdePoluchilSrObrazovanie(abit_A.getGdePoluchilSrObrazovanie());
+    abit_A.setNazvanie(abit_A.getNazvanie());
+    abit_A.setNazvanieRajona(abit_A.getNazvanieRajona());
+    abit_A.setNazvanieOblasti(abit_A.getNazvanieOblasti());
+    abit_A.setTipOkonchennogoZavedenija(abit_A.getTipOkonchennogoZavedenija());
+    abit_A.setNomerShkoly(abit_A.getNomerShkoly());
+    abit_A.setKodLgot(abit_A.getKodLgot());
+    abit_A.setKodZavedenija(abit_A.getKodZavedenija());
+    
+   // Integer kKurs = 1;
+ //   stmt.setObject(30, kKurs, Types.INTEGER);
+ //   abit_A.setKodKursov(abit_A.getKodKursov());
+    abit_A.setKodLgot(abit_A.getKodLgot());
+    abit_A.setKodMedali(abit_A.getKodMedali());
+    abit_A.setKodTselevogoPriema(abit_A.getKodTselevogoPriema());
+    abit_A.setSokr(abit_A.getSokr());
+    abit_A.setPolnoeNaimenovanieZavedenija(abit_A.getPolnoeNaimenovanieZavedenija());
+    abit_A.setVidDokSredObraz(abit_A.getVidDokSredObraz());
+    abit_A.setTipDokSredObraz(abit_A.getTipDokSredObraz());
+    abit_A.setSeriaAtt(abit_A.getSeriaAtt());
+    abit_A.setNomerAtt(abit_A.getNomerAtt());
+    abit_A.setKopijaSertifikata(abit_A.getKopijaSertifikata());
+    abit_A.setNomerSertifikata(abit_A.getNomerSertifikata());
+    abit_A.setShifrKursov(abit_A.getShifrKursov());
+    abit_A.setShifrLgot(abit_A.getShifrLgot());
+    abit_A.setShifrMedali(abit_A.getShifrMedali());
+    abit_A.setInostrannyjJazyk(abit_A.getInostrannyjJazyk());
+    abit_A.setNapravlenieOtPredprijatija(abit_A.getNapravlenieOtPredprijatija());
+    abit_A.setShifrPriema(abit_A.getShifrPriema());
+    abit_A.setS_okso_1(abit_A.getS_okso_1());
+    abit_A.setS_okso_2(abit_A.getS_okso_2());
+    abit_A.setS_okso_3(abit_A.getS_okso_3());
+    abit_A.setS_okso_4(abit_A.getS_okso_4());
+    abit_A.setS_okso_5(abit_A.getS_okso_5());
+    abit_A.setS_okso_6(abit_A.getS_okso_6());
+    abit_A.setBud_1(abit_A.getBud_1());
+    abit_A.setBud_2(abit_A.getBud_2());
+    abit_A.setBud_3(abit_A.getBud_3());
+    abit_A.setBud_4(abit_A.getBud_4());
+    abit_A.setBud_5(abit_A.getBud_5());
+    abit_A.setBud_6(abit_A.getBud_6());
+    abit_A.setDog_1(abit_A.getDog_1());
+    abit_A.setDog_2(abit_A.getDog_2());
+    abit_A.setDog_3(abit_A.getDog_3());
+    abit_A.setDog_4(abit_A.getDog_4());
+    abit_A.setDog_5(abit_A.getDog_5());
+    abit_A.setDog_6(abit_A.getDog_6());
+    abit_A.setDog_ok_1(abit_A.getDog_ok_1());
+    abit_A.setDog_ok_2(abit_A.getDog_ok_2());
+    abit_A.setDog_ok_3(abit_A.getDog_ok_3());
+    abit_A.setDog_ok_4(abit_A.getDog_ok_4());
+    abit_A.setDog_ok_5(abit_A.getDog_ok_5());
+    abit_A.setDog_ok_6(abit_A.getDog_ok_6());
+    abit_A.setOlimp_1(abit_A.getOlimp_1());
+    abit_A.setOlimp_2(abit_A.getOlimp_2());
+    abit_A.setOlimp_3(abit_A.getOlimp_3());
+    abit_A.setOlimp_4(abit_A.getOlimp_4());
+    abit_A.setOlimp_5(abit_A.getOlimp_5());
+    abit_A.setOlimp_6(abit_A.getOlimp_6());
+    abit_A.setTarget_1(abit_A.getTarget_1());
+    abit_A.setTarget_2(abit_A.getTarget_2());
+    abit_A.setTarget_3(abit_A.getTarget_3());
+    abit_A.setTarget_4(abit_A.getTarget_4());
+    abit_A.setTarget_5(abit_A.getTarget_5());
+    abit_A.setTarget_6(abit_A.getTarget_6());
+    abit_A.setFito_1(abit_A.getFito_1());
+    abit_A.setFito_2(abit_A.getFito_2());
+    abit_A.setFito_3(abit_A.getFito_3());
+    abit_A.setFito_4(abit_A.getFito_4());
+    abit_A.setFito_5(abit_A.getFito_5());
+    abit_A.setFito_6(abit_A.getFito_6());
+    abit_A.setSix_1(abit_A.getSix_1());
+    abit_A.setSix_2(abit_A.getSix_2());
+    abit_A.setSix_3(abit_A.getSix_3());
+    abit_A.setSix_4(abit_A.getSix_4());
+    abit_A.setSix_5(abit_A.getSix_5());
+    abit_A.setSix_6(abit_A.getSix_6());
+    abit_A.setThree_1(abit_A.getThree_1());
+    abit_A.setThree_2(abit_A.getThree_2());
+    abit_A.setThree_3(abit_A.getThree_3());
+    abit_A.setThree_4(abit_A.getThree_4());
+    abit_A.setThree_5(abit_A.getThree_5());
+    abit_A.setThree_6(abit_A.getThree_6());
+    abit_A.setDokumentyHranjatsja(abit_A.getDokumentyHranjatsja());
+    abit_A.setTip_Spec(abit_A.getTip_Spec());
+    abit_A.setStepen_Mag(abit_A.getStepen_Mag());
+    abit_A.setNeed_Spo(abit_A.getNeed_Spo());
+    abit_A.setTrudovajaDejatelnost(abit_A.getTrudovajaDejatelnost());
+    abit_A.setNujdaetsjaVObschejitii(abit_A.getNujdaetsjaVObschejitii());
+    abit_A.setNomerPlatnogoDogovora(abit_A.getNomerPlatnogoDogovora());
+    abit_A.setForma_Ob1(abit_A.getForma_Ob1());
+    abit_A.setForma_Ob2(abit_A.getForma_Ob2());
+    abit_A.setForma_Ob3(abit_A.getForma_Ob3());
+    abit_A.setTel(abit_A.getTel());
+    abit_A.setPostgraduateStudies(abit_A.getPostgraduateStudies());
+    abit_A.setTraineeship(abit_A.getTraineeship());
+    abit_A.setInternship(abit_A.getInternship());
+    abit_A.setAbitEmail(abit_A.getAbitEmail());
+    abit_A.setDopAddress(abit_A.getDopAddress());
+    abit_A.setProvidingSpecialCondition(abit_A.getProvidingSpecialCondition());
+    abit_A.setReturnDocument(abit_A.getReturnDocument());
+    abit_A.setPreemptiveRight(abit_A.getPreemptiveRight());
+
+// Данные о полученных оценках для автоматизации повторного ввода
+
+    Enumeration paramNames = request.getParameterNames();
+    ArrayList ege  = new ArrayList();
+    ArrayList exam = new ArrayList();
+    ArrayList kpr  = new ArrayList();
+    ArrayList kprx = new ArrayList();
+    ArrayList kpre = new ArrayList();
+    ArrayList pr   = new ArrayList();
+    ArrayList oat	= new ArrayList();
+    ArrayList at	= new ArrayList();
+    ArrayList kpreat = new ArrayList();
+    ArrayList kprat = new ArrayList();
+    while(paramNames.hasMoreElements()) {
+      String paramName = (String)paramNames.nextElement();
+      String paramValue[] = request.getParameterValues(paramName);
+
+      if(paramName.indexOf("Ege_note") != -1) {
+        ege.add(paramValue[0]);                 
+        kpre.add(paramName.substring(8));  // Код предмета
+        stmt = conn.prepareStatement("SELECT Sokr FROM NazvanijaPredmetov WHERE KodPredmeta LIKE ?");
+        stmt.setObject(1,new Integer(paramName.substring(8)),Types.INTEGER);
+        rs = stmt.executeQuery();
+        if(rs.next()) pr.add(rs.getString(1));  // Предмет
+      }
+      if(paramName.indexOf("Examen") != -1) {
+        exam.add(StringUtil.toDB(paramValue[0]));
+        kprx.add(paramName.substring(6));  // Код предмета
+      }
+      if(paramName.indexOf("Attestat") != -1) {
+    	  at.add(paramValue[0]);                 
+          kpreat.add(paramName.substring(8));  // Код предмета
+          stmt = conn.prepareStatement("SELECT Sokr FROM NazvanijaPredmetov WHERE KodPredmeta LIKE ?");
+          stmt.setObject(1,new Integer(paramName.substring(8)),Types.INTEGER);
+          rs = stmt.executeQuery();
+          if(rs.next()) oat.add(rs.getString(1));  // Предмет
+        }
+      
+    }
+
+// Сортировка массивов оценок 
+    int index=0,maxKod=0;
+    ArrayList sortedMass = new ArrayList();
+    ArrayList sortedMass2 = new ArrayList();
+    
+    while(kpreat.size()!=0){
+        index=0;
+        maxKod=StringUtil.toInt(""+kpreat.get(0),0);
+        for(int cur_ind=0;cur_ind<kpreat.size();cur_ind++){   
+           if(StringUtil.toInt(""+kpreat.get(cur_ind),0)<=maxKod){
+             maxKod=StringUtil.toInt(""+kpreat.get(cur_ind),0);
+             index=cur_ind;
+           }
+        }
+        sortedMass.add(at.get(index));
+        sortedMass2.add(oat.get(index));
+        kprat.add(kpreat.get(index));
+        kpreat.remove(index);
+        at.remove(index);
+        oat.remove(index);
+     }
+    at.clear();
+    oat.clear();
+    for(int i=0;i<kprat.size();i++) at.add(sortedMass.get(i));
+    for(int i=0;i<kprat.size();i++) oat.add(sortedMass2.get(i));
+    index=maxKod=0;
+    sortedMass.clear();
+    sortedMass2.clear();
+
+// оценки ЕГЭ по коду предмета
+
+    while(kpre.size()!=0){
+       index=0;
+       maxKod=StringUtil.toInt(""+kpre.get(0),0);
+       for(int cur_ind=0;cur_ind<kpre.size();cur_ind++){   
+          if(StringUtil.toInt(""+kpre.get(cur_ind),0)<=maxKod){
+            maxKod=StringUtil.toInt(""+kpre.get(cur_ind),0);
+            index=cur_ind;
+          }
+       }
+       sortedMass.add(ege.get(index));
+       sortedMass2.add(pr.get(index));
+       kpr.add(kpre.get(index));
+       kpre.remove(index);
+       ege.remove(index);
+       pr.remove(index);
+    }
+
+// Копирование отсортированного массива в исходный массив
+    ege.clear();
+    pr.clear();
+    for(int i=0;i<kpr.size();i++) ege.add(sortedMass.get(i));
+    for(int i=0;i<kpr.size();i++) pr.add(sortedMass2.get(i));
+
+// Признак экзамена по коду предмета
+    index=maxKod=0;
+    sortedMass.clear();
+
+    while(kprx.size()!=0){
+      index=0;
+      maxKod=StringUtil.toInt(""+kprx.get(0),0);
+      for(int cur_ind=0;cur_ind<kprx.size();cur_ind++){   
+         if(StringUtil.toInt(""+kprx.get(cur_ind),0)<=maxKod){
+           maxKod=StringUtil.toInt(""+kprx.get(cur_ind),0);
+           index=cur_ind;
+         }
+      }
+      sortedMass.add(exam.get(index));
+      kprx.remove(index);
+      exam.remove(index);
+    }
+
+// Копирование отсортированного массива в исходный массив
+    exam.clear();
+    for(int i=0;i<kpr.size();i++) exam.add(sortedMass.get(i));
+
+    abit_A_S1.clear();
+
+    for(int i=0;i<kpr.size();i++){
+      AbiturientBean abit_TMP = new AbiturientBean();
+      abit_TMP.setExamen(""+exam.get(i));
+      abit_TMP.setEge(""+ege.get(i));
+//      if(at.size()<=i){
+//    	  abit_TMP.setOtsenkaAtt(""+at.get(i));
+//      }else{
+//      abit_TMP.setOtsenka_Att("0");
+//      }
+      abit_TMP.setKodPredmeta(new Integer(""+kpr.get(i)));
+      abit_TMP.setPredmet(""+pr.get(i));
+      abit_A_S1.add(abit_TMP);
+    }
+    for(int i=0;i<at.size();i++){
+    	 AbiturientBean abit_TMP = new AbiturientBean();
+    	 abit_TMP.setOtsenkaAtt(""+at.get(i));
+    	 abit_TMP.setKodPredmeta(new Integer(""+kpr.get(i)));
+         abit_TMP.setPredmet(""+pr.get(i));
+    	 abit_A_S11.add(abit_TMP);
+    }
+ }
+
+
+
+/************************************************************************************************/
+/****************************      ОБНОВЛЕНИЕ ПОЛЯ ЗАВЕДЕНИЙ      *******************************/
+/************************************************************************************************/
+
+    abit_A_S8.clear();
+    stmt = conn.prepareStatement("SELECT DISTINCT Sokr,KodZavedenija,Ordr FROM Zavedenija WHERE KodVuza LIKE ? ORDER BY Ordr,Sokr ASC");
+    stmt.setObject(1,session.getAttribute("kVuza"),Types.INTEGER);
+    rs = stmt.executeQuery();
+    while (rs.next()) {
+       AbiturientBean abit_TMP = new AbiturientBean();
+       abit_TMP.setSokr(rs.getString(1));
+       abit_TMP.setKodZavedenija(new Integer(rs.getInt(2)));
+       abit_A_S8.add(abit_TMP);
+    }
+        }
+        catch ( SQLException e ) {
+          request.setAttribute("SQLException", e);
+          return mapping.findForward("error");
+        }
+        catch ( java.lang.Exception e ) {
+          request.setAttribute("JAVAexception", e);
+          return mapping.findForward("error");
+        }
+        finally {
+
+          if ( rs != null ) {
+               try {
+                     rs.close();
+                   } catch (Exception e) {
+                    ;
+                                         }
+          }
+          if ( stmt != null ) {
+               try {
+                     stmt.close();
+                   } catch (Exception e) {
+                    ;
+                                         }
+          }
+          if ( conn != null ) {
+               try {
+                     conn.close();
+                   } catch (Exception e) {
+                    ;
+                                         }
+          }
+        }
+     }
+        request.setAttribute("mess", mess);
+        request.setAttribute("abit_A", abit_A);
+        request.setAttribute("abits_A", abits_A);
+        request.setAttribute("abit_forms", abit_forms);
+        request.setAttribute("abit_osnovs", abit_osnovs);
+        request.setAttribute("abit_A_S1", abit_A_S1);
+        request.setAttribute("abit_A_S4", abit_A_S4);
+        request.setAttribute("abit_A_S5", abit_A_S5);
+        request.setAttribute("abit_A_S6", abit_A_S6);
+        request.setAttribute("abit_A_S7", abit_A_S7);
+        request.setAttribute("abit_A_S8", abit_A_S8);
+        request.setAttribute("abit_A_S9", abit_A_S9);
+        request.setAttribute("abit_A_S10", abit_A_S10);
+        request.setAttribute("abit_A_S11", abit_A_S11);
+        request.setAttribute("nationalityList", nationalityList);
+
+        if(error) return mapping.findForward("error");
+
+        return mapping.findForward("success");
+    }
+}
