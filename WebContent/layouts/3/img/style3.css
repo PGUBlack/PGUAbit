@@ -1,0 +1,151 @@
+FONT.text_8_w {
+	COLOR: #FFFFFF; FONT-FAMILY: "MS Sans Serif", Geneva, sans-serif; FONT-SIZE: 7pt; FONT-WEIGHT: bold; TEXT-DECORATION: none }
+
+FONT.text_8 {
+	COLOR: #00FF00; FONT-FAMILY: "MS Sans Serif", Geneva, sans-serif; FONT-SIZE: 7pt; FONT-WEIGHT: bold; TEXT-DECORATION: none}
+
+FONT.text_8_mark {
+	COLOR: #A0FF00; FONT-FAMILY: "MS Sans Serif", Geneva, sans-serif; FONT-SIZE: 8pt; FONT-WEIGHT: bold; TEXT-DECORATION: none}
+
+FONT.text_9 {
+	COLOR: #00FF00; FONT-FAMILY: "MS Sans Serif", Geneva, sans-serif; FONT-SIZE: 8pt; FONT-WEIGHT: bold; TEXT-DECORATION: none}
+
+FONT.text_9_mark {
+	COLOR: #A0FF00; FONT-FAMILY: "MS Sans Serif", Geneva, sans-serif; FONT-SIZE: 8pt; FONT-WEIGHT: bold; TEXT-DECORATION: none}
+
+FONT.text_10 {
+	COLOR: #00FF00; FONT-FAMILY: "MS Sans Serif", Geneva, sans-serif; FONT-SIZE: 9pt; FONT-WEIGHT: bold; TEXT-DECORATION: none;
+}
+FONT.text_10_mark {
+	COLOR: #A0FF00; FONT-FAMILY: "MS Sans Serif", Geneva, sans-serif; FONT-SIZE: 9pt; FONT-WEIGHT: bold; TEXT-DECORATION: none;
+}
+FONT.text_10_bl {
+	COLOR: #00FF66; FONT-FAMILY: "MS Sans Serif", Geneva, sans-serif; FONT-SIZE: 9pt; FONT-WEIGHT: bold; TEXT-DECORATION: none; BLINK: true;
+}
+FONT.text_11_bl {
+	COLOR: #00FF66; FONT-FAMILY: "MS Sans Serif", Geneva, sans-serif; FONT-SIZE: 9pt; FONT-WEIGHT: bold; TEXT-DECORATION: none; BLINK: true;
+}
+FONT.text_11 {
+	COLOR: #00FF66; FONT-FAMILY: "MS Sans Serif", Geneva, sans-serif; FONT-SIZE: 9pt; FONT-WEIGHT: bold; TEXT-DECORATION: none
+}
+FONT.text_12 {
+	COLOR: #00FF66; FONT-FAMILY: "MS Sans Serif", Geneva, sans-serif; FONT-SIZE: 11pt; FONT-WEIGHT: bold; TEXT-DECORATION: none
+}
+FONT.text_18 {
+	COLOR: #00FF00; FONT-FAMILY: "Times New Roman", Geneva, sans-serif; FONT-SIZE: 12pt; FONT-WEIGHT: bold; TEXT-DECORATION: none
+}
+FONT.text_22 {
+	COLOR: #00FF00; FONT-FAMILY: "Times New Roman", Geneva, sans-serif; FONT-SIZE: 15pt; FONT-WEIGHT: bold; TEXT-DECORATION: none
+}
+FONT.text_25 {
+	COLOR: #00FF00; FONT-FAMILY: "Times New Roman", Geneva, sans-serif; FONT-SIZE: 18pt; FONT-WEIGHT: bold; TEXT-DECORATION: none
+}
+FONT.text_th {
+	COLOR: #b2FF00; FONT-FAMILY: "MS Sans Serif", Geneva, sans-serif; FONT-SIZE: 9pt; FONT-WEIGHT: bold;TEXT-DECORATION: none;
+}
+FONT.text_th9 {
+	COLOR: #b2FF00; FONT-FAMILY: "MS Sans Serif", Geneva, sans-serif; FONT-SIZE: 8pt; FONT-WEIGHT: bold;TEXT-DECORATION: none; 
+}
+FONT.text_th_sm {
+	COLOR: #b9FF00; FONT-FAMILY: "MS Sans Serif", Geneva, sans-serif; FONT-SIZE: 9pt; FONT-WEIGHT: bold;TEXT-DECORATION: none;
+}
+
+.text_f8 { font-family: Arial; font-size: 7pt; background-color: #272B22; color: #00FF00; position: relative; border: 1 solid gray; padding: 0; background-position: center}
+
+.text_f8_short { font-family: Arial; font-size: 7pt; background-color: #272B22; color: #00FF00; position: relative; border: 1 solid gray; padding: 0; background-position: center; text-align: center }
+
+.text_f9 { font-family: Arial; font-size: 8pt; background-color: #272B22; color: #00FF00; position: relative; border: 1 solid gray; padding: 0; background-position: center}
+
+.text_f9_short { font-family: Arial; font-size: 8pt; background-color: #272B22; color: #00FF00; position: relative; border: 1 solid gray; padding: 0; background-position: center; text-align: center }
+
+.text_f9_small { font-family: Arial; font-size: 8pt; background-color: #272B22; color: #00FF00; position: relative; border: 1 solid gray; padding: 0; background-position: center; text-align: left }
+
+.text_f10 { font-family: Arial; font-size: 9pt; background-color: #272B22; color: #00FF00; position: relative; border: 1 solid gray; padding: 0; background-position: left center }
+
+.text_f10_short { font-family: Arial; font-size: 9pt; background-color: #272B22; color: #00FF00; position: relative; border: 1 solid gray; padding: 0; background-position: center; text-align: center }
+
+.text_f11 { font-family: Arial; font-size: 10pt; background-color: #272B22; color: #00FF00; position: relative; border: 1 solid gray; padding: 0; background-position: left center }
+
+.text_f11_small { font-family: Arial; font-size: 10pt; background-color: #272B22; color: #00FF00; position: relative; border: 1 solid gray; padding: 0; background-position: left center }
+
+.text_f11_sh_b { font-family: Arial; font-size: 9pt; background-color: #272B22; color: #00FF00; position: relative; border: 1 solid gray; padding: 0; font-weight: bold; background-position: center; text-align: center }
+
+.text_f11_short { font-family: Arial; font-size: 10pt; background-color: #272B22; color: #00FF00; position: relative; border: 1 solid gray; padding: 0; background-position: center; text-align: center }
+
+.text_th_ab { font-family: "Arial"; font-weight: bold; font-size: 10pt; text-decoration: none; color: #00FF00 }
+
+A.menu {
+	COLOR: #008040; FONT-SIZE: 9pt; FONT-WEIGHT: bold; TEXT-DECORATION: none
+}
+A.menu:hover {
+	COLOR: gray; FONT-SIZE: 9pt; FONT-WEIGHT: bold; TEXT-DECORATION: none
+}
+
+.link_b_11   { font-weight: bold; font-size: 9pt; text-decoration: none; color: #008040 }
+
+.link_b_11_A  { font-weight: bold; font-size: 9pt; text-decoration: none; color: #008040 }
+.link_b_11_A:hover { font-weight: bold; font-size: 9pt; text-decoration: none; color: #008040 }
+
+.link_b_9_A  { font-weight: bold; font-size: 8pt; text-decoration: none; color: #008040 }
+.link_b_9_A:hover { font-weight: bold; font-size: 8pt; text-decoration: none; color: #008040 }
+
+.link_hov {
+	COLOR: #008040; FONT-SIZE: 9pt; FONT-WEIGHT: bold; TEXT-DECORATION: none
+}
+.link_hov:hover {
+	COLOR: #008040; FONT-SIZE: 9pt; FONT-WEIGHT: bold; TEXT-DECORATION: none
+}
+.link_hov_blue {
+	COLOR: #00FF97; FONT-SIZE: 9pt; FONT-WEIGHT: bold; TEXT-DECORATION: none
+}
+.link_hov_blue:hover {
+	COLOR: #ecFF03; FONT-SIZE: 9pt; FONT-WEIGHT: bold; TEXT-DECORATION: none
+}
+FONT.message { 
+   COLOR: #b20000; FONT-FAMILY: "MS Sans Serif", Geneva, sans-serif; FONT-SIZE: 11pt; FONT-WEIGHT: bold;TEXT-DECORATION: none; 
+}
+.warning { 
+  font-family: Arial,Times New Roman; font-size: 10pt; text-decoration: none; color: #FF0000; font-weight: bold 
+}
+FONT.target_name {
+  COLOR: #FFFFFF; FONT-FAMILY: Verdana, Geneva, Arial, Helvetica, sans-serif; FONT-SIZE: 10pt; FONT-WEIGHT: bold; TEXT-DECORATION: none; TEXT-TRANSFORM: uppercase; 
+}
+FONT.sub_name {
+  COLOR: #ffbf03; FONT-FAMILY: Verdana, Geneva, Arial, Helvetica, sans-serif; FONT-SIZE: 9pt; FONT-WEIGHT: bold; TEXT-DECORATION: none; TEXT-TRANSFORM: uppercase; 
+}
+FONT.sub_name2 {
+  COLOR: #008040; FONT-FAMILY: Verdana, Geneva, Arial, Helvetica, sans-serif; FONT-SIZE: 8pt; FONT-WEIGHT: bold; TEXT-DECORATION: none; TEXT-TRANSFORM: uppercase; 
+}
+
+TABLE {
+	FONT-SIZE: 9pt; BORDER: 1px; border-color: #272B22; FONT-FAMILY: arial, helvetica, verdana, sans-serif;  TEXT-DECORATION: none
+}
+
+THEAD { background-color: #2D2820; COLOR: #b20000; FONT-FAMILY: "MS Sans Serif", Geneva, sans-serif; FONT-SIZE: 11pt; FONT-WEIGHT: bold;}
+
+RADIO {
+	BORDER-STYLE: none; BORDER-WIDTH: 0px; FONT-SIZE: 10px; COLOR: #00FF00; FONT-FAMILY: arial, helvetica, verdana, sans-serif; BACKGROUND-COLOR: #000000; TEXT-DECORATION: none
+}
+
+INPUT. {
+	BORDER-RIGHT: #5A573F 1px solid; BORDER-TOP: #000000 2px solid; FONT: 11px Arial,Helvetica,sans-serif; BORDER-LEFT: #000000 2px solid; COLOR: #00FF00; BORDER-BOTTOM: #5A573F 1px solid; BACKGROUND-COLOR: black
+}
+
+SELECT {
+	BORDER-STYLE: solid #000000 1px solid; SCROLLBAR-FACE-COLOR: #ff0000; PADDING-RIGHT: #000000 0px; PADDING-BOTTOM: #000000 0px; BORDER-WIDTH: 0px; BORDER-BOTTOM-WIDTH: 0px; BORDER-RIGHT: #000000 1px; BORDER-TOP: #000000 1px solid; FONT-SIZE: 12px; BORDER-LEFT: #000000 1px solid; COLOR: #00FF00; BORDER-BOTTOM: #000000 0px; FONT-FAMILY: arial, helvetica, verdana, sans-serif; BACKGROUND-COLOR: #272B22; TEXT-DECORATION: none
+}
+
+.select_fix_width { font-family: Arial,Times New Roman; font-size: 10pt; background-color: #FFFFFF;  color: #000066; font-weight: normal; position: relative; border: 1 solid #7F9DB9; padding: 0; background-position: left; BORDER-BOTTOM-COLOR: #000000; BORDER-LEFT-COLOR: #000000; BORDER-RIGHT-COLOR: #000000; BORDER-TOP-COLOR: #000000;}
+
+.button { font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; font-size: 9pt; font-weight: bold; color: #00FF00; background-color: #2D2820; border: 1 solid #1F4C32 
+}
+
+.button_sd { font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; font-size: 9pt; font-weight: bold; color: #00FF00; background-color: #2D2820; border: 1 solid #1F4C32; position:relative; top: 7 }
+
+BODY {
+  SCROLLBAR-FACE-COLOR: #272B22; SCROLLBAR-HIGHLIGHT-COLOR: #413A34; SCROLLBAR-SHADOW-COLOR: #14140E; SCROLLBAR-3DLIGHT-COLOR: #62614F; SCROLLBAR-ARROW-COLOR: #ffffff; SCROLLBAR-TRACK-COLOR: #272B22; SCROLLBAR-DARKSHADOW-COLOR: #000000; 
+  BACKGROUND-COLOR: #000000; COLOR: #00FF00; font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+  font-size: 9pt;
+}
+
+TD.light { background-color: #FFFCCF; COLOR: #b20000; FONT-FAMILY: "MS Sans Serif", Geneva, sans-serif; FONT-WEIGHT: bold;}

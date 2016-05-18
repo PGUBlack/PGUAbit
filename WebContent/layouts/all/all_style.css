@@ -1,0 +1,20 @@
+A.menu {
+	COLOR: #ffffff; FONT-FAMILY: "MS Sans Serif", Geneva, sans-serif; FONT-SIZE: 10pt; FONT-WEIGHT: bold; TEXT-DECORATION: none
+}
+A.menu:hover {
+	COLOR: #ecbf03; FONT-FAMILY: "MS Sans Serif", Geneva, sans-serif; FONT-SIZE: 10pt; FONT-WEIGHT: bold; TEXT-DECORATION: none
+}
+FONT.text_10 {
+	COLOR: #000066; FONT-FAMILY: "MS Sans Serif", Geneva, sans-serif; FONT-SIZE: 10pt; FONT-WEIGHT: bold; TEXT-DECORATION: none;
+}
+FONT.text_18 {
+	COLOR: #0A5736; FONT-FAMILY: "Times New Roman", Geneva, sans-serif; FONT-SIZE: 18pt; FONT-WEIGHT: bold; TEXT-DECORATION: none
+}
+FONT.text_22 {
+	COLOR: #0A5736; FONT-FAMILY: "Times New Roman", Geneva, sans-serif; FONT-SIZE: 22pt; FONT-WEIGHT: bold; TEXT-DECORATION: none
+}
+FONT.text_25 {
+	COLOR: #0A5736; FONT-FAMILY: "Times New Roman", Geneva, sans-serif; FONT-SIZE: 22pt; FONT-WEIGHT: bold; TEXT-DECORATION: none
+}
+
+BODY { scrollbar-face-color: #C5D5FC; scrollbar-highlight-color: #FFFFFF; scrollbar-shadow-color: 9FB5D2; scrollbar-3dlight-color: #FBFBF9; scrollbar-arrow-color: #4D6185; scrollbar-track-color: #F4F1EC; scrollbar-darkshadow-color: #FBFBF9; }

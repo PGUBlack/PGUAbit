@@ -1,0 +1,2420 @@
+package abit.action;
+import java.io.IOException;
+import java.sql.*;
+
+import javax.servlet.*;
+import javax.servlet.http.*;
+import java.util.Locale;
+import java.util.ArrayList;
+import org.apache.struts.action.*;
+import javax.naming.*;
+import javax.sql.*;
+import abit.bean.*;
+import abit.Constants;
+import abit.util.*;
+
+import java.util.Date;
+import java.io.*;
+import abit.sql.*; 
+
+public class WaveFirstAction extends Action {
+
+    public ActionForward perform ( ActionMapping        mapping,
+                                   ActionForm           actionForm,
+                                   HttpServletRequest   request,
+                                   HttpServletResponse  response )
+
+    throws IOException, ServletException
+    {   
+
+        HttpSession          session            = request.getSession();
+        Connection           conn               = null;
+        PreparedStatement    pstmt              = null;
+        Statement            stmt               = null;
+        Statement            stmt2              = null;
+        Statement            stmt3              = null;
+        Statement stmt9=null;
+        PreparedStatement stmt10=null;
+        PreparedStatement stmt11=null;
+        ResultSet rs9=null;
+        ResultSet rs10=null;
+        ResultSet rs11=null;
+        ResultSet            rs                 = null;
+        ResultSet            rs2                = null;
+        ResultSet            rs3                = null;
+        ActionErrors         errors             = new ActionErrors();
+        ActionError          msg                = null;
+        ListsDecForm         form               = (ListsDecForm) actionForm;
+        AbiturientBean       abit_SD            = form.getBean(request, errors);
+        boolean              lists_dec_ege_f    = false;
+        boolean              error              = false;
+        ActionForward        f                  = null;
+        ArrayList            abits_SD           = new ArrayList();
+        ArrayList            abit_SD_S1         = new ArrayList();
+        ArrayList            abit_SD_S2         = new ArrayList();
+        String               AS                 = new String();           // аббревиатура специальности
+        String               SS                 = new String();           // шифр
+        String               NS                 = new String();           // название специальности
+        String               PP                 = new String();           // план приема
+        String               TP1                = new String();           // план целевого приема 1
+        String               TP2                = new String();           // план целевого приема 2
+        String               AF                 = new String();           // аббревиатура факультета
+        StringBuffer         excludeList        = new StringBuffer("-1");
+        StringBuffer         query              = new StringBuffer();
+        StringBuffer		 query1  			= new StringBuffer();
+        StringBuffer		 query2  			= new StringBuffer();
+        int                  kAbit              = -1;
+        int                  summa              = -1;
+        int                  oldBallAbt         = -1;
+        boolean              only_one_run       = true;
+        boolean              header             = false;
+        boolean              primechanie        = false;
+        int                  nomer              = 0;
+        int                  count_predm        = 4; // Только профильный предмет
+        int kl=0;
+        String dt=new String();
+        dt=StringUtil.CurrDate(".");
+        //vremennie dannie
+        String F=new String();
+        String I=new String();
+        String O=new String();
+        String ko=new String();
+        String op=new String();
+        String ind=new String();
+        int N=0;
+        int summ=0;
+        String Shifr=new String();
+        int pr1=0;
+        int pr2=0;
+        int pr3=0;
+        int pr4=0;
+        String z=null;
+        int lgn=0;
+        int total_lgn=0;
+        int idfak=0;
+        int num=0;
+        
+        
+        
+        
+
+        UserBean             user               = (UserBean)session.getAttribute("user");
+
+        if (user==null || user.getGroup()==null || user.getGroup().getTypeId()==0) {
+            msg = new ActionError( "logon.must" );
+            errors.add( "logon.login", msg );
+        }
+
+        if ( errors.empty() ) {
+
+        request.setAttribute( "waveFirstAction", new Boolean(true) );
+        Locale locale = new Locale("ru","RU");
+        session.setAttribute( Action.LOCALE_KEY, locale );
+
+        try {
+
+/**********************************************************************/
+/*********  Получение соединения с БД и ведение статистики  ***********/
+
+          UserConn us = new UserConn(request, mapping);
+          conn = us.getConn(user.getSid());
+          request.setAttribute( "waveFirstForm", form );
+
+/*****************  Возврат к предыдущей странице   *******************/
+          if(us.quit("exit")) return mapping.findForward("back");
+/**********************************************************************/
+          
+          pstmt = conn.prepareStatement("SELECT DISTINCT KodFakulteta,AbbreviaturaFakulteta FROM Fakultety WHERE KodVuza LIKE ? ORDER BY 2 ASC");
+          pstmt.setObject(1,session.getAttribute("kVuza"),Types.INTEGER);
+          rs = pstmt.executeQuery();
+          while (rs.next()) {
+            AbiturientBean abit_TMP = new AbiturientBean();
+            abit_TMP.setKodFakulteta(new Integer(rs.getString(1)));
+            abit_TMP.setAbbreviaturaFakulteta(rs.getString(2));
+            abit_SD_S1.add(abit_TMP);
+          }
+ 
+      if ( form.getAction() == null ) {
+
+           form.setAction(us.getClientIntName("view","init"));
+
+      } else if ( form.getAction().equals("report")) {
+    	  stmt10 = conn.prepareStatement("DELETE FROM Perelom");
+    	  stmt10.executeUpdate();
+
+/************************************************/
+/***** Регистрация файла в Браузере отчетов *****/
+/************************************************/
+
+  String priority = new String();
+
+  String priority_query = new String();
+
+// ИСХОДНЫЕ ПАРАМЕТРЫ
+
+  abit_SD.setSpecial2("-");
+
+  abit_SD.setSpecial3("-");
+
+  priority_query = "%";
+
+  if(!(abit_SD.getSpecial4() != null && abit_SD.getSpecial4().length() > 1 )) { 
+    priority = abit_SD.getSpecial4()+"-го приоритета";
+    priority_query = abit_SD.getSpecial4();
+  }
+
+  pstmt = conn.prepareStatement("SELECT DISTINCT AbbreviaturaFakulteta FROM Fakultety WHERE KodFakulteta LIKE ?");
+  pstmt.setObject(1,abit_SD.getKodFakulteta(),Types.INTEGER);
+  rs = pstmt.executeQuery();
+  if(rs.next()) {
+    AF = rs.getString(1).toUpperCase();
+  }
+
+  String name = "Список абитуриентов 1-го этапа (предв.) "+AF+" "+priority;
+
+  String file_con = "lists_"+StringUtil.toEng(AF)+"_predv_first_wave";
+
+  if(priority_query.equals("%")) file_con += "_allPr";
+  else file_con += priority_query;
+
+  session.setAttribute("rpt",StringUtil.AddToRepBrw(user.getName()+user.getUid(),name,file_con,"rtf"));
+
+  String file_name = (request.getRealPath(request.getContextPath())).substring(0,request.getRealPath(request.getContextPath()).lastIndexOf('\\'))+Constants.RELATIVE_PATH+"\\"+((ReportsBrowserBean)session.getAttribute("rpt")).getFileName();
+ 
+  BufferedWriter report = new BufferedWriter(new FileWriter(file_name)); 
+
+  report.write("{\\rtf1\\ansi\n");
+  report.write("\\paperw11906\\paperh16838\\margl567\\margr567\\margt567\\margb567\\widowctrl\\ftnbj\\aenddoc\\noxlattoyen\\expshrtn\\noultrlspc\\dntblnsbdb\\nospaceforul\\formshade\\dghspace100\\dgvspace180\\dghorigin1701\\dgvorigin1984\\dghshow0\\dgvshow0\\jexpand\\viewkind1\\viewscale90\\viewzk2\\pgbrdrhead\\pgbrdrfoot\\nolnhtadjtbl\n");
+
+  pstmt = conn.prepareStatement("SELECT NazvanieVuza,PostAdresVuza FROM NazvanieVuza WHERE KodVuza LIKE ?");
+  pstmt.setObject(1,session.getAttribute("kVuza"),Types.INTEGER);
+  rs = pstmt.executeQuery();
+  if(rs.next()) 
+    report.write("\\fs40 \\qc "+rs.getString(1)+"\n");
+
+/**********************************************************/
+/**                                                      **/
+/**  Перебираем все специальности указанного факультета  **/
+/**                                                      **/
+/**********************************************************/
+
+  stmt2 = conn.createStatement();
+
+  query = new StringBuffer("SELECT DISTINCT f.AbbreviaturaFakulteta,s.ShifrSpetsialnosti,s.Abbreviatura,s.NazvanieSpetsialnosti,s.KodSpetsialnosti,s.PlanPriema,s.TselPr_PGU,s.TselPr_ROS,s.PlanPriemaDog FROM Fakultety f,Spetsialnosti s, Konkurs kon, Abiturient a,Forma_Obuch fo WHERE f.KodFakulteta=s.KodFakulteta AND fo.KodFormyOb=a.KodFormyOb AND a.KodAbiturienta=kon.KodAbiturienta AND kon.KodSpetsialnosti=s.KodSpetsialnosti AND s.KodFakulteta LIKE '"+abit_SD.getKodFakulteta()+"' ");
+  
+    if(abit_SD.getPriznakSortirovki().equals("budgetniki"))
+      query.append("AND (kon.Bud LIKE 'д')");
+//      query.append("AND fo.Sokr IN ('очная') AND (kon.Bud LIKE 'д')");
+//      query.append("AND fo.Sokr IN ('очная') AND (a.NomerPlatnogoDogovora IS NULL)");
+//    else if(abit_SD.getPriznakSortirovki().equals("kontraktniki"))
+    else
+      query.append("AND (kon.Dog LIKE 'д')");
+//      query.append("AND kon.Forma_Ob IN ('о') AND (kon.Dog LIKE 'д')");
+//      query.append("AND fo.Sokr IN ('очная') AND (kon.Dog LIKE 'д')");
+//      query.append("AND fo.Sokr IN ('очная') AND (a.NomerPlatnogoDogovora IS NOT NULL)");
+
+//    else if(abit_SD.getPriznakSortirovki().equals("z_budgetniki"))
+//      query.append("AND kon.Forma_Ob IN ('з','у','ф') AND (kon.Bud LIKE 'д')");
+//      query.append("AND fo.Sokr IN ('заочная','заочно-уск') AND (kon.Bud LIKE 'д')");
+//      query.append("AND fo.Sokr IN ('заочная','заочно-уск') AND (a.NomerPlatnogoDogovora IS NULL)");
+
+//    else 
+//      query.append("AND kon.Forma_Ob IN ('з','у','ф') AND (kon.Dog LIKE 'д')");
+//      query.append("AND fo.Sokr IN ('заочная','заочно-уск') AND (kon.Dog LIKE 'д')");
+//      query.append("AND fo.Sokr IN ('заочная','заочно-уск') AND (a.NomerPlatnogoDogovora IS NOT NULL)");
+
+  rs2 = stmt2.executeQuery(query.toString());
+  while(rs2.next()) {
+
+// Для каждой специальности нумерация своя и свой список исключения
+
+    nomer = 0;
+    excludeList = new StringBuffer("-1");
+
+    SS = rs2.getString(2);
+    AS = rs2.getString(3);
+    NS = rs2.getString(4).toUpperCase();
+    if(abit_SD.getPriznakSortirovki().equals("budgetniki")){
+    if(StringUtil.toInt(rs2.getString(6), 0) == 0) PP = "0";
+    else PP  = "" + StringUtil.toInt(rs2.getString(6), 0);
+    }else{
+    	if(StringUtil.toInt(rs2.getString(9), 0) == 0) PP = "0";
+        else PP  = "" + StringUtil.toInt(rs2.getString(9), 0);
+    	total_lgn=rs2.getInt(9);
+    }
+    TP1 = "" + StringUtil.toInt(rs2.getString(7), 0);
+    TP2 = "" + StringUtil.toInt(rs2.getString(8), 0);
+
+    report.write("\\fs24\\par\\par\n");
+    report.write("\\fs26\\b0\\qc{Список абитуриентов }\\b1{"+AF+"}\\b0\\par{поступающих на специальность (направление):}\\par\\fs24\\b1{"+SS+" }\\'ab{"+NS+"}\\'bb\\qc{ ("+AS+")}\\b0\\par\n");
+    report.write("\\par\\fs26\\qc\\b0{Данные сформированы на: } "+dt+"\\b0\\par\n");
+    if(StringUtil.toInt(PP, 0) != 0)
+      report.write("\\par\\fs26\\qc\\b1{План приёма: } "+PP+"{  Вакансии: } "+PP+"\\b0\\par\n");
+    else
+      report.write("\\par");
+
+
+
+/******************************************************/
+/**********  ЗАПРОСЫ НА ВЫБОРКУ АБИТУРИЕНТОВ **********/
+/******************************************************/
+
+    if(abit_SD.getPriznakSortirovki().equals("budgetniki")){
+
+// ОЛИМПИЙЦЫ (без вступительных испытаний)
+
+    header = false;
+
+    query = new StringBuffer("SELECT a.KodAbiturienta,a.NomerLichnogoDela,a.Familija,a.Imja,a.Otchestvo,m.ShifrMedali,a.TipDokSredObraz,SUM(zso.OtsenkaEge)\"SummaEge\",kon.NomerLichnogoDela FROM Abiturient a,ZajavlennyeShkolnyeOtsenki zso, Spetsialnosti s, Medali m,Lgoty l, NazvanijaPredmetov np,Kursy k,EkzamenyNaSpetsialnosti ens,Forma_Obuch fo,Konkurs kon WHERE kon.KodAbiturienta=a.KodAbiturienta AND kon.KodSpetsialnosti=s.KodSpetsialnosti AND fo.KodFormyOb=a.KodFormyOb AND k.KodKursov=a.KodKursov AND a.KodAbiturienta=zso.KodAbiturienta AND a.KodMedali=m.KodMedali AND a.KodLgot=l.KodLgot AND kon.KodSpetsialnosti=ens.KodSpetsialnosti AND zso.KodPredmeta=np.KodPredmeta AND a.KodAbiturienta=zso.KodAbiturienta AND ens.KodPredmeta=zso.KodPredmeta AND kon.KodSpetsialnosti LIKE "+rs2.getString(5)+" AND a.DokumentyHranjatsja LIKE 'д' AND a.KodAbiturienta NOT IN ("+excludeList.toString()+") ");
+    query1= new StringBuffer("SELECT a.KodAbiturienta,a.NomerLichnogoDela,a.Familija,a.Imja,a.Otchestvo,m.ShifrMedali,a.TipDokSredObraz,SUM(zso.OtsenkaEge)\"SummaEge\",l.ShifrLgot,kon.NomerLichnogoDela FROM Abiturient a,ZajavlennyeShkolnyeOtsenki zso, Spetsialnosti s, Medali m,Lgoty l, NazvanijaPredmetov np,Kursy k,EkzamenyNaSpetsialnosti ens,Forma_Obuch fo,Konkurs kon WHERE a.kodlgot=7 AND kon.KodAbiturienta=a.KodAbiturienta AND kon.KodSpetsialnosti=s.KodSpetsialnosti AND fo.KodFormyOb=a.KodFormyOb AND k.KodKursov=a.KodKursov AND a.KodAbiturienta=zso.KodAbiturienta AND a.KodMedali=m.KodMedali AND a.KodLgot=l.KodLgot AND kon.KodSpetsialnosti=ens.KodSpetsialnosti AND zso.KodPredmeta=np.KodPredmeta AND a.KodAbiturienta=zso.KodAbiturienta AND ens.KodPredmeta=zso.KodPredmeta AND kon.KodSpetsialnosti LIKE "+rs2.getString(5)+" AND a.DokumentyHranjatsja LIKE 'д' AND a.KodAbiturienta NOT IN ("+excludeList.toString()+")");
+    query.append("AND kon.Prioritet LIKE '"+priority_query+"' ");
+    query1.append("AND kon.Prioritet LIKE '"+priority_query+"' ");
+    
+//Мешали спец-ти СурТал    query.append(" AND (m.ShifrMedali IN ('о','к') AND (s.ShifrSpetsialnosti IN ("+Constants.Sur_Talants_NO_KONKURS+"))) ");
+    query.append(" AND (l.shifrlgot IN ('о','к')) ");
+    query1.append(" AND (l.shifrlgot IN ('о','к')) ");
+
+    if(abit_SD.getSpecial2().equals("orig")){
+      query.append("AND a.TipDokSredObraz LIKE ('о') ");
+    query1.append("AND a.TipDokSredObraz LIKE ('о') ");
+    }
+    else if(abit_SD.getSpecial2().equals("copy")){
+      query.append("AND a.TipDokSredObraz LIKE ('к') ");
+      query1.append("AND a.TipDokSredObraz LIKE ('к') "); 
+    }
+
+    if(abit_SD.getSpecial3().equals("rek")){
+      query.append("AND a.Prinjat LIKE ('р') ");
+    query1.append("AND a.Prinjat LIKE ('р') ");
+    }
+
+    if(abit_SD.getPriznakSortirovki().equals("budgetniki")){
+      query.append("AND (kon.Bud LIKE 'д')");
+    query1.append("AND (kon.Bud LIKE 'д')");
+    }
+//      query.append("AND kon.Forma_Ob IN ('о') AND (kon.Bud LIKE 'д')");
+//      query.append("AND fo.Sokr IN ('очная') AND (kon.Bud LIKE 'д')");
+//      query.append("AND fo.Sokr IN ('очная') AND (a.NomerPlatnogoDogovora IS NULL)");
+    else{
+      query.append("AND (kon.Dog LIKE 'д')");
+    query1.append("AND (kon.Dog LIKE 'д')");
+    }
+//    else if(abit_SD.getPriznakSortirovki().equals("kontraktniki"))
+//      query.append("AND kon.Forma_Ob IN ('о') AND (kon.Dog LIKE 'д')");
+//      query.append("AND fo.Sokr IN ('очная') AND (kon.Dog LIKE 'д')");
+//      query.append("AND fo.Sokr IN ('очная') AND (a.NomerPlatnogoDogovora IS NOT NULL)");
+
+//    else if(abit_SD.getPriznakSortirovki().equals("z_budgetniki"))
+//      query.append("AND kon.Forma_Ob IN ('з','у','ф') AND (kon.Bud LIKE 'д')");
+//      query.append("AND fo.Sokr IN ('заочная','заочно-уск') AND (kon.Bud LIKE 'д')");
+//      query.append("AND fo.Sokr IN ('заочная','заочно-уск') AND (a.NomerPlatnogoDogovora IS NULL)");
+
+//    else 
+//      query.append("AND kon.Forma_Ob IN ('з','у','ф') AND (kon.Dog LIKE 'д')");
+//      query.append("AND fo.Sokr IN ('заочная','заочно-уск') AND (kon.Dog LIKE 'д')");
+//      query.append("AND fo.Sokr IN ('заочная','заочно-уск') AND (a.NomerPlatnogoDogovora IS NOT NULL)");
+
+    query.append(" GROUP BY a.KodAbiturienta,a.NomerLichnogoDela,a.Familija,a.Imja,a.Otchestvo,m.ShifrMedali,a.TipDokSredObraz,kon.NomerLichnogoDela ORDER BY SummaEge DESC,a.Familija,a.Imja,a.Otchestvo");
+    query1.append(" GROUP BY a.KodAbiturienta,a.NomerLichnogoDela,a.Familija,a.Imja,a.Otchestvo,m.ShifrMedali,a.TipDokSredObraz,l.ShifrLgot,kon.NomerLichnogoDela ORDER BY SummaEge DESC,a.KodAbiturienta,a.Familija,a.Imja,a.Otchestvo,l.ShifrLgot");
+//System.out.println(query.toString());
+String s=null;
+    stmt9 = conn.createStatement();
+
+    rs9 = stmt9.executeQuery(query1.toString());
+    while(rs9.next()) {
+    	stmt10 = conn.prepareStatement("INSERT INTO Perelom(N,Shifr,F,I,O,ind,ko,sum,op,ka,nld) VALUES(?,?,?,?,?,?,?,?,?,?,?)");
+    	N++;
+        stmt10.setObject(1, N,Types.INTEGER);
+        stmt10.setObject(2, rs9.getString(2),Types.VARCHAR);
+        stmt10.setObject(3, rs9.getString(3),Types.VARCHAR);
+        stmt10.setObject(4, rs9.getString(4),Types.VARCHAR);
+        stmt10.setObject(5, rs9.getString(5),Types.VARCHAR);
+        stmt10.setObject(6, rs9.getString(6),Types.VARCHAR);
+        stmt10.setObject(7, rs9.getString(7),Types.VARCHAR);
+        stmt10.setObject(8, new Integer(rs9.getString(8)),Types.INTEGER);
+        stmt10.setObject(9, rs9.getString(9),Types.VARCHAR);
+        stmt10.setObject(10, new Integer(rs9.getString(1)),Types.INTEGER);
+        stmt10.setObject(11, rs9.getString(10),Types.VARCHAR);
+        stmt10.executeUpdate();
+    }
+    
+    stmt10=conn.prepareStatement("SELECT DISTINCT zso.OtsenkaEge,p.ka FROM Perelom p, ZajavlennyeShkolnyeOtsenki zso, abiturient a, ekzamenynaspetsialnosti ens WHERE p.ka=a.kodabiturienta AND ens.kodspetsialnosti LIKE "+rs2.getString(5)+"  AND ens.kodpredmeta=zso.kodpredmeta AND zso.kodabiturienta=p.ka AND ens.prioritet LIKE '1'");
+    rs10=stmt10.executeQuery();
+    while(rs10.next()){
+    	stmt11=conn.prepareStatement("UPDATE Perelom SET pr1=? WHERE ka=?");
+    	stmt11.setObject(1, rs10.getString(1),Types.INTEGER); 
+    	stmt11.setObject(2, rs10.getString(2),Types.INTEGER); 
+    	stmt11.executeUpdate();
+    }
+    stmt10=conn.prepareStatement("SELECT DISTINCT zso.OtsenkaEge,p.ka FROM Perelom p, ZajavlennyeShkolnyeOtsenki zso, abiturient a, ekzamenynaspetsialnosti ens WHERE p.ka=a.kodabiturienta AND ens.kodspetsialnosti LIKE "+rs2.getString(5)+"  AND ens.kodpredmeta=zso.kodpredmeta AND zso.kodabiturienta=p.ka AND ens.prioritet LIKE '2'");
+    rs10=stmt10.executeQuery();
+    while(rs10.next()){
+    	stmt11=conn.prepareStatement("UPDATE Perelom SET pr2=? WHERE ka=?");
+    	stmt11.setObject(1, rs10.getString(1),Types.INTEGER); 
+    	stmt11.setObject(2, rs10.getString(2),Types.INTEGER); 
+    	stmt11.executeUpdate();
+    }
+    stmt10=conn.prepareStatement("SELECT DISTINCT zso.OtsenkaEge,p.ka FROM Perelom p, ZajavlennyeShkolnyeOtsenki zso, abiturient a, ekzamenynaspetsialnosti ens WHERE p.ka=a.kodabiturienta AND ens.kodspetsialnosti LIKE "+rs2.getString(5)+" AND ens.kodpredmeta=zso.kodpredmeta AND zso.kodabiturienta=p.ka AND ens.prioritet LIKE '3'");
+    rs10=stmt10.executeQuery();
+    while(rs10.next()){
+    	stmt11=conn.prepareStatement("UPDATE Perelom SET pr3=? WHERE ka=?");
+    	stmt11.setObject(1, rs10.getString(1),Types.INTEGER); 
+    	stmt11.setObject(2, rs10.getString(2),Types.INTEGER); 
+    	stmt11.executeUpdate();
+    }
+    stmt10=conn.prepareStatement("SELECT DISTINCT zso.OtsenkaEge,p.ka FROM Perelom p, ZajavlennyeShkolnyeOtsenki zso, abiturient a, ekzamenynaspetsialnosti ens WHERE p.ka=a.kodabiturienta AND ens.kodspetsialnosti LIKE "+rs2.getString(5)+" AND ens.kodpredmeta=zso.kodpredmeta AND zso.kodabiturienta=p.ka AND ens.prioritet LIKE '4'");
+    rs10=stmt10.executeQuery();
+    while(rs10.next()){
+    	stmt11=conn.prepareStatement("UPDATE Perelom SET pr4=? WHERE ka=?");
+    	stmt11.setObject(1, rs10.getString(1),Types.INTEGER); 
+    	stmt11.setObject(2, rs10.getString(2),Types.INTEGER); 
+    	stmt11.executeUpdate();
+    }
+    stmt10=conn.prepareStatement("SELECT pr1,pr2,pr3,pr4,ka FROM Perelom");
+    rs10=stmt10.executeQuery();
+    while(rs10.next()){
+    	pr1=rs10.getInt(1);
+        pr2=rs10.getInt(2);
+        pr3=rs10.getInt(3);
+        pr4=rs10.getInt(4);
+        summ=pr1+pr2+pr3+pr4;
+        stmt11=conn.prepareStatement("UPDATE Perelom SET sum=? WHERE ka=?");
+        stmt11.setObject(1, summ,Types.INTEGER); 
+    	stmt11.setObject(2, rs10.getString(5),Types.INTEGER); 
+    	stmt11.executeUpdate();
+    }
+    
+    
+    stmt10 = conn.prepareStatement("SELECT Shifr,F,I,O,ko,sum,pr1,pr2,pr3,pr4,op,ind,ka,nld FROM Perelom ORDER BY sum DESC, pr1 DESC, pr2 DESC, pr3 DESC, pr4 DESC");
+    rs10=stmt10.executeQuery();
+   N=1;
+   // stmt = conn.createStatement();
+  //  rs = stmt.executeQuery(query.toString());
+    while(rs10.next()) {
+
+      if(header == false) {
+        header = true;
+        report.write("\\pard\\par\n");
+        report.write("\\b1\\ql\\fs28{Перечень лиц, имеющих право на прием без вступительных испытаний}\\b0\\par\\par\n"); 
+        report.write("\\fs22\\b1 \\trowd \\trqc\\trgaph108\\trrh280\\trleft36\\trhdr\n");
+        report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx500\n");
+        report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx1900\n");
+        report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx3300\n");
+        report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx5200\n");
+        report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx5700\n");
+        report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx6500\n");
+        report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx7200\n");
+        report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx7900\n"); 
+        report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx8600\n"); 
+        report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx9300\n"); 
+        report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx10000\n"); 
+        report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx10700\n"); 
+  
+
+        report.write("\\intbl\\qc{№}\\cell\n");
+        report.write("\\intbl{Шифр}\\cell\n");
+        report.write("\\intbl{Номер}\\par{личного}\\par{дела}\\cell\n");
+        report.write("\\intbl{Фамилия И.О.}\\cell\n");
+        report.write("\\intbl{Копия-оригинал}\\cell\n");
+        report.write("\\intbl{Особ.пр.}\\cell\n");
+        report.write("\\intbl{Инд.дост.}\\cell\n");
+        report.write("\\intbl{Первый}\\par{экзамен}\\cell\n");
+        report.write("\\intbl{Второй}\\par{экзамен}\\cell\n");
+        report.write("\\intbl{Третий}\\par{экзамен}\\cell\n");
+        report.write("\\intbl{Четвёртый}\\par{экзамен}\\cell\n");
+        report.write("\\intbl{Сумма}\\par{баллов}\\cell\n");
+        report.write("\\intbl\\row\n");
+
+        report.write("\\b1 \\trowd \\trqc\\trgaph108\\trrh280\\trleft36\\trhdr\n");
+        report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx500\n");
+        report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx1900\n");
+        report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx3300\n");
+        report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx5200\n");
+        report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx5700\n");
+        report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx6500\n");
+        report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx7200\n");
+        report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx7900\n"); 
+        report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx8600\n"); 
+        report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx9300\n"); 
+        report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx10000\n"); 
+        report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx10700\n"); 
+
+        report.write("\\intbl\\cell\n");
+        report.write("\\intbl\\cell\n");
+        report.write("\\intbl\\cell\n");
+        report.write("\\intbl\\cell\n");
+        report.write("\\intbl\\cell\n");
+        report.write("\\intbl\\cell\n");
+        report.write("\\intbl\\cell\n");
+        kl=0;
+        stmt3 = conn.createStatement();
+        rs3 = stmt3.executeQuery("SELECT np.Sokr,ens.prioritet FROM NazvanijaPredmetov np, ekzamenynaspetsialnosti ens, spetsialnosti s WHERE np.kodpredmeta=ens.kodpredmeta AND s.kodspetsialnosti=ens.kodspetsialnosti AND s.KodSpetsialnosti LIKE '"+rs2.getString(5)+"' ORDER BY ens.prioritet ASC");
+        while(rs3.next()) {
+        	kl++;
+        	report.write("\\intbl "+rs3.getString(1)+" \\cell\n");
+        }
+        if(kl!=4)
+        {report.write("\\intbl\\cell\n");}
+
+        report.write("\\intbl\\cell\n");
+        report.write("\\intbl \\row\n");
+
+        report.write("\\b0\\trowd \\trqc\\trgaph108\\trrh280\\trleft36\n");
+        report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx500\n"); 
+        report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx1900\n"); 
+        report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx3300\n"); 
+        report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx5200\n"); 
+        report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx5700\n"); 
+        report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx6500\n"); 
+        report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx7200\n"); 
+        report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx7900\n"); 
+        report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx8600\n"); 
+        report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx9300\n"); 
+        report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx10000\n"); 
+        report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx10700\n");  
+      }
+      nomer++;
+      report.write("\\fs24\\intbl\\qc "+(nomer)+"\\cell\n");
+      report.write("\\intbl\\qc "+rs10.getString(14)+"\\cell\n"); // NLD
+      report.write("\\intbl\\qc "+rs10.getString(1)+"\\cell\n"); // NLD
+      
+      report.write("\\intbl\\ql "+rs10.getString(2)+" "+rs10.getString(3).substring(0,1)+"."+rs10.getString(4).substring(0,1)+"."+"\\cell\n"); // FAMIL I.O.
+      report.write("\\intbl\\qc "+rs10.getString(5)+"\\cell\n"); // SHIFR LICHNOGO DELA
+      report.write("\\intbl\\qc "+rs10.getString(11)+"\\cell\n");
+      report.write("\\intbl\\qc "+rs10.getString(12)+"\\cell\n"); // ATTESTAT (KOPIJA)
+      report.write("\\intbl\\qc "+rs10.getString(7)+"\\cell\n");
+      report.write("\\intbl\\qc "+rs10.getString(8)+"\\cell\n");
+      report.write("\\intbl\\qc "+rs10.getString(9)+"\\cell\n");
+      if(z==rs10.getString(10)){
+    	  report.write("\\intbl\\qc{0}\\cell\n");
+    	
+      }else{
+      report.write("\\intbl\\qc "+rs10.getString(10)+"\\cell\n");
+      }
+      
+   //   report.write("\\intbl\\qc "+(summ)+"\\cell\n");
+    report.write("\\intbl\\qc "+rs10.getString(6)+"\\cell\n"); // LGOTA
+      report.write("\\intbl\\row\n");
+      N++;
+//Добавляем код абитуриента в список исключения для того, чтобы он появлялся в отчете только один раз
+ 
+      excludeList.append(","+rs10.getString(13));
+    }
+    stmt10 = conn.prepareStatement("DELETE FROM Perelom WHERE 1=1");
+    stmt10.executeUpdate();
+
+    if(header) report.write("\\pard\\par\n");
+
+
+
+    header = false;
+// ЛЬГОТНИКИ (только инвалиды и сироты)
+    lgn=0;
+    stmt = conn.createStatement();
+    rs = stmt.executeQuery("SELECT planPriemaLg FROM Spetsialnosti WHERE KodSpetsialnosti LIKE '"+rs2.getString(5)+"'");
+    if( rs.next() && StringUtil.toInt(rs.getString(1),0) != 0 ) {
+    	total_lgn=rs.getInt(1);
+    
+   
+
+    query = new StringBuffer("SELECT a.KodAbiturienta,a.NomerLichnogoDela,a.Familija,a.Imja,a.Otchestvo,l.ShifrLgot,a.TipDokSredObraz,SUM(zso.OtsenkaEge)\"SummaEge\",kon.NomerLichnogoDela FROM Abiturient a,ZajavlennyeShkolnyeOtsenki zso, Spetsialnosti s, Medali m,Lgoty l, NazvanijaPredmetov np,Kursy k,EkzamenyNaSpetsialnosti ens,Forma_Obuch fo,Konkurs kon WHERE kon.KodAbiturienta=a.KodAbiturienta AND kon.KodSpetsialnosti=s.KodSpetsialnosti AND fo.KodFormyOb=a.KodFormyOb AND k.KodKursov=a.KodKursov AND a.KodAbiturienta=zso.KodAbiturienta AND a.KodMedali=m.KodMedali AND a.KodLgot=l.KodLgot AND kon.KodSpetsialnosti=ens.KodSpetsialnosti AND zso.KodPredmeta=np.KodPredmeta AND a.KodAbiturienta=zso.KodAbiturienta AND ens.KodPredmeta=zso.KodPredmeta AND kon.KodSpetsialnosti LIKE '"+rs2.getString(5)+"' AND l.ShifrLgot IN ('и','с') AND a.DokumentyHranjatsja LIKE 'д' AND a.KodAbiturienta NOT IN ("+excludeList.toString()+") ");
+    query1= new StringBuffer("SELECT a.KodAbiturienta,a.NomerLichnogoDela,a.Familija,a.Imja,a.Otchestvo,m.ShifrMedali,a.TipDokSredObraz,SUM(zso.OtsenkaEge)\"SummaEge\",l.shifrlgot,kon.NomerLichnogoDela  FROM Abiturient a,ZajavlennyeShkolnyeOtsenki zso, Spetsialnosti s, Medali m,Lgoty l, NazvanijaPredmetov np,Kursy k,EkzamenyNaSpetsialnosti ens,Forma_Obuch fo,Konkurs kon WHERE a.KodAbiturienta=kon.KodAbiturienta AND kon.KodSpetsialnosti=s.KodSpetsialnosti AND fo.KodFormyOb=a.KodFormyOb AND k.KodKursov=a.KodKursov AND a.KodAbiturienta=zso.KodAbiturienta AND a.KodMedali=m.KodMedali AND a.KodLgot=l.KodLgot AND kon.KodSpetsialnosti=ens.KodSpetsialnosti AND zso.KodPredmeta=np.KodPredmeta AND a.KodAbiturienta=zso.KodAbiturienta AND ens.KodPredmeta=zso.KodPredmeta AND kon.KodSpetsialnosti LIKE '"+rs2.getString(5)+"' AND l.ShifrLgot IN ('и','с') AND a.DokumentyHranjatsja LIKE 'д' AND kon.NomerLichnogoDela LIKE '%-1' AND a.KodAbiturienta NOT IN ("+excludeList.toString()+") ");
+    query.append("AND kon.Prioritet LIKE '"+priority_query+"' ");
+    query1.append("AND kon.Prioritet LIKE '"+priority_query+"' ");
+
+    if(abit_SD.getSpecial2().equals("orig")){
+      query.append("AND a.TipDokSredObraz LIKE ('о') ");
+      query1.append("AND a.TipDokSredObraz LIKE ('о') ");
+    }
+    else if(abit_SD.getSpecial2().equals("copy")){
+      query.append("AND a.TipDokSredObraz LIKE ('к') ");
+      query1.append("AND a.TipDokSredObraz LIKE ('к') ");
+    }
+
+    if(abit_SD.getSpecial3().equals("rek")){
+      query.append("AND a.Prinjat LIKE ('р') ");
+      query1.append("AND a.Prinjat LIKE ('р') ");
+    }
+ 
+    if(abit_SD.getPriznakSortirovki().equals("budgetniki")){
+      query.append("AND (kon.Bud LIKE 'д')");
+      query1.append("AND (kon.Bud LIKE 'д')");
+    }
+//      query.append("AND kon.Forma_Ob IN ('о') AND (kon.Bud LIKE 'д')");
+//      query.append("AND fo.Sokr IN ('очная') AND (kon.Bud LIKE 'д')");
+//      query.append("AND fo.Sokr IN ('очная') AND (a.NomerPlatnogoDogovora IS NULL)");
+
+//    else if(abit_SD.getPriznakSortirovki().equals("kontraktniki"))
+      else{
+      query.append("AND (kon.Dog LIKE 'д')");
+      query1.append("AND (kon.Dog LIKE 'д')");
+      }
+//      query.append("AND kon.Forma_Ob IN ('о') AND (kon.Dog LIKE 'д')");
+//      query.append("AND fo.Sokr IN ('очная') AND (kon.Dog LIKE 'д')");
+//      query.append("AND fo.Sokr IN ('очная') AND (a.NomerPlatnogoDogovora IS NOT NULL)");
+
+//    else if(abit_SD.getPriznakSortirovki().equals("z_budgetniki"))
+//      query.append("AND kon.Forma_Ob IN ('з','у','ф') AND (kon.Bud LIKE 'д')");
+//      query.append("AND fo.Sokr IN ('заочная','заочно-уск') AND (kon.Bud LIKE 'д')");
+//      query.append("AND fo.Sokr IN ('заочная','заочно-уск') AND (a.NomerPlatnogoDogovora IS NULL)");
+
+//    else 
+//      query.append("AND kon.Forma_Ob IN ('з','у','ф') AND (kon.Dog LIKE 'д')");
+//      query.append("AND fo.Sokr IN ('заочная','заочно-уск') AND (kon.Dog LIKE 'д')");
+//      query.append("AND fo.Sokr IN ('заочная','заочно-уск') AND (a.NomerPlatnogoDogovora IS NOT NULL)");
+
+    query.append(" GROUP BY a.KodAbiturienta,a.NomerLichnogoDela,a.Familija,a.Imja,a.Otchestvo,l.ShifrLgot,a.TipDokSredObraz,kon.NomerLichnogoDela ORDER BY SummaEge DESC,a.Familija,a.Imja,a.Otchestvo");
+    query1.append(" GROUP BY a.KodAbiturienta,a.NomerLichnogoDela,a.Familija,a.Imja,a.Otchestvo,m.ShifrMedali,a.TipDokSredObraz,l.ShifrLgot,kon.NomerLichnogoDela ORDER BY SummaEge DESC,a.KodAbiturienta,a.Familija,a.Imja,a.Otchestvo,l.ShifrLgot");
+    stmt9 = conn.createStatement();
+N=0;
+    rs9 = stmt9.executeQuery(query1.toString());
+    while(rs9.next()) {
+    	stmt10 = conn.prepareStatement("INSERT INTO Perelom(N,Shifr,F,I,O,ind,ko,sum,op,ka,nld) VALUES(?,?,?,?,?,?,?,?,?,?,?)");
+    	N++;
+        stmt10.setObject(1, N,Types.INTEGER);
+        stmt10.setObject(2, rs9.getString(2),Types.VARCHAR);
+        stmt10.setObject(3, rs9.getString(3),Types.VARCHAR);
+        stmt10.setObject(4, rs9.getString(4),Types.VARCHAR);
+        stmt10.setObject(5, rs9.getString(5),Types.VARCHAR);
+        stmt10.setObject(6, rs9.getString(6),Types.VARCHAR);
+        stmt10.setObject(7, rs9.getString(7),Types.VARCHAR);
+        stmt10.setObject(8, new Integer(rs9.getString(8)),Types.INTEGER);
+        stmt10.setObject(9, rs9.getString(9),Types.VARCHAR);
+        stmt10.setObject(10, new Integer(rs9.getString(1)),Types.INTEGER);
+        stmt10.setObject(11, rs9.getString(10),Types.VARCHAR);
+        stmt10.executeUpdate();
+    }
+    
+    stmt10=conn.prepareStatement("SELECT DISTINCT zso.OtsenkaEge,p.ka FROM Perelom p, ZajavlennyeShkolnyeOtsenki zso, abiturient a, ekzamenynaspetsialnosti ens WHERE p.ka=a.kodabiturienta AND ens.kodspetsialnosti LIKE "+rs2.getString(5)+" AND ens.kodpredmeta=zso.kodpredmeta AND zso.kodabiturienta=p.ka AND ens.prioritet LIKE '1'");
+    rs10=stmt10.executeQuery();
+    while(rs10.next()){
+    	stmt11=conn.prepareStatement("UPDATE Perelom SET pr1=? WHERE ka=?");
+    	stmt11.setObject(1, rs10.getString(1),Types.INTEGER); 
+    	stmt11.setObject(2, rs10.getString(2),Types.INTEGER); 
+    	stmt11.executeUpdate();
+    }
+    stmt10=conn.prepareStatement("SELECT DISTINCT zso.OtsenkaEge,p.ka FROM Perelom p, ZajavlennyeShkolnyeOtsenki zso, abiturient a, ekzamenynaspetsialnosti ens WHERE p.ka=a.kodabiturienta AND ens.kodspetsialnosti LIKE "+rs2.getString(5)+" AND ens.kodpredmeta=zso.kodpredmeta AND zso.kodabiturienta=p.ka AND ens.prioritet LIKE '2'");
+    rs10=stmt10.executeQuery();
+    while(rs10.next()){
+    	stmt11=conn.prepareStatement("UPDATE Perelom SET pr2=? WHERE ka=?");
+    	stmt11.setObject(1, rs10.getString(1),Types.INTEGER); 
+    	stmt11.setObject(2, rs10.getString(2),Types.INTEGER); 
+    	stmt11.executeUpdate();
+    }
+    stmt10=conn.prepareStatement("SELECT DISTINCT zso.OtsenkaEge,p.ka FROM Perelom p, ZajavlennyeShkolnyeOtsenki zso, abiturient a, ekzamenynaspetsialnosti ens WHERE p.ka=a.kodabiturienta AND ens.kodspetsialnosti LIKE "+rs2.getString(5)+" AND ens.kodpredmeta=zso.kodpredmeta AND zso.kodabiturienta=p.ka AND ens.prioritet LIKE '3'");
+    rs10=stmt10.executeQuery();
+    while(rs10.next()){
+    	stmt11=conn.prepareStatement("UPDATE Perelom SET pr3=? WHERE ka=?");
+    	stmt11.setObject(1, rs10.getString(1),Types.INTEGER); 
+    	stmt11.setObject(2, rs10.getString(2),Types.INTEGER); 
+    	stmt11.executeUpdate();
+    }
+    stmt10=conn.prepareStatement("SELECT DISTINCT zso.OtsenkaEge,p.ka FROM Perelom p, ZajavlennyeShkolnyeOtsenki zso, abiturient a, ekzamenynaspetsialnosti ens WHERE p.ka=a.kodabiturienta AND ens.kodspetsialnosti LIKE "+rs2.getString(5)+" AND ens.kodpredmeta=zso.kodpredmeta AND zso.kodabiturienta=p.ka AND ens.prioritet LIKE '4'");
+    rs10=stmt10.executeQuery();
+    while(rs10.next()){
+    	stmt11=conn.prepareStatement("UPDATE Perelom SET pr4=? WHERE ka=?");
+    	stmt11.setObject(1, rs10.getString(1),Types.INTEGER); 
+    	stmt11.setObject(2, rs10.getString(2),Types.INTEGER); 
+    	stmt11.executeUpdate();
+    }
+    stmt10=conn.prepareStatement("SELECT pr1,pr2,pr3,pr4,ka FROM Perelom");
+    rs10=stmt10.executeQuery();
+    while(rs10.next()){
+    	pr1=rs10.getInt(1);
+        pr2=rs10.getInt(2);
+        pr3=rs10.getInt(3);
+        pr4=rs10.getInt(4);
+        summ=pr1+pr2+pr3+pr4;
+        stmt11=conn.prepareStatement("UPDATE Perelom SET sum=? WHERE ka=?");
+        stmt11.setObject(1, summ,Types.INTEGER); 
+    	stmt11.setObject(2, rs10.getString(5),Types.INTEGER); 
+    	stmt11.executeUpdate();
+    }
+    stmt10 = conn.prepareStatement("SELECT Shifr,F,I,O,ko,sum,pr1,pr2,pr3,pr4,op,ind,ka,nld FROM Perelom ORDER BY sum DESC, pr1 DESC, pr2 DESC, pr3 DESC, pr4 DESC");
+    rs10=stmt10.executeQuery();
+    N=1;
+   // stmt = conn.createStatement();
+  //  rs = stmt.executeQuery(query.toString());
+    
+
+      if(header == false) {
+        header = true;
+        report.write("\\pard\\par\n");
+        report.write("\\b1\\ql\\fs28{Перечень лиц, имеющих особые права и поступающих на места в пределах квоты приема "+total_lgn+": }\\b0\\par\\par\n");
+        report.write("\\fs22\\b1 \\trowd \\trqc\\trgaph108\\trrh280\\trleft36\\trhdr\n");
+        report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx600\n");
+        report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx2000\n");
+        report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx3400\n");
+        report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx5300\n");
+        report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx5800\n");
+        report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx6500\n");
+        report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx7200\n");
+        report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx7900\n"); 
+        report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx8600\n"); 
+        report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx9300\n"); 
+        report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx10000\n"); 
+        report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx10700\n"); 
+        
+        report.write("\\intbl\\qc{№}\\cell\n");
+        report.write("\\intbl{Шифр}\\cell\n");
+        report.write("\\intbl{Номер}\\par{личного}\\par{дела}\\cell\n");
+        report.write("\\intbl{Фамилия И.О.}\\cell\n");
+        report.write("\\intbl{Копия-оригинал}\\cell\n");
+        report.write("\\intbl{Особ.пр.}\\cell\n");
+        report.write("\\intbl{Инд.дост.}\\cell\n");
+        report.write("\\intbl{Первый}\\par{экзамен}\\cell\n");
+        report.write("\\intbl{Второй}\\par{экзамен}\\cell\n");
+        report.write("\\intbl{Третий}\\par{экзамен}\\cell\n");
+        report.write("\\intbl{Четвёртый}\\par{экзамен}\\cell\n");
+        report.write("\\intbl{Сумма}\\par{баллов}\\cell\n");
+        report.write("\\intbl\\row\n");
+
+        report.write("\\b1 \\trowd \\trqc\\trgaph108\\trrh280\\trleft36\\trhdr\n");
+        report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx600\n");
+        report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx2000\n");
+        report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx3400\n");
+        report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx5300\n");
+        report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx5800\n");
+        report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx6500\n");
+        report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx7200\n");
+        report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx7900\n"); 
+        report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx8600\n"); 
+        report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx9300\n"); 
+        report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx10000\n"); 
+        report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx10700\n"); 
+        
+        report.write("\\intbl\\cell\n");
+        report.write("\\intbl\\cell\n");
+        report.write("\\intbl\\cell\n");
+        report.write("\\intbl\\cell\n");
+        report.write("\\intbl\\cell\n");
+        report.write("\\intbl\\cell\n");
+        report.write("\\intbl\\cell\n");
+        kl=0;
+        stmt3 = conn.createStatement();
+        rs3 = stmt3.executeQuery("SELECT np.Sokr,ens.prioritet FROM NazvanijaPredmetov np, ekzamenynaspetsialnosti ens, spetsialnosti s WHERE np.kodpredmeta=ens.kodpredmeta AND s.kodspetsialnosti=ens.kodspetsialnosti AND s.KodSpetsialnosti LIKE '"+rs2.getString(5)+"' ORDER BY ens.prioritet ASC");
+        while(rs3.next()){
+        	kl++;
+        	report.write("\\intbl "+rs3.getString(1)+" \\cell\n");
+        }
+        if(kl!=4)
+        {report.write("\\intbl\\cell\n");}
+
+        report.write("\\intbl\\cell\n");
+        report.write("\\intbl \\row\n");
+
+        report.write("\\b0\\trowd \\trqc\\trgaph108\\trrh280\\trleft36\n");
+        report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx600\n"); 
+        report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx2000\n"); 
+        report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx3400\n"); 
+        report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx5300\n"); 
+        report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx5800\n"); 
+        report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx6500\n"); 
+        report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx7200\n"); 
+        report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx7900\n"); 
+        report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx8600\n"); 
+        report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx9300\n"); 
+        report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx10000\n"); 
+        report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx10700\n");   
+      }
+      num=nomer+total_lgn;
+      while(rs10.next()) {
+    	  if(nomer<num){
+      nomer++;
+    	  }
+      lgn++;
+      report.write("\\fs24\\intbl\\qc "+(nomer)+"\\cell\n");
+      report.write("\\intbl\\qc "+rs10.getString(14)+"\\cell\n"); // NLD
+      report.write("\\intbl\\qc "+rs10.getString(1)+"\\cell\n"); // NLD
+      report.write("\\intbl\\ql "+rs10.getString(2)+" "+rs10.getString(3).substring(0,1)+"."+rs10.getString(4).substring(0,1)+"."+"\\cell\n"); // FAMIL I.O.
+      report.write("\\intbl\\qc "+rs10.getString(5)+"\\cell\n"); // SHIFR LICHNOGO DELA
+      report.write("\\intbl\\qc "+rs10.getString(11)+"\\cell\n");
+      report.write("\\intbl\\qc "+rs10.getString(12)+"\\cell\n"); // ATTESTAT (KOPIJA)
+      report.write("\\intbl\\qc "+rs10.getString(7)+"\\cell\n");
+      report.write("\\intbl\\qc "+rs10.getString(8)+"\\cell\n");
+      report.write("\\intbl\\qc "+rs10.getString(9)+"\\cell\n");
+      if(z==rs10.getString(10)){
+    	  report.write("\\intbl\\qc{0}\\cell\n");
+    	
+      }else{
+      report.write("\\intbl\\qc "+rs10.getString(10)+"\\cell\n");
+      }
+      report.write("\\intbl\\qc "+rs10.getString(6)+"\\cell\n"); // LGOTA
+
+
+      report.write("\\intbl\\row\n");
+      N++;
+//Добавляем код абитуриента в список исключения для того, чтобы он появлялся в отчете только один раз
+ 
+      excludeList.append(","+rs10.getString(13));
+    }
+    
+
+    for(;lgn<total_lgn;lgn++) {
+
+        report.write("\\fs24\\intbl\\qc\\cell\n");      // №
+        report.write("\\intbl\\qc\\cell\n");  
+        report.write("\\intbl\\qc\\cell\n");  
+        report.write("\\intbl\\ql{вакантно}\\cell\n"); // NLD
+        report.write("\\intbl\\qc\\cell\n");                          // SHIFR LICHNOGO DELA
+                       // FAMIL I.O.
+        report.write("\\intbl\\qc\\cell\n");                          // ATTESTAT (KOPIJA)
+        report.write("\\intbl\\qc\\cell\n");                          // KOD TSELEVOGO PRIEMA
+        report.write("\\intbl\\qc\\cell\n");                          // SUMMA Ege
+        report.write("\\intbl\\qc\\cell\n");  
+        report.write("\\intbl\\qc\\cell\n");  
+        report.write("\\intbl\\qc\\cell\n");  
+        report.write("\\intbl\\qc\\cell\n");  
+        report.write("\\intbl\\row\n");
+      }
+    }
+//Добавляем код абитуриента в список исключения для того, чтобы он появлялся в отчете только один раз
+    stmt10 = conn.prepareStatement("DELETE FROM Perelom WHERE 1=1");
+    stmt10.executeUpdate();
+    
+    if(header) report.write("\\pard\\par\n");
+
+
+
+
+
+// ЦЕЛЕВОЙ ПРИЕМ ( Уч. совет ПГУ )
+
+
+    header = false;
+
+    int total_amount = 0, tselev_nomer = 0;
+
+    stmt = conn.createStatement();
+    rs = stmt.executeQuery("SELECT TselPr_PGU FROM Spetsialnosti WHERE KodSpetsialnosti LIKE '"+rs2.getString(5)+"'");
+    if( rs.next() && StringUtil.toInt(rs.getString(1),0) != 0 ) {
+
+      if(header == false) {
+        header = true;
+        report.write("\\pard\\par\n");
+        report.write("\\b1\\ql\\fs28{Перечень лиц, поступающих по целевому приему (в интересах органов гос. власти) в пределах квоты "+rs.getString(1)+":} \\b0\\par\\par\n");
+        report.write("\\fs22\\b1 \\trowd \\trqc\\trgaph108\\trrh280\\trleft36\\trhdr\n");
+        report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx600\n");
+        report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx2000\n");
+        report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx3400\n");
+        report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx5300\n");
+        report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx5800\n");
+        report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx6500\n");
+        report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx7200\n");
+        report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx7900\n"); 
+        report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx8600\n"); 
+        report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx9300\n"); 
+        report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx10000\n"); 
+        report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx10700\n"); 
+
+        report.write("\\intbl\\qc{№}\\cell\n");
+        report.write("\\intbl{Шифр}\\cell\n");
+        report.write("\\intbl{Номер}\\par{личного}\\par{дела}\\cell\n");
+        report.write("\\intbl{Фамилия И.О.}\\cell\n");
+        report.write("\\intbl{Копия-оригинал}\\cell\n");
+        report.write("\\intbl{Преим.пр.}\\cell\n");
+        report.write("\\intbl{Инд.дост.}\\cell\n");
+        report.write("\\intbl{Первый}\\par{экзамен}\\cell\n");
+        report.write("\\intbl{Второй}\\par{экзамен}\\cell\n");
+        report.write("\\intbl{Третий}\\par{экзамен}\\cell\n");
+        report.write("\\intbl{Четвёртый}\\par{экзамен}\\cell\n");
+        report.write("\\intbl{Сумма}\\par{баллов}\\cell\n");
+        report.write("\\intbl\\row\n");
+
+        report.write("\\b1 \\trowd \\trqc\\trgaph108\\trrh280\\trleft36\\trhdr\n");
+        report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx600\n");
+        report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx2000\n");
+        report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx3400\n");
+        report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx5300\n");
+        report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx5800\n");
+        report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx6500\n");
+        report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx7200\n");
+        report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx7900\n"); 
+        report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx8600\n"); 
+        report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx9300\n"); 
+        report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx10000\n"); 
+        report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx10700\n"); 
+
+        report.write("\\intbl\\cell\n");
+        report.write("\\intbl\\cell\n");
+        report.write("\\intbl\\cell\n");
+        report.write("\\intbl\\cell\n");
+        report.write("\\intbl\\cell\n");
+        report.write("\\intbl\\cell\n");
+        report.write("\\intbl\\cell\n");
+kl=0;
+        stmt3 = conn.createStatement();
+        rs3 = stmt3.executeQuery("SELECT np.Sokr,ens.prioritet FROM NazvanijaPredmetov np, ekzamenynaspetsialnosti ens, spetsialnosti s WHERE np.kodpredmeta=ens.kodpredmeta AND s.kodspetsialnosti=ens.kodspetsialnosti AND s.KodSpetsialnosti LIKE '"+rs2.getString(5)+"' ORDER BY ens.prioritet ASC");
+        while(rs3.next())
+        	{
+        	kl++;
+        	report.write("\\intbl "+rs3.getString(1)+" \\cell\n");
+        	}
+        if(kl!=4)
+        {report.write("\\intbl\\cell\n");}
+        
+        report.write("\\intbl\\cell\n");
+        report.write("\\intbl \\row\n");
+
+        report.write("\\b0\\trowd \\trqc\\trgaph108\\trrh280\\trleft36\n");
+        report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx600\n"); 
+        report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx2000\n"); 
+        report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx3400\n"); 
+        report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx5300\n"); 
+        report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx5800\n"); 
+        report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx6500\n"); 
+        report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx7200\n"); 
+        report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx7900\n"); 
+        report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx8600\n"); 
+        report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx9300\n"); 
+        report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx10000\n"); 
+        report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx10700\n");  
+
+        total_amount = StringUtil.toInt(rs.getString(1),0);
+      }
+
+// Абитуриенты-целевики
+
+      query = new StringBuffer("SELECT a.KodAbiturienta,a.NomerLichnogoDela,a.Familija,a.Imja,a.Otchestvo,tp.ShifrPriema,a.TipDokSredObraz,SUM(zso.OtsenkaEge)\"SummaEge\",kon.NomerLichnogoDela FROM Abiturient a,ZajavlennyeShkolnyeOtsenki zso, Spetsialnosti s, Medali m,TselevojPriem tp, NazvanijaPredmetov np,Kursy k,EkzamenyNaSpetsialnosti ens,Forma_Obuch fo,Konkurs kon WHERE kon.KodAbiturienta=a.KodAbiturienta AND kon.KodSpetsialnosti=s.KodSpetsialnosti AND fo.KodFormyOb=a.KodFormyOb AND tp.KodTselevogoPriema=a.KodTselevogoPriema AND k.KodKursov=a.KodKursov AND a.KodAbiturienta=zso.KodAbiturienta AND a.KodMedali=m.KodMedali AND kon.KodSpetsialnosti=ens.KodSpetsialnosti AND zso.KodPredmeta=np.KodPredmeta AND a.KodAbiturienta=zso.KodAbiturienta AND ens.KodPredmeta=zso.KodPredmeta AND kon.KodSpetsialnosti LIKE '"+rs2.getString(5)+"' AND tp.ShifrPriema IN ('ц','ф') AND kon.Target LIKE 'д' AND a.DokumentyHranjatsja LIKE 'д' AND a.KodAbiturienta NOT IN ("+excludeList.toString()+") ");
+      query1 = new StringBuffer("SELECT a.KodAbiturienta,a.NomerLichnogoDela,a.Familija,a.Imja,a.Otchestvo,m.ShifrMedali,a.TipDokSredObraz,SUM(zso.OtsenkaEge)\"SummaEge\",pr.PreemptiveRight,kon.NomerLichnogoDela,pr.pr FROM Abiturient a,ZajavlennyeShkolnyeOtsenki zso, Spetsialnosti s, Medali m,lgoty l,TselevojPriem tp, NazvanijaPredmetov np,Kursy k,EkzamenyNaSpetsialnosti ens,Forma_Obuch fo,Konkurs kon,PR pr WHERE pr.kodAbiturienta=a.KodAbiturienta AND kon.KodAbiturienta=a.KodAbiturienta AND kon.KodSpetsialnosti=s.KodSpetsialnosti AND fo.KodFormyOb=a.KodFormyOb AND tp.KodTselevogoPriema=a.KodTselevogoPriema AND k.KodKursov=a.KodKursov AND a.KodAbiturienta=zso.KodAbiturienta AND a.KodMedali=m.KodMedali AND a.KodLgot=l.KodLgot AND kon.KodSpetsialnosti=ens.KodSpetsialnosti AND zso.KodPredmeta=np.KodPredmeta AND a.KodAbiturienta=zso.KodAbiturienta AND ens.KodPredmeta=zso.KodPredmeta AND kon.KodSpetsialnosti LIKE '"+rs2.getString(5)+"' AND tp.ShifrPriema IN ('цел','ф') AND kon.Target LIKE 'д' AND a.DokumentyHranjatsja LIKE 'д' AND a.KodAbiturienta NOT IN ("+excludeList.toString()+") ");
+      query1.append("AND kon.NomerLichnogoDela LIKE '%-1' ");
+//  query.append("AND kon.Prioritet LIKE '"+priority_query+"' ");
+
+      if(abit_SD.getSpecial2().equals("orig")){
+        query.append("AND a.TipDokSredObraz LIKE ('о') ");
+        query1.append("AND a.TipDokSredObraz LIKE ('о') ");
+      }
+      else if(abit_SD.getSpecial2().equals("copy")){
+        query.append("AND a.TipDokSredObraz LIKE ('к') ");
+        query1.append("AND a.TipDokSredObraz LIKE ('к') ");
+      }
+      if(abit_SD.getSpecial3().equals("rek")){
+        query.append("AND a.Prinjat LIKE ('р') ");
+        query1.append("AND a.Prinjat LIKE ('р') ");
+      }
+
+    if(abit_SD.getPriznakSortirovki().equals("budgetniki")){
+      query.append("AND (kon.Bud LIKE 'д')");
+    query1.append("AND (kon.Bud LIKE 'д')");
+    }
+//      query.append("AND kon.Forma_Ob IN ('о') AND (kon.Bud LIKE 'д')");
+//      query.append("AND fo.Sokr IN ('очная') AND (kon.Bud LIKE 'д')");
+//      query.append("AND fo.Sokr IN ('очная') AND (a.NomerPlatnogoDogovora IS NULL)");
+
+//    else if(abit_SD.getPriznakSortirovki().equals("kontraktniki"))
+    else{
+      query.append("AND (kon.Dog LIKE 'д')");
+      query1.append("AND (kon.Dog LIKE 'д')");
+    }
+//      query.append("AND kon.Forma_Ob IN ('о') AND (kon.Dog LIKE 'д')");
+//      query.append("AND fo.Sokr IN ('очная') AND (kon.Dog LIKE 'д')");
+//      query.append("AND fo.Sokr IN ('очная') AND (a.NomerPlatnogoDogovora IS NOT NULL)");
+
+//    else if(abit_SD.getPriznakSortirovki().equals("z_budgetniki"))
+//      query.append("AND kon.Forma_Ob IN ('з','у','ф') AND (kon.Bud LIKE 'д')");
+//      query.append("AND fo.Sokr IN ('заочная','заочно-уск') AND (kon.Bud LIKE 'д')");
+//      query.append("AND fo.Sokr IN ('заочная','заочно-уск') AND (a.NomerPlatnogoDogovora IS NULL)");
+
+//    else 
+//      query.append("AND kon.Forma_Ob IN ('з','у','ф') AND (kon.Dog LIKE 'д')");
+//      query.append("AND fo.Sokr IN ('заочная','заочно-уск') AND (kon.Dog LIKE 'д')");
+//      query.append("AND fo.Sokr IN ('заочная','заочно-уск') AND (a.NomerPlatnogoDogovora IS NOT NULL)");
+
+      query.append(" GROUP BY a.KodAbiturienta,a.NomerLichnogoDela,a.Familija,a.Imja,a.Otchestvo,tp.ShifrPriema,a.TipDokSredObraz,kon.NomerLichnogoDela ORDER BY tp.ShifrPriema DESC,SummaEge DESC,a.Familija,a.Imja,a.Otchestvo");
+      query1.append(" GROUP BY a.KodAbiturienta,a.NomerLichnogoDela,a.Familija,a.Imja,a.Otchestvo,m.ShifrMedali,a.TipDokSredObraz,pr.PreemptiveRight,kon.NomerLichnogoDela,pr.pr");
+      query1.append(" ORDER BY SummaEge DESC,m.shifrmedali ASC,a.KodAbiturienta,a.Familija,a.Imja,a.Otchestvo,pr.PreemptiveRight");
+      
+
+      stmt9 = conn.createStatement();
+N=0;
+      rs9 = stmt9.executeQuery(query1.toString());
+      while(rs9.next()) {
+      	stmt10 = conn.prepareStatement("INSERT INTO Perelom(N,Shifr,F,I,O,ind,ko,sum,op,ka,nld,pp) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)");
+      	N++;
+          stmt10.setObject(1, N,Types.INTEGER);
+          stmt10.setObject(2, rs9.getString(2),Types.VARCHAR);
+          stmt10.setObject(3, rs9.getString(3),Types.VARCHAR);
+          stmt10.setObject(4, rs9.getString(4),Types.VARCHAR);
+          stmt10.setObject(5, rs9.getString(5),Types.VARCHAR);
+          stmt10.setObject(6, rs9.getString(6),Types.VARCHAR);
+          stmt10.setObject(7, rs9.getString(7),Types.VARCHAR);
+          stmt10.setObject(8, new Integer(rs9.getString(8)),Types.INTEGER);
+          stmt10.setObject(9, rs9.getString(9),Types.VARCHAR);
+          stmt10.setObject(10, new Integer(rs9.getString(1)),Types.INTEGER);
+          stmt10.setObject(11, rs9.getString(10),Types.VARCHAR);
+          stmt10.setObject(12, rs9.getString(11),Types.VARCHAR);
+          stmt10.executeUpdate();
+      }
+      stmt10=conn.prepareStatement("SELECT DISTINCT zso.OtsenkaEge,p.ka FROM Perelom p, ZajavlennyeShkolnyeOtsenki zso, abiturient a, ekzamenynaspetsialnosti ens WHERE p.ka=a.kodabiturienta AND ens.kodspetsialnosti LIKE "+rs2.getString(5)+" AND ens.kodpredmeta=zso.kodpredmeta AND zso.kodabiturienta=p.ka AND ens.prioritet LIKE '1'");
+      rs10=stmt10.executeQuery();
+      while(rs10.next()){
+      	stmt11=conn.prepareStatement("UPDATE Perelom SET pr1=? WHERE ka=?");
+      	stmt11.setObject(1, rs10.getString(1),Types.INTEGER); 
+      	stmt11.setObject(2, rs10.getString(2),Types.INTEGER); 
+      	stmt11.executeUpdate();
+      }
+      stmt10=conn.prepareStatement("SELECT DISTINCT zso.OtsenkaEge,p.ka FROM Perelom p, ZajavlennyeShkolnyeOtsenki zso, abiturient a, ekzamenynaspetsialnosti ens WHERE p.ka=a.kodabiturienta AND ens.kodspetsialnosti LIKE "+rs2.getString(5)+" AND ens.kodpredmeta=zso.kodpredmeta AND zso.kodabiturienta=p.ka AND ens.prioritet LIKE '2'");
+      rs10=stmt10.executeQuery();
+      while(rs10.next()){
+      	stmt11=conn.prepareStatement("UPDATE Perelom SET pr2=? WHERE ka=?");
+      	stmt11.setObject(1, rs10.getString(1),Types.INTEGER); 
+      	stmt11.setObject(2, rs10.getString(2),Types.INTEGER); 
+      	stmt11.executeUpdate();
+      }
+      stmt10=conn.prepareStatement("SELECT DISTINCT zso.OtsenkaEge,p.ka FROM Perelom p, ZajavlennyeShkolnyeOtsenki zso, abiturient a, ekzamenynaspetsialnosti ens WHERE p.ka=a.kodabiturienta AND ens.kodspetsialnosti LIKE "+rs2.getString(5)+" AND ens.kodpredmeta=zso.kodpredmeta AND zso.kodabiturienta=p.ka AND ens.prioritet LIKE '3'");
+      rs10=stmt10.executeQuery();
+      while(rs10.next()){
+      	stmt11=conn.prepareStatement("UPDATE Perelom SET pr3=? WHERE ka=?");
+      	stmt11.setObject(1, rs10.getString(1),Types.INTEGER); 
+      	stmt11.setObject(2, rs10.getString(2),Types.INTEGER); 
+      	stmt11.executeUpdate();
+      }
+      stmt10=conn.prepareStatement("SELECT DISTINCT zso.OtsenkaEge,p.ka FROM Perelom p, ZajavlennyeShkolnyeOtsenki zso, abiturient a, ekzamenynaspetsialnosti ens WHERE p.ka=a.kodabiturienta AND ens.kodspetsialnosti LIKE "+rs2.getString(5)+" AND ens.kodpredmeta=zso.kodpredmeta AND zso.kodabiturienta=p.ka AND ens.prioritet LIKE '4'");
+      rs10=stmt10.executeQuery();
+      while(rs10.next()){
+      	stmt11=conn.prepareStatement("UPDATE Perelom SET pr4=? WHERE ka=?");
+      	stmt11.setObject(1, rs10.getString(1),Types.INTEGER); 
+      	stmt11.setObject(2, rs10.getString(2),Types.INTEGER); 
+      	stmt11.executeUpdate();
+      }
+      stmt10=conn.prepareStatement("SELECT pr1,pr2,pr3,pr4,ka FROM Perelom");
+      rs10=stmt10.executeQuery();
+      while(rs10.next()){
+      	pr1=rs10.getInt(1);
+          pr2=rs10.getInt(2);
+          pr3=rs10.getInt(3);
+          pr4=rs10.getInt(4);
+          summ=pr1+pr2+pr3+pr4;
+          stmt11=conn.prepareStatement("UPDATE Perelom SET sum=? WHERE ka=?");
+          stmt11.setObject(1, summ,Types.INTEGER); 
+      	stmt11.setObject(2, rs10.getString(5),Types.INTEGER); 
+      	stmt11.executeUpdate();
+      }
+        
+      stmt10 = conn.prepareStatement("SELECT Shifr,F,I,O,ko,sum,pr1,pr2,pr3,pr4,op,ind,ka,nld,pp FROM Perelom ORDER BY sum DESC, pr1 DESC, pr2 DESC, pr3 DESC, pr4 DESC, pp DESC");
+      rs10=stmt10.executeQuery();
+     N=1;
+     num=nomer+total_amount;
+     // stmt = conn.createStatement();
+    //  rs = stmt.executeQuery(query.toString());
+      while(rs10.next()) {
+    	  if(nomer<num){
+    	  nomer++;
+    	  }
+    	  report.write("\\fs24\\intbl\\qc "+(nomer)+"\\cell\n");
+    	  report.write("\\intbl\\qc "+rs10.getString(14)+"\\cell\n"); // NLD
+          report.write("\\intbl\\qc "+rs10.getString(1)+"\\cell\n"); // NLD
+          report.write("\\intbl\\ql "+rs10.getString(2)+" "+rs10.getString(3).substring(0,1)+"."+rs10.getString(4).substring(0,1)+"."+"\\cell\n"); // FAMIL I.O.
+          report.write("\\intbl\\qc "+rs10.getString(5)+"\\cell\n"); // SHIFR LICHNOGO DELA
+          report.write("\\intbl\\qc "+rs10.getString(11)+"\\cell\n");
+          report.write("\\intbl\\qc "+rs10.getString(12)+"\\cell\n"); // ATTESTAT (KOPIJA)
+          report.write("\\intbl\\qc "+rs10.getString(7)+"\\cell\n");
+          report.write("\\intbl\\qc "+rs10.getString(8)+"\\cell\n");
+          report.write("\\intbl\\qc "+rs10.getString(9)+"\\cell\n");
+          if(z==rs10.getString(10)){
+        	  report.write("\\intbl\\qc{0}\\cell\n");
+        	
+          }else{
+          report.write("\\intbl\\qc "+rs10.getString(10)+"\\cell\n");
+          }
+          
+          report.write("\\intbl\\qc "+rs10.getString(6)+"\\cell\n"); // LGOTA
+         
+          
+        report.write("\\intbl\\row\n");
+
+//Добавляем код абитуриента в список исключения для того, чтобы он появлялся в отчете только один раз
+ 
+        excludeList.append(","+rs10.getString(13));
+        if((++tselev_nomer) <= total_amount) ++N;
+      }
+
+// Добавляем строки целевиков с надписью "вакантно"
+      for(;tselev_nomer<total_amount;tselev_nomer++) {
+
+        report.write("\\fs24\\intbl\\qc\\cell\n");      // №
+        report.write("\\intbl\\qc\\cell\n");  
+        report.write("\\intbl\\qc\\cell\n"); 
+        report.write("\\intbl\\ql{вакантно}\\cell\n"); // NLD
+        report.write("\\intbl\\qc\\cell\n");                          // SHIFR LICHNOGO DELA
+                       // FAMIL I.O.
+        report.write("\\intbl\\qc\\cell\n");                          // ATTESTAT (KOPIJA)
+        report.write("\\intbl\\qc\\cell\n");                          // KOD TSELEVOGO PRIEMA
+        report.write("\\intbl\\qc\\cell\n");                          // SUMMA Ege
+        report.write("\\intbl\\qc\\cell\n");  
+        report.write("\\intbl\\qc\\cell\n");  
+        report.write("\\intbl\\qc\\cell\n");  
+        report.write("\\intbl\\qc\\cell\n");  
+        report.write("\\intbl\\row\n");
+      }
+
+      if(header) report.write("\\pard\\par\n");
+    }
+    stmt10 = conn.prepareStatement("DELETE FROM Perelom WHERE 1=1");
+    stmt10.executeUpdate();
+
+
+
+
+// ЦЕЛЕВОЙ ПРИЕМ ( РосАтом )
+
+    header = false;
+
+    total_amount = 0;
+
+    tselev_nomer = 0;
+
+    stmt = conn.createStatement();
+    rs = stmt.executeQuery("SELECT TselPr_1 FROM Spetsialnosti WHERE KodSpetsialnosti LIKE '"+rs2.getString(5)+"'");
+    if( rs.next() && StringUtil.toInt(rs.getString(1),0) != 0 ) {
+
+    	if(header == false) {
+            header = true;
+            report.write("\\pard\\par\n");
+            report.write("\\b1\\ql\\fs28{Перечень лиц, поступающих по целевому приему (в интересах РосАтома) в пределах квоты "+rs.getString(1)+": }\\b0\\par\\par\n");
+            report.write("\\fs22\\b1 \\trowd \\trqc\\trgaph108\\trrh280\\trleft36\\trhdr\n");
+            report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx600\n");
+            report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx2000\n");
+            report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx3400\n");
+            report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx5300\n");
+            report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx5800\n");
+            report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx6500\n");
+            report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx7200\n");
+            report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx7900\n"); 
+            report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx8600\n"); 
+            report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx9300\n"); 
+            report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx10000\n"); 
+            report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx10700\n"); 
+
+            report.write("\\intbl\\qc{№}\\cell\n");
+            report.write("\\intbl{Шифр}\\cell\n");
+            report.write("\\intbl{Номер}\\par{личного}\\par{дела}\\cell\n");
+            report.write("\\intbl{Фамилия И.О.}\\cell\n");
+            report.write("\\intbl{Копия-оригинал}\\cell\n");
+            report.write("\\intbl{Преим.пр.}\\cell\n");
+            report.write("\\intbl{Инд.дост.}\\cell\n");
+            report.write("\\intbl{Первый}\\par{экзамен}\\cell\n");
+            report.write("\\intbl{Второй}\\par{экзамен}\\cell\n");
+            report.write("\\intbl{Третий}\\par{экзамен}\\cell\n");
+            report.write("\\intbl{Четвёртый}\\par{экзамен}\\cell\n");
+            report.write("\\intbl{Сумма}\\par{баллов}\\cell\n");
+            report.write("\\intbl\\row\n");
+
+            report.write("\\b1 \\trowd \\trqc\\trgaph108\\trrh280\\trleft36\\trhdr\n");
+            report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx600\n");
+            report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx2000\n");
+            report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx3400\n");
+            report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx5300\n");
+            report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx5800\n");
+            report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx6500\n");
+            report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx7200\n");
+            report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx7900\n"); 
+            report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx8600\n"); 
+            report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx9300\n"); 
+            report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx10000\n"); 
+            report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx10700\n"); 
+
+            report.write("\\intbl\\cell\n");
+            report.write("\\intbl\\cell\n");
+            report.write("\\intbl\\cell\n");
+            report.write("\\intbl\\cell\n");
+            report.write("\\intbl\\cell\n");
+            report.write("\\intbl\\cell\n");
+            report.write("\\intbl\\cell\n");
+kl=0;
+            stmt3 = conn.createStatement();
+            rs3 = stmt3.executeQuery("SELECT np.Sokr,ens.prioritet FROM NazvanijaPredmetov np, ekzamenynaspetsialnosti ens, spetsialnosti s WHERE np.kodpredmeta=ens.kodpredmeta AND s.kodspetsialnosti=ens.kodspetsialnosti AND s.KodSpetsialnosti LIKE '"+rs2.getString(5)+"' ORDER BY ens.prioritet ASC");
+            while(rs3.next()) {
+            	kl++;
+            	report.write("\\intbl "+rs3.getString(1)+" \\cell\n");
+            }
+            if(kl!=4)
+            {report.write("\\intbl\\cell\n");}
+
+            report.write("\\intbl\\cell\n");
+            report.write("\\intbl \\row\n");
+
+            report.write("\\b0\\trowd \\trqc\\trgaph108\\trrh280\\trleft36\n");
+            report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx600\n"); 
+            report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx2000\n"); 
+            report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx3400\n"); 
+            report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx5300\n"); 
+            report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx5800\n"); 
+            report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx6500\n"); 
+            report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx7200\n"); 
+            report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx7900\n"); 
+            report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx8600\n"); 
+            report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx9300\n"); 
+            report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx10000\n"); 
+            report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx10700\n");   
+
+            total_amount = StringUtil.toInt(rs.getString(1),0);
+          }
+
+    // Абитуриенты-целевики
+
+          query = new StringBuffer("SELECT a.KodAbiturienta,a.NomerLichnogoDela,a.Familija,a.Imja,a.Otchestvo,tp.ShifrPriema,a.TipDokSredObraz,SUM(zso.OtsenkaEge)\"SummaEge\",kon.NomerLichnogoDela FROM Abiturient a,ZajavlennyeShkolnyeOtsenki zso, Spetsialnosti s, Medali m,TselevojPriem tp, NazvanijaPredmetov np,Kursy k,EkzamenyNaSpetsialnosti ens,Forma_Obuch fo,Konkurs kon WHERE kon.KodAbiturienta=a.KodAbiturienta AND kon.KodSpetsialnosti=s.KodSpetsialnosti AND fo.KodFormyOb=a.KodFormyOb AND tp.KodTselevogoPriema=a.KodTselevogoPriema AND k.KodKursov=a.KodKursov AND a.KodAbiturienta=zso.KodAbiturienta AND a.KodMedali=m.KodMedali AND kon.KodSpetsialnosti=ens.KodSpetsialnosti AND zso.KodPredmeta=np.KodPredmeta AND a.KodAbiturienta=zso.KodAbiturienta AND ens.KodPredmeta=zso.KodPredmeta AND kon.KodSpetsialnosti LIKE '"+rs2.getString(5)+"' AND tp.ShifrPriema IN ('ц','ф') AND kon.Target LIKE 'д' AND a.DokumentyHranjatsja LIKE 'д' AND a.KodAbiturienta NOT IN ("+excludeList.toString()+") ");
+          query1 = new StringBuffer("SELECT a.KodAbiturienta,a.NomerLichnogoDela,a.Familija,a.Imja,a.Otchestvo,m.ShifrMedali,a.TipDokSredObraz,SUM(zso.OtsenkaEge)\"SummaEge\",pr.preemptiveright,kon.NomerLichnogoDela,pr.pr FROM Abiturient a,ZajavlennyeShkolnyeOtsenki zso, Spetsialnosti s, Medali m,lgoty l,TselevojPriem tp, NazvanijaPredmetov np,Kursy k,EkzamenyNaSpetsialnosti ens,Forma_Obuch fo,Konkurs kon,PR pr WHERE pr.kodabiturienta=a.kodabiturienta AND kon.KodAbiturienta=a.KodAbiturienta AND kon.KodSpetsialnosti=s.KodSpetsialnosti AND fo.KodFormyOb=a.KodFormyOb AND tp.KodTselevogoPriema=a.KodTselevogoPriema AND k.KodKursov=a.KodKursov AND a.KodAbiturienta=zso.KodAbiturienta AND a.KodMedali=m.KodMedali AND a.KodLgot=l.KodLgot AND kon.KodSpetsialnosti=ens.KodSpetsialnosti AND zso.KodPredmeta=np.KodPredmeta AND a.KodAbiturienta=zso.KodAbiturienta AND ens.KodPredmeta=zso.KodPredmeta AND kon.KodSpetsialnosti LIKE '"+rs2.getString(5)+"' AND tp.ShifrPriema IN ('а') AND kon.Target LIKE 'д' AND a.DokumentyHranjatsja LIKE 'д' AND a.KodAbiturienta NOT IN ("+excludeList.toString()+") ");
+
+    //  query.append("AND kon.Prioritet LIKE '"+priority_query+"' ");
+          query1.append("AND kon.NomerLichnogoDela LIKE '%-1' ");
+          if(abit_SD.getSpecial2().equals("orig")){
+            query.append("AND a.TipDokSredObraz LIKE ('о') ");
+            query1.append("AND a.TipDokSredObraz LIKE ('о') ");
+          }
+          else if(abit_SD.getSpecial2().equals("copy")){
+            query.append("AND a.TipDokSredObraz LIKE ('к') ");
+            query1.append("AND a.TipDokSredObraz LIKE ('к') ");
+          }
+          if(abit_SD.getSpecial3().equals("rek")){
+            query.append("AND a.Prinjat LIKE ('р') ");
+            query1.append("AND a.Prinjat LIKE ('р') ");
+          }
+
+        if(abit_SD.getPriznakSortirovki().equals("budgetniki")){
+          query.append("AND (kon.Bud LIKE 'д')");
+        query1.append("AND (kon.Bud LIKE 'д')");
+        }
+//          query.append("AND kon.Forma_Ob IN ('о') AND (kon.Bud LIKE 'д')");
+//          query.append("AND fo.Sokr IN ('очная') AND (kon.Bud LIKE 'д')");
+//          query.append("AND fo.Sokr IN ('очная') AND (a.NomerPlatnogoDogovora IS NULL)");
+
+//        else if(abit_SD.getPriznakSortirovki().equals("kontraktniki"))
+        else{
+          query.append("AND (kon.Dog LIKE 'д')");
+          query1.append("AND (kon.Dog LIKE 'д')");
+        }
+//          query.append("AND kon.Forma_Ob IN ('о') AND (kon.Dog LIKE 'д')");
+//          query.append("AND fo.Sokr IN ('очная') AND (kon.Dog LIKE 'д')");
+//          query.append("AND fo.Sokr IN ('очная') AND (a.NomerPlatnogoDogovora IS NOT NULL)");
+
+//        else if(abit_SD.getPriznakSortirovki().equals("z_budgetniki"))
+//          query.append("AND kon.Forma_Ob IN ('з','у','ф') AND (kon.Bud LIKE 'д')");
+//          query.append("AND fo.Sokr IN ('заочная','заочно-уск') AND (kon.Bud LIKE 'д')");
+//          query.append("AND fo.Sokr IN ('заочная','заочно-уск') AND (a.NomerPlatnogoDogovora IS NULL)");
+
+//        else 
+//          query.append("AND kon.Forma_Ob IN ('з','у','ф') AND (kon.Dog LIKE 'д')");
+//          query.append("AND fo.Sokr IN ('заочная','заочно-уск') AND (kon.Dog LIKE 'д')");
+//          query.append("AND fo.Sokr IN ('заочная','заочно-уск') AND (a.NomerPlatnogoDogovora IS NOT NULL)");
+
+          query.append(" GROUP BY a.KodAbiturienta,a.NomerLichnogoDela,a.Familija,a.Imja,a.Otchestvo,tp.ShifrPriema,a.TipDokSredObraz,kon.NomerLichnogoDela ORDER BY tp.ShifrPriema DESC,SummaEge DESC,a.Familija,a.Imja,a.Otchestvo");
+          query1.append(" GROUP BY a.KodAbiturienta,a.NomerLichnogoDela,a.Familija,a.Imja,a.Otchestvo,m.ShifrMedali,a.TipDokSredObraz,pr.preemptiveright,kon.NomerLichnogoDela,pr.pr ORDER BY SummaEge DESC,a.KodAbiturienta,a.Familija,a.Imja,a.Otchestvo,pr.preemptiveright");
+          
+
+          stmt9 = conn.createStatement();
+    N=0;
+          rs9 = stmt9.executeQuery(query1.toString());
+          while(rs9.next()) {
+        	  stmt10 = conn.prepareStatement("INSERT INTO Perelom(N,Shifr,F,I,O,ind,ko,sum,op,ka,nld,pp) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)");
+            	N++;
+                stmt10.setObject(1, N,Types.INTEGER);
+                stmt10.setObject(2, rs9.getString(2),Types.VARCHAR);
+                stmt10.setObject(3, rs9.getString(3),Types.VARCHAR);
+                stmt10.setObject(4, rs9.getString(4),Types.VARCHAR);
+                stmt10.setObject(5, rs9.getString(5),Types.VARCHAR);
+                stmt10.setObject(6, rs9.getString(6),Types.VARCHAR);
+                stmt10.setObject(7, rs9.getString(7),Types.VARCHAR);
+                stmt10.setObject(8, new Integer(rs9.getString(8)),Types.INTEGER);
+                stmt10.setObject(9, rs9.getString(9),Types.VARCHAR);
+                stmt10.setObject(10, new Integer(rs9.getString(1)),Types.INTEGER);
+                stmt10.setObject(11, rs9.getString(10),Types.VARCHAR);
+                stmt10.setObject(12, rs9.getString(11),Types.VARCHAR);
+                stmt10.executeUpdate();
+          }
+          stmt10=conn.prepareStatement("SELECT DISTINCT zso.OtsenkaEge,p.ka FROM Perelom p, ZajavlennyeShkolnyeOtsenki zso, abiturient a, ekzamenynaspetsialnosti ens WHERE p.ka=a.kodabiturienta AND ens.kodspetsialnosti LIKE "+rs2.getString(5)+" AND ens.kodpredmeta=zso.kodpredmeta AND zso.kodabiturienta=p.ka AND ens.prioritet LIKE '1'");
+          rs10=stmt10.executeQuery();
+          while(rs10.next()){
+          	stmt11=conn.prepareStatement("UPDATE Perelom SET pr1=? WHERE ka=?");
+          	stmt11.setObject(1, rs10.getString(1),Types.INTEGER); 
+          	stmt11.setObject(2, rs10.getString(2),Types.INTEGER); 
+          	stmt11.executeUpdate();
+          }
+          stmt10=conn.prepareStatement("SELECT DISTINCT zso.OtsenkaEge,p.ka FROM Perelom p, ZajavlennyeShkolnyeOtsenki zso, abiturient a, ekzamenynaspetsialnosti ens WHERE p.ka=a.kodabiturienta AND ens.kodspetsialnosti LIKE "+rs2.getString(5)+" AND ens.kodpredmeta=zso.kodpredmeta AND zso.kodabiturienta=p.ka AND ens.prioritet LIKE '2'");
+          rs10=stmt10.executeQuery();
+          while(rs10.next()){
+          	stmt11=conn.prepareStatement("UPDATE Perelom SET pr2=? WHERE ka=?");
+          	stmt11.setObject(1, rs10.getString(1),Types.INTEGER); 
+          	stmt11.setObject(2, rs10.getString(2),Types.INTEGER); 
+          	stmt11.executeUpdate();
+          }
+          stmt10=conn.prepareStatement("SELECT DISTINCT zso.OtsenkaEge,p.ka FROM Perelom p, ZajavlennyeShkolnyeOtsenki zso, abiturient a, ekzamenynaspetsialnosti ens WHERE p.ka=a.kodabiturienta AND ens.kodspetsialnosti LIKE "+rs2.getString(5)+" AND ens.kodpredmeta=zso.kodpredmeta AND zso.kodabiturienta=p.ka AND ens.prioritet LIKE '3'");
+          rs10=stmt10.executeQuery();
+          while(rs10.next()){
+          	stmt11=conn.prepareStatement("UPDATE Perelom SET pr3=? WHERE ka=?");
+          	stmt11.setObject(1, rs10.getString(1),Types.INTEGER); 
+          	stmt11.setObject(2, rs10.getString(2),Types.INTEGER); 
+          	stmt11.executeUpdate();
+          }
+          stmt10=conn.prepareStatement("SELECT DISTINCT zso.OtsenkaEge,p.ka FROM Perelom p, ZajavlennyeShkolnyeOtsenki zso, abiturient a, ekzamenynaspetsialnosti ens WHERE p.ka=a.kodabiturienta AND ens.kodspetsialnosti LIKE "+rs2.getString(5)+" AND ens.kodpredmeta=zso.kodpredmeta AND zso.kodabiturienta=p.ka AND ens.prioritet LIKE '4'");
+          rs10=stmt10.executeQuery();
+          while(rs10.next()){
+          	stmt11=conn.prepareStatement("UPDATE Perelom SET pr4=? WHERE ka=?");
+          	stmt11.setObject(1, rs10.getString(1),Types.INTEGER); 
+          	stmt11.setObject(2, rs10.getString(2),Types.INTEGER); 
+          	stmt11.executeUpdate();
+          }
+            
+          stmt10=conn.prepareStatement("SELECT pr1,pr2,pr3,pr4,ka FROM Perelom");
+          rs10=stmt10.executeQuery();
+          while(rs10.next()){
+          	pr1=rs10.getInt(1);
+              pr2=rs10.getInt(2);
+              pr3=rs10.getInt(3);
+              pr4=rs10.getInt(4);
+              summ=pr1+pr2+pr3+pr4;
+              stmt11=conn.prepareStatement("UPDATE Perelom SET sum=? WHERE ka=?");
+              stmt11.setObject(1, summ,Types.INTEGER); 
+          	stmt11.setObject(2, rs10.getString(5),Types.INTEGER); 
+          	stmt11.executeUpdate();
+          }
+          
+          stmt10 = conn.prepareStatement("SELECT Shifr,F,I,O,ko,sum,pr1,pr2,pr3,pr4,op,ind,ka,nld,pp FROM Perelom ORDER BY sum DESC, pr1 DESC, pr2 DESC, pr3 DESC, pr4 DESC, pp DESC");
+          rs10=stmt10.executeQuery();
+         N=1;
+         num=nomer+total_amount;
+         // stmt = conn.createStatement();
+        //  rs = stmt.executeQuery(query.toString());
+          while(rs10.next()) {
+        	  if(nomer<num){
+        	  nomer++;
+        	  }
+        	  report.write("\\fs24\\intbl\\qc "+(nomer)+"\\cell\n");
+        	  report.write("\\intbl\\qc "+rs10.getString(14)+"\\cell\n"); // NLD
+              report.write("\\intbl\\qc "+rs10.getString(1)+"\\cell\n"); // NLD
+              report.write("\\intbl\\ql "+rs10.getString(2)+" "+rs10.getString(3).substring(0,1)+"."+rs10.getString(4).substring(0,1)+"."+"\\cell\n"); // FAMIL I.O.
+              report.write("\\intbl\\qc "+rs10.getString(5)+"\\cell\n"); // SHIFR LICHNOGO DELA
+              report.write("\\intbl\\qc "+rs10.getString(11)+"\\cell\n");
+              report.write("\\intbl\\qc "+rs10.getString(12)+"\\cell\n"); // ATTESTAT (KOPIJA)
+              report.write("\\intbl\\qc "+rs10.getString(7)+"\\cell\n");
+              report.write("\\intbl\\qc "+rs10.getString(8)+"\\cell\n");
+              report.write("\\intbl\\qc "+rs10.getString(9)+"\\cell\n");
+              if(z==rs10.getString(10)){
+            	  report.write("\\intbl\\qc{0}\\cell\n");
+            	
+              }else{
+              report.write("\\intbl\\qc "+rs10.getString(10)+"\\cell\n");
+              }
+             report.write("\\intbl\\qc "+rs10.getString(6)+"\\cell\n"); // LGOTA
+             
+              
+            report.write("\\intbl\\row\n");
+
+    //Добавляем код абитуриента в список исключения для того, чтобы он появлялся в отчете только один раз
+     
+            excludeList.append(","+rs10.getString(13));
+            if((++tselev_nomer) <= total_amount) ++N;
+          }
+
+    // Добавляем строки целевиков с надписью "вакантно"
+          for(;tselev_nomer<total_amount;tselev_nomer++) {
+
+            report.write("\\fs24\\intbl\\qc\\cell\n");      // №
+            report.write("\\intbl\\qc\\cell\n");  
+            report.write("\\intbl\\qc\\cell\n"); 
+            report.write("\\intbl\\ql{вакантно}\\cell\n"); // NLD
+            report.write("\\intbl\\qc\\cell\n");                          // SHIFR LICHNOGO DELA
+                           // FAMIL I.O.
+            report.write("\\intbl\\qc\\cell\n");                          // ATTESTAT (KOPIJA)
+            report.write("\\intbl\\qc\\cell\n");                          // KOD TSELEVOGO PRIEMA
+            report.write("\\intbl\\qc\\cell\n");                          // SUMMA Ege
+            report.write("\\intbl\\qc\\cell\n");  
+            report.write("\\intbl\\qc\\cell\n");  
+            report.write("\\intbl\\qc\\cell\n");  
+            report.write("\\intbl\\qc\\cell\n");  
+            report.write("\\intbl\\row\n");
+          }
+
+          if(header) report.write("\\pard\\par\n");
+        }
+        stmt10 = conn.prepareStatement("DELETE FROM Perelom WHERE 1=1");
+        stmt10.executeUpdate();
+
+
+
+
+// ЦЕЛЕВОЙ ПРИЕМ ( РосКосмос )
+
+    header = false;
+
+    total_amount = 0;
+
+    tselev_nomer = 0;
+
+    stmt = conn.createStatement();
+    rs = stmt.executeQuery("SELECT TselPr_2 FROM Spetsialnosti WHERE KodSpetsialnosti LIKE '"+rs2.getString(5)+"'");
+    if( rs.next() && StringUtil.toInt(rs.getString(1),0) != 0 ) {
+
+    	if(header == false) {
+            header = true;
+            report.write("\\pard\\par\n");
+            report.write("\\b1\\ql\\fs28{Перечень лиц, поступающих по целевому приему (в интересах РосКосмоса) в пределах квоты "+rs.getString(1)+": } \\b0\\par\\par\n");
+            report.write("\\fs22\\b1 \\trowd \\trqc\\trgaph108\\trrh280\\trleft36\\trhdr\n");
+            report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx600\n");
+            report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx2000\n");
+            report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx3400\n");
+            report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx5300\n");
+            report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx5800\n");
+            report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx6500\n");
+            report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx7200\n");
+            report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx7900\n"); 
+            report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx8600\n"); 
+            report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx9300\n"); 
+            report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx10000\n"); 
+            report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx10700\n"); 
+
+            report.write("\\intbl\\qc{№}\\cell\n");
+            report.write("\\intbl{Шифр}\\cell\n");
+            report.write("\\intbl{Номер}\\par{личного}\\par{дела}\\cell\n");
+            report.write("\\intbl{Фамилия И.О.}\\cell\n");
+            report.write("\\intbl{Копия-оригинал}\\cell\n");
+            report.write("\\intbl{Преим.пр.}\\cell\n");
+            report.write("\\intbl{Инд.дост.}\\cell\n");
+            report.write("\\intbl{Первый}\\par{экзамен}\\cell\n");
+            report.write("\\intbl{Второй}\\par{экзамен}\\cell\n");
+            report.write("\\intbl{Третий}\\par{экзамен}\\cell\n");
+            report.write("\\intbl{Четвёртый}\\par{экзамен}\\cell\n");
+            report.write("\\intbl{Сумма}\\par{баллов}\\cell\n");
+            report.write("\\intbl\\row\n");
+
+            report.write("\\b1 \\trowd \\trqc\\trgaph108\\trrh280\\trleft36\\trhdr\n");
+            report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx600\n");
+            report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx2000\n");
+            report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx3400\n");
+            report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx5300\n");
+            report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx5800\n");
+            report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx6500\n");
+            report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx7200\n");
+            report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx7900\n"); 
+            report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx8600\n"); 
+            report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx9300\n"); 
+            report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx10000\n"); 
+            report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx10700\n"); 
+
+            report.write("\\intbl\\cell\n");
+            report.write("\\intbl\\cell\n");
+            report.write("\\intbl\\cell\n");
+            report.write("\\intbl\\cell\n");
+            report.write("\\intbl\\cell\n");
+            report.write("\\intbl\\cell\n");
+            report.write("\\intbl\\cell\n");
+kl=0;
+            stmt3 = conn.createStatement();
+            rs3 = stmt3.executeQuery("SELECT np.Sokr,ens.prioritet FROM NazvanijaPredmetov np, ekzamenynaspetsialnosti ens, spetsialnosti s WHERE np.kodpredmeta=ens.kodpredmeta AND s.kodspetsialnosti=ens.kodspetsialnosti AND s.KodSpetsialnosti LIKE '"+rs2.getString(5)+"' ORDER BY ens.prioritet ASC");
+            while(rs3.next()){
+            	kl++;
+            	report.write("\\intbl "+rs3.getString(1)+" \\cell\n");
+            }
+            if(kl!=4)
+            {report.write("\\intbl\\cell\n");}
+
+            report.write("\\intbl\\cell\n");
+            report.write("\\intbl \\row\n");
+
+            report.write("\\b0\\trowd \\trqc\\trgaph108\\trrh280\\trleft36\n");
+            report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx600\n"); 
+            report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx2000\n"); 
+            report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx3400\n"); 
+            report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx5300\n"); 
+            report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx5800\n"); 
+            report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx6500\n"); 
+            report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx7200\n"); 
+            report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx7900\n"); 
+            report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx8600\n"); 
+            report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx9300\n"); 
+            report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx10000\n"); 
+            report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx10700\n");  
+
+            total_amount = StringUtil.toInt(rs.getString(1),0);
+          }
+
+    // Абитуриенты-целевики
+
+          query = new StringBuffer("SELECT a.KodAbiturienta,a.NomerLichnogoDela,a.Familija,a.Imja,a.Otchestvo,tp.ShifrPriema,a.TipDokSredObraz,SUM(zso.OtsenkaEge)\"SummaEge\",kon.NomerLichnogoDela FROM Abiturient a,ZajavlennyeShkolnyeOtsenki zso, Spetsialnosti s, Medali m,TselevojPriem tp, NazvanijaPredmetov np,Kursy k,EkzamenyNaSpetsialnosti ens,Forma_Obuch fo,Konkurs kon WHERE kon.KodAbiturienta=a.KodAbiturienta AND kon.KodSpetsialnosti=s.KodSpetsialnosti AND fo.KodFormyOb=a.KodFormyOb AND tp.KodTselevogoPriema=a.KodTselevogoPriema AND k.KodKursov=a.KodKursov AND a.KodAbiturienta=zso.KodAbiturienta AND a.KodMedali=m.KodMedali AND kon.KodSpetsialnosti=ens.KodSpetsialnosti AND zso.KodPredmeta=np.KodPredmeta AND a.KodAbiturienta=zso.KodAbiturienta AND ens.KodPredmeta=zso.KodPredmeta AND kon.KodSpetsialnosti LIKE '"+rs2.getString(5)+"' AND tp.ShifrPriema IN ('ц','ф') AND kon.Target LIKE 'д' AND a.DokumentyHranjatsja LIKE 'д' AND a.KodAbiturienta NOT IN ("+excludeList.toString()+") ");
+          query1 = new StringBuffer("SELECT a.KodAbiturienta,a.NomerLichnogoDela,a.Familija,a.Imja,a.Otchestvo,m.ShifrMedali,a.TipDokSredObraz,SUM(zso.OtsenkaEge)\"SummaEge\",pr.preemptiveright,kon.NomerLichnogoDela,pr.pr FROM Abiturient a,ZajavlennyeShkolnyeOtsenki zso, Spetsialnosti s, Medali m,lgoty l,TselevojPriem tp, NazvanijaPredmetov np,Kursy k,EkzamenyNaSpetsialnosti ens,Forma_Obuch fo,Konkurs kon,PR pr WHERE pr.kodabiturienta=a.kodabiturienta AND kon.KodAbiturienta=a.KodAbiturienta AND kon.KodSpetsialnosti=s.KodSpetsialnosti AND fo.KodFormyOb=a.KodFormyOb AND tp.KodTselevogoPriema=a.KodTselevogoPriema AND k.KodKursov=a.KodKursov AND a.KodAbiturienta=zso.KodAbiturienta AND a.KodMedali=m.KodMedali AND a.KodLgot=l.KodLgot AND kon.KodSpetsialnosti=ens.KodSpetsialnosti AND zso.KodPredmeta=np.KodPredmeta AND a.KodAbiturienta=zso.KodAbiturienta AND ens.KodPredmeta=zso.KodPredmeta AND kon.KodSpetsialnosti LIKE '"+rs2.getString(5)+"' AND tp.ShifrPriema IN ('к') AND kon.Target LIKE 'д' AND a.DokumentyHranjatsja LIKE 'д' AND a.KodAbiturienta NOT IN ("+excludeList.toString()+") ");
+          query1.append("AND kon.NomerLichnogoDela LIKE '%-1' ");
+    //  query.append("AND kon.Prioritet LIKE '"+priority_query+"' ");
+
+          if(abit_SD.getSpecial2().equals("orig")){
+            query.append("AND a.TipDokSredObraz LIKE ('о') ");
+            query1.append("AND a.TipDokSredObraz LIKE ('о') ");
+          }
+          else if(abit_SD.getSpecial2().equals("copy")){
+            query.append("AND a.TipDokSredObraz LIKE ('к') ");
+            query1.append("AND a.TipDokSredObraz LIKE ('к') ");
+          }
+          if(abit_SD.getSpecial3().equals("rek")){
+            query.append("AND a.Prinjat LIKE ('р') ");
+            query1.append("AND a.Prinjat LIKE ('р') ");
+          }
+
+        if(abit_SD.getPriznakSortirovki().equals("budgetniki")){
+          query.append("AND (kon.Bud LIKE 'д')");
+        query1.append("AND (kon.Bud LIKE 'д')");
+        }
+//          query.append("AND kon.Forma_Ob IN ('о') AND (kon.Bud LIKE 'д')");
+//          query.append("AND fo.Sokr IN ('очная') AND (kon.Bud LIKE 'д')");
+//          query.append("AND fo.Sokr IN ('очная') AND (a.NomerPlatnogoDogovora IS NULL)");
+
+//        else if(abit_SD.getPriznakSortirovki().equals("kontraktniki"))
+        else{
+          query.append("AND (kon.Dog LIKE 'д')");
+          query1.append("AND (kon.Dog LIKE 'д')");
+        }
+//          query.append("AND kon.Forma_Ob IN ('о') AND (kon.Dog LIKE 'д')");
+//          query.append("AND fo.Sokr IN ('очная') AND (kon.Dog LIKE 'д')");
+//          query.append("AND fo.Sokr IN ('очная') AND (a.NomerPlatnogoDogovora IS NOT NULL)");
+
+//        else if(abit_SD.getPriznakSortirovki().equals("z_budgetniki"))
+//          query.append("AND kon.Forma_Ob IN ('з','у','ф') AND (kon.Bud LIKE 'д')");
+//          query.append("AND fo.Sokr IN ('заочная','заочно-уск') AND (kon.Bud LIKE 'д')");
+//          query.append("AND fo.Sokr IN ('заочная','заочно-уск') AND (a.NomerPlatnogoDogovora IS NULL)");
+
+//        else 
+//          query.append("AND kon.Forma_Ob IN ('з','у','ф') AND (kon.Dog LIKE 'д')");
+//          query.append("AND fo.Sokr IN ('заочная','заочно-уск') AND (kon.Dog LIKE 'д')");
+//          query.append("AND fo.Sokr IN ('заочная','заочно-уск') AND (a.NomerPlatnogoDogovora IS NOT NULL)");
+
+          query.append(" GROUP BY a.KodAbiturienta,a.NomerLichnogoDela,a.Familija,a.Imja,a.Otchestvo,tp.ShifrPriema,a.TipDokSredObraz,kon.NomerLichnogoDela ORDER BY tp.ShifrPriema DESC,SummaEge DESC,a.Familija,a.Imja,a.Otchestvo");
+          query1.append(" GROUP BY a.KodAbiturienta,a.NomerLichnogoDela,a.Familija,a.Imja,a.Otchestvo,m.ShifrMedali,a.TipDokSredObraz,pr.preemptiveright,kon.NomerLichnogoDela,pr.pr ORDER BY SummaEge DESC,a.KodAbiturienta,a.Familija,a.Imja,a.Otchestvo,pr.preemptiveright");
+          
+
+          stmt9 = conn.createStatement();
+    N=0;
+          rs9 = stmt9.executeQuery(query1.toString());
+          while(rs9.next()) {
+        	  stmt10 = conn.prepareStatement("INSERT INTO Perelom(N,Shifr,F,I,O,ind,ko,sum,op,ka,nld,pp) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)");
+            	N++;
+                stmt10.setObject(1, N,Types.INTEGER);
+                stmt10.setObject(2, rs9.getString(2),Types.VARCHAR);
+                stmt10.setObject(3, rs9.getString(3),Types.VARCHAR);
+                stmt10.setObject(4, rs9.getString(4),Types.VARCHAR);
+                stmt10.setObject(5, rs9.getString(5),Types.VARCHAR);
+                stmt10.setObject(6, rs9.getString(6),Types.VARCHAR);
+                stmt10.setObject(7, rs9.getString(7),Types.VARCHAR);
+                stmt10.setObject(8, new Integer(rs9.getString(8)),Types.INTEGER);
+                stmt10.setObject(9, rs9.getString(9),Types.VARCHAR);
+                stmt10.setObject(10, new Integer(rs9.getString(1)),Types.INTEGER);
+                stmt10.setObject(11, rs9.getString(10),Types.VARCHAR);
+                stmt10.setObject(12, rs9.getString(11),Types.VARCHAR);
+                stmt10.executeUpdate();
+          }
+          stmt10=conn.prepareStatement("SELECT DISTINCT zso.OtsenkaEge,p.ka FROM Perelom p, ZajavlennyeShkolnyeOtsenki zso, abiturient a, ekzamenynaspetsialnosti ens WHERE p.ka=a.kodabiturienta AND ens.kodspetsialnosti LIKE "+rs2.getString(5)+" AND ens.kodpredmeta=zso.kodpredmeta AND zso.kodabiturienta=p.ka AND ens.prioritet LIKE '1'");
+          rs10=stmt10.executeQuery();
+          while(rs10.next()){
+          	stmt11=conn.prepareStatement("UPDATE Perelom SET pr1=? WHERE ka=?");
+          	stmt11.setObject(1, rs10.getString(1),Types.INTEGER); 
+          	stmt11.setObject(2, rs10.getString(2),Types.INTEGER); 
+          	stmt11.executeUpdate();
+          }
+          stmt10=conn.prepareStatement("SELECT DISTINCT zso.OtsenkaEge,p.ka FROM Perelom p, ZajavlennyeShkolnyeOtsenki zso, abiturient a, ekzamenynaspetsialnosti ens WHERE p.ka=a.kodabiturienta AND ens.kodspetsialnosti LIKE "+rs2.getString(5)+" AND ens.kodpredmeta=zso.kodpredmeta AND zso.kodabiturienta=p.ka AND ens.prioritet LIKE '2'");
+          rs10=stmt10.executeQuery();
+          while(rs10.next()){
+          	stmt11=conn.prepareStatement("UPDATE Perelom SET pr2=? WHERE ka=?");
+          	stmt11.setObject(1, rs10.getString(1),Types.INTEGER); 
+          	stmt11.setObject(2, rs10.getString(2),Types.INTEGER); 
+          	stmt11.executeUpdate();
+          }
+          stmt10=conn.prepareStatement("SELECT DISTINCT zso.OtsenkaEge,p.ka FROM Perelom p, ZajavlennyeShkolnyeOtsenki zso, abiturient a, ekzamenynaspetsialnosti ens WHERE p.ka=a.kodabiturienta AND ens.kodspetsialnosti LIKE "+rs2.getString(5)+" AND ens.kodpredmeta=zso.kodpredmeta AND zso.kodabiturienta=p.ka AND ens.prioritet LIKE '3'");
+          rs10=stmt10.executeQuery();
+          while(rs10.next()){
+          	stmt11=conn.prepareStatement("UPDATE Perelom SET pr3=? WHERE ka=?");
+          	stmt11.setObject(1, rs10.getString(1),Types.INTEGER); 
+          	stmt11.setObject(2, rs10.getString(2),Types.INTEGER); 
+          	stmt11.executeUpdate();
+          }
+          stmt10=conn.prepareStatement("SELECT DISTINCT zso.OtsenkaEge,p.ka FROM Perelom p, ZajavlennyeShkolnyeOtsenki zso, abiturient a, ekzamenynaspetsialnosti ens WHERE p.ka=a.kodabiturienta AND ens.kodspetsialnosti LIKE "+rs2.getString(5)+" AND ens.kodpredmeta=zso.kodpredmeta AND zso.kodabiturienta=p.ka AND ens.prioritet LIKE '4'");
+          rs10=stmt10.executeQuery();
+          while(rs10.next()){
+          	stmt11=conn.prepareStatement("UPDATE Perelom SET pr4=? WHERE ka=?");
+          	stmt11.setObject(1, rs10.getString(1),Types.INTEGER); 
+          	stmt11.setObject(2, rs10.getString(2),Types.INTEGER); 
+          	stmt11.executeUpdate();
+          }
+          stmt10=conn.prepareStatement("SELECT pr1,pr2,pr3,pr4,ka FROM Perelom");
+          rs10=stmt10.executeQuery();
+          while(rs10.next()){
+          	pr1=rs10.getInt(1);
+              pr2=rs10.getInt(2);
+              pr3=rs10.getInt(3);
+              pr4=rs10.getInt(4);
+              summ=pr1+pr2+pr3+pr4;
+              stmt11=conn.prepareStatement("UPDATE Perelom SET sum=? WHERE ka=?");
+              stmt11.setObject(1, summ,Types.INTEGER); 
+          	stmt11.setObject(2, rs10.getString(5),Types.INTEGER); 
+          	stmt11.executeUpdate();
+          }  
+          
+          
+          stmt10 = conn.prepareStatement("SELECT Shifr,F,I,O,ko,sum,pr1,pr2,pr3,pr4,op,ind,ka,nld,pp FROM Perelom ORDER BY sum DESC, pr1 DESC, pr2 DESC, pr3 DESC, pr4 DESC, pp DESC");
+          rs10=stmt10.executeQuery();
+         N=1;
+         num=nomer+total_amount;
+         // stmt = conn.createStatement();
+        //  rs = stmt.executeQuery(query.toString());
+          while(rs10.next()) {
+        	  if(nomer<num){
+        	  nomer++;
+        	  }
+        	  report.write("\\fs24\\intbl\\qc "+(nomer)+"\\cell\n");
+        	  report.write("\\intbl\\qc "+rs10.getString(14)+"\\cell\n"); // NLD
+              report.write("\\intbl\\qc "+rs10.getString(1)+"\\cell\n"); // NLD
+              report.write("\\intbl\\ql "+rs10.getString(2)+" "+rs10.getString(3).substring(0,1)+"."+rs10.getString(4).substring(0,1)+"."+"\\cell\n"); // FAMIL I.O.
+              report.write("\\intbl\\qc "+rs10.getString(5)+"\\cell\n"); // SHIFR LICHNOGO DELA
+              report.write("\\intbl\\qc "+rs10.getString(11)+"\\cell\n");
+              report.write("\\intbl\\qc "+rs10.getString(12)+"\\cell\n"); // ATTESTAT (KOPIJA)
+              report.write("\\intbl\\qc "+rs10.getString(7)+"\\cell\n");
+              report.write("\\intbl\\qc "+rs10.getString(8)+"\\cell\n");
+              report.write("\\intbl\\qc "+rs10.getString(9)+"\\cell\n");
+              if(z==rs10.getString(10)){
+            	  report.write("\\intbl\\qc{0}\\cell\n");
+            	
+              }else{
+              report.write("\\intbl\\qc "+rs10.getString(10)+"\\cell\n");
+              }
+             report.write("\\intbl\\qc "+rs10.getString(6)+"\\cell\n"); // LGOTA
+       
+              
+            report.write("\\intbl\\row\n");
+
+    //Добавляем код абитуриента в список исключения для того, чтобы он появлялся в отчете только один раз
+     
+            excludeList.append(","+rs10.getString(13));
+            if((++tselev_nomer) <= total_amount) ++N;
+          }
+
+    // Добавляем строки целевиков с надписью "вакантно"
+          for(;tselev_nomer<total_amount;tselev_nomer++) {
+
+            report.write("\\fs24\\intbl\\qc\\cell\n");      // №
+            report.write("\\intbl\\qc\\cell\n");  
+            report.write("\\intbl\\qc\\cell\n");  
+            report.write("\\intbl\\ql{вакантно}\\cell\n"); // NLD
+            report.write("\\intbl\\qc\\cell\n");                          // SHIFR LICHNOGO DELA
+                           // FAMIL I.O.
+            report.write("\\intbl\\qc\\cell\n");                          // ATTESTAT (KOPIJA)
+            report.write("\\intbl\\qc\\cell\n");                          // KOD TSELEVOGO PRIEMA
+            report.write("\\intbl\\qc\\cell\n");                          // SUMMA Ege
+            report.write("\\intbl\\qc\\cell\n");  
+            report.write("\\intbl\\qc\\cell\n");  
+            report.write("\\intbl\\qc\\cell\n");  
+            report.write("\\intbl\\qc\\cell\n");  
+            report.write("\\intbl\\row\n");
+          }
+
+          if(header) report.write("\\pard\\par\n");
+        }
+        stmt10 = conn.prepareStatement("DELETE FROM Perelom WHERE 1=1");
+        stmt10.executeUpdate();
+
+
+
+
+
+// ЦЕЛЕВОЙ ПРИЕМ ( МинПромТорг )
+
+    header = false;
+
+    total_amount = 0;
+
+    tselev_nomer = 0;
+
+    stmt = conn.createStatement();
+    rs = stmt.executeQuery("SELECT TselPr_3 FROM Spetsialnosti WHERE KodSpetsialnosti LIKE '"+rs2.getString(5)+"'");
+    if( rs.next() && StringUtil.toInt(rs.getString(1),0) != 0 ) {
+
+    	if(header == false) {
+            header = true;
+            report.write("\\pard\\par\n");
+            report.write("\\b1\\ql\\fs28{Перечень лиц, поступающих по целевому приему (в интересах МинПромТОрга) в пределах квоты "+rs.getString(1)+": } \\b0\\par\\par\n");
+            report.write("\\fs22\\b1 \\trowd \\trqc\\trgaph108\\trrh280\\trleft36\\trhdr\n");
+            report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx600\n");
+            report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx2000\n");
+            report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx3400\n");
+            report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx5300\n");
+            report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx5800\n");
+            report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx6500\n");
+            report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx7200\n");
+            report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx7900\n"); 
+            report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx8600\n"); 
+            report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx9300\n"); 
+            report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx10000\n"); 
+            report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx10700\n");  
+
+            report.write("\\intbl\\qc{№}\\cell\n");
+            report.write("\\intbl{Шифр}\\cell\n");
+            report.write("\\intbl{Номер}\\par{личного}\\par{дела}\\cell\n");
+            report.write("\\intbl{Фамилия И.О.}\\cell\n");
+            report.write("\\intbl{Копия-оригинал}\\cell\n");
+            report.write("\\intbl{Преим.пр.}\\cell\n");
+            report.write("\\intbl{Инд.дост.}\\cell\n");
+            report.write("\\intbl{Первый}\\par{экзамен}\\cell\n");
+            report.write("\\intbl{Второй}\\par{экзамен}\\cell\n");
+            report.write("\\intbl{Третий}\\par{экзамен}\\cell\n");
+            report.write("\\intbl{Четвёртый}\\par{экзамен}\\cell\n");
+            report.write("\\intbl{Сумма}\\par{баллов}\\cell\n");
+            report.write("\\intbl\\row\n");
+
+            report.write("\\b1 \\trowd \\trqc\\trgaph108\\trrh280\\trleft36\\trhdr\n");
+            report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx600\n");
+            report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx2000\n");
+            report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx3400\n");
+            report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx5300\n");
+            report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx5800\n");
+            report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx6500\n");
+            report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx7200\n");
+            report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx7900\n"); 
+            report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx8600\n"); 
+            report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx9300\n"); 
+            report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx10000\n"); 
+            report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx10700\n"); 
+
+            report.write("\\intbl\\cell\n");
+            report.write("\\intbl\\cell\n");
+            report.write("\\intbl\\cell\n");
+            report.write("\\intbl\\cell\n");
+            report.write("\\intbl\\cell\n");
+            report.write("\\intbl\\cell\n");
+            report.write("\\intbl\\cell\n");
+kl=0;
+            stmt3 = conn.createStatement();
+            rs3 = stmt3.executeQuery("SELECT np.Sokr,ens.prioritet FROM NazvanijaPredmetov np, ekzamenynaspetsialnosti ens, spetsialnosti s WHERE np.kodpredmeta=ens.kodpredmeta AND s.kodspetsialnosti=ens.kodspetsialnosti AND s.KodSpetsialnosti LIKE '"+rs2.getString(5)+"' ORDER BY ens.prioritet ASC");
+            while(rs3.next()) {
+            	kl++;
+            	report.write("\\intbl "+rs3.getString(1)+" \\cell\n");
+            }
+            if(kl!=4)
+            {report.write("\\intbl\\cell\n");}
+            
+            report.write("\\intbl\\cell\n");
+            report.write("\\intbl \\row\n");
+
+            report.write("\\b0\\trowd \\trqc\\trgaph108\\trrh280\\trleft36\n");
+            report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx600\n"); 
+            report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx2000\n"); 
+            report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx3400\n"); 
+            report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx5300\n"); 
+            report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx5800\n"); 
+            report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx6500\n"); 
+            report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx7200\n"); 
+            report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx7900\n"); 
+            report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx8600\n"); 
+            report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx9300\n"); 
+            report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx10000\n"); 
+            report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx10700\n");  
+
+            total_amount = StringUtil.toInt(rs.getString(1),0);
+          }
+
+    // Абитуриенты-целевики
+
+          query = new StringBuffer("SELECT a.KodAbiturienta,a.NomerLichnogoDela,a.Familija,a.Imja,a.Otchestvo,tp.ShifrPriema,a.TipDokSredObraz,SUM(zso.OtsenkaEge)\"SummaEge\",kon.NomerLichnogoDela FROM Abiturient a,ZajavlennyeShkolnyeOtsenki zso, Spetsialnosti s, Medali m,TselevojPriem tp, NazvanijaPredmetov np,Kursy k,EkzamenyNaSpetsialnosti ens,Forma_Obuch fo,Konkurs kon WHERE kon.KodAbiturienta=a.KodAbiturienta AND kon.KodSpetsialnosti=s.KodSpetsialnosti AND fo.KodFormyOb=a.KodFormyOb AND tp.KodTselevogoPriema=a.KodTselevogoPriema AND k.KodKursov=a.KodKursov AND a.KodAbiturienta=zso.KodAbiturienta AND a.KodMedali=m.KodMedali AND kon.KodSpetsialnosti=ens.KodSpetsialnosti AND zso.KodPredmeta=np.KodPredmeta AND a.KodAbiturienta=zso.KodAbiturienta AND ens.KodPredmeta=zso.KodPredmeta AND kon.KodSpetsialnosti LIKE '"+rs2.getString(5)+"' AND tp.ShifrPriema IN ('ц','ф') AND kon.Target LIKE 'д' AND a.DokumentyHranjatsja LIKE 'д' AND a.KodAbiturienta NOT IN ("+excludeList.toString()+") ");
+          query1 = new StringBuffer("SELECT a.KodAbiturienta,a.NomerLichnogoDela,a.Familija,a.Imja,a.Otchestvo,m.ShifrMedali,a.TipDokSredObraz,SUM(zso.OtsenkaEge)\"SummaEge\",pr.preemptiveright,kon.NomerLichnogoDela,pr.pr FROM Abiturient a,ZajavlennyeShkolnyeOtsenki zso, Spetsialnosti s, Medali m,lgoty l,TselevojPriem tp, NazvanijaPredmetov np,Kursy k,EkzamenyNaSpetsialnosti ens,Forma_Obuch fo,Konkurs kon, PR pr WHERE pr.kodabiturienta=a.kodabiturienta AND kon.KodAbiturienta=a.KodAbiturienta AND kon.KodSpetsialnosti=s.KodSpetsialnosti AND fo.KodFormyOb=a.KodFormyOb AND tp.KodTselevogoPriema=a.KodTselevogoPriema AND k.KodKursov=a.KodKursov AND a.KodAbiturienta=zso.KodAbiturienta AND a.KodMedali=m.KodMedali AND a.KodLgot=l.KodLgot AND kon.KodSpetsialnosti=ens.KodSpetsialnosti AND zso.KodPredmeta=np.KodPredmeta AND a.KodAbiturienta=zso.KodAbiturienta AND ens.KodPredmeta=zso.KodPredmeta AND kon.KodSpetsialnosti LIKE '"+rs2.getString(5)+"' AND tp.ShifrPriema IN ('т') AND kon.Target LIKE 'д' AND a.DokumentyHranjatsja LIKE 'д' AND a.KodAbiturienta NOT IN ("+excludeList.toString()+") ");
+          query1.append("AND kon.NomerLichnogoDela LIKE '%-1' ");
+    //  query.append("AND kon.Prioritet LIKE '"+priority_query+"' ");
+
+          if(abit_SD.getSpecial2().equals("orig")){
+            query.append("AND a.TipDokSredObraz LIKE ('о') ");
+            query1.append("AND a.TipDokSredObraz LIKE ('о') ");
+          }
+          else if(abit_SD.getSpecial2().equals("copy")){
+            query.append("AND a.TipDokSredObraz LIKE ('к') ");
+            query1.append("AND a.TipDokSredObraz LIKE ('к') ");
+          }
+          if(abit_SD.getSpecial3().equals("rek")){
+            query.append("AND a.Prinjat LIKE ('р') ");
+            query1.append("AND a.Prinjat LIKE ('р') ");
+          }
+
+        if(abit_SD.getPriznakSortirovki().equals("budgetniki")){
+          query.append("AND (kon.Bud LIKE 'д')");
+        query1.append("AND (kon.Bud LIKE 'д')");
+        }
+//          query.append("AND kon.Forma_Ob IN ('о') AND (kon.Bud LIKE 'д')");
+//          query.append("AND fo.Sokr IN ('очная') AND (kon.Bud LIKE 'д')");
+//          query.append("AND fo.Sokr IN ('очная') AND (a.NomerPlatnogoDogovora IS NULL)");
+
+//        else if(abit_SD.getPriznakSortirovki().equals("kontraktniki"))
+        else{
+          query.append("AND (kon.Dog LIKE 'д')");
+          query1.append("AND (kon.Dog LIKE 'д')");
+        }
+//          query.append("AND kon.Forma_Ob IN ('о') AND (kon.Dog LIKE 'д')");
+//          query.append("AND fo.Sokr IN ('очная') AND (kon.Dog LIKE 'д')");
+//          query.append("AND fo.Sokr IN ('очная') AND (a.NomerPlatnogoDogovora IS NOT NULL)");
+
+//        else if(abit_SD.getPriznakSortirovki().equals("z_budgetniki"))
+//          query.append("AND kon.Forma_Ob IN ('з','у','ф') AND (kon.Bud LIKE 'д')");
+//          query.append("AND fo.Sokr IN ('заочная','заочно-уск') AND (kon.Bud LIKE 'д')");
+//          query.append("AND fo.Sokr IN ('заочная','заочно-уск') AND (a.NomerPlatnogoDogovora IS NULL)");
+
+//        else 
+//          query.append("AND kon.Forma_Ob IN ('з','у','ф') AND (kon.Dog LIKE 'д')");
+//          query.append("AND fo.Sokr IN ('заочная','заочно-уск') AND (kon.Dog LIKE 'д')");
+//          query.append("AND fo.Sokr IN ('заочная','заочно-уск') AND (a.NomerPlatnogoDogovora IS NOT NULL)");
+
+          query.append(" GROUP BY a.KodAbiturienta,a.NomerLichnogoDela,a.Familija,a.Imja,a.Otchestvo,tp.ShifrPriema,a.TipDokSredObraz,kon.NomerLichnogoDela ORDER BY tp.ShifrPriema DESC,SummaEge DESC,a.Familija,a.Imja,a.Otchestvo");
+          query1.append(" GROUP BY a.KodAbiturienta,a.NomerLichnogoDela,a.Familija,a.Imja,a.Otchestvo,m.ShifrMedali,a.TipDokSredObraz,pr.preemptiveright,kon.NomerLichnogoDela,pr.pr ORDER BY SummaEge DESC,a.KodAbiturienta,a.Familija,a.Imja,a.Otchestvo,pr.preemptiveright");
+          
+
+          stmt9 = conn.createStatement();
+    N=0;
+          rs9 = stmt9.executeQuery(query1.toString());
+          while(rs9.next()) {
+        	  stmt10 = conn.prepareStatement("INSERT INTO Perelom(N,Shifr,F,I,O,ind,ko,sum,op,ka,nld,pp) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)");
+            	N++;
+                stmt10.setObject(1, N,Types.INTEGER);
+                stmt10.setObject(2, rs9.getString(2),Types.VARCHAR);
+                stmt10.setObject(3, rs9.getString(3),Types.VARCHAR);
+                stmt10.setObject(4, rs9.getString(4),Types.VARCHAR);
+                stmt10.setObject(5, rs9.getString(5),Types.VARCHAR);
+                stmt10.setObject(6, rs9.getString(6),Types.VARCHAR);
+                stmt10.setObject(7, rs9.getString(7),Types.VARCHAR);
+                stmt10.setObject(8, new Integer(rs9.getString(8)),Types.INTEGER);
+                stmt10.setObject(9, rs9.getString(9),Types.VARCHAR);
+                stmt10.setObject(10, new Integer(rs9.getString(1)),Types.INTEGER);
+                stmt10.setObject(11, rs9.getString(10),Types.VARCHAR);
+                stmt10.setObject(12, rs9.getString(11),Types.VARCHAR);
+                stmt10.executeUpdate();
+          }
+          stmt10=conn.prepareStatement("SELECT DISTINCT zso.OtsenkaEge,p.ka FROM Perelom p, ZajavlennyeShkolnyeOtsenki zso, abiturient a, ekzamenynaspetsialnosti ens WHERE p.ka=a.kodabiturienta AND ens.kodspetsialnosti LIKE "+rs2.getString(5)+" AND ens.kodpredmeta=zso.kodpredmeta AND zso.kodabiturienta=p.ka AND ens.prioritet LIKE '1'");
+          rs10=stmt10.executeQuery();
+          while(rs10.next()){
+          	stmt11=conn.prepareStatement("UPDATE Perelom SET pr1=? WHERE ka=?");
+          	stmt11.setObject(1, rs10.getString(1),Types.INTEGER); 
+          	stmt11.setObject(2, rs10.getString(2),Types.INTEGER); 
+          	stmt11.executeUpdate();
+          }
+          stmt10=conn.prepareStatement("SELECT DISTINCT zso.OtsenkaEge,p.ka FROM Perelom p, ZajavlennyeShkolnyeOtsenki zso, abiturient a, ekzamenynaspetsialnosti ens WHERE p.ka=a.kodabiturienta AND ens.kodspetsialnosti LIKE "+rs2.getString(5)+" AND ens.kodpredmeta=zso.kodpredmeta AND zso.kodabiturienta=p.ka AND ens.prioritet LIKE '2'");
+          rs10=stmt10.executeQuery();
+          while(rs10.next()){
+          	stmt11=conn.prepareStatement("UPDATE Perelom SET pr2=? WHERE ka=?");
+          	stmt11.setObject(1, rs10.getString(1),Types.INTEGER); 
+          	stmt11.setObject(2, rs10.getString(2),Types.INTEGER); 
+          	stmt11.executeUpdate();
+          }
+          stmt10=conn.prepareStatement("SELECT DISTINCT zso.OtsenkaEge,p.ka FROM Perelom p, ZajavlennyeShkolnyeOtsenki zso, abiturient a, ekzamenynaspetsialnosti ens WHERE p.ka=a.kodabiturienta AND ens.kodspetsialnosti LIKE "+rs2.getString(5)+" AND ens.kodpredmeta=zso.kodpredmeta AND zso.kodabiturienta=p.ka AND ens.prioritet LIKE '3'");
+          rs10=stmt10.executeQuery();
+          while(rs10.next()){
+          	stmt11=conn.prepareStatement("UPDATE Perelom SET pr3=? WHERE ka=?");
+          	stmt11.setObject(1, rs10.getString(1),Types.INTEGER); 
+          	stmt11.setObject(2, rs10.getString(2),Types.INTEGER); 
+          	stmt11.executeUpdate();
+          }
+          stmt10=conn.prepareStatement("SELECT DISTINCT zso.OtsenkaEge,p.ka FROM Perelom p, ZajavlennyeShkolnyeOtsenki zso, abiturient a, ekzamenynaspetsialnosti ens WHERE p.ka=a.kodabiturienta AND ens.kodspetsialnosti LIKE "+rs2.getString(5)+" AND ens.kodpredmeta=zso.kodpredmeta AND zso.kodabiturienta=p.ka AND ens.prioritet LIKE '4'");
+          rs10=stmt10.executeQuery();
+          while(rs10.next()){
+          	stmt11=conn.prepareStatement("UPDATE Perelom SET pr4=? WHERE ka=?");
+          	stmt11.setObject(1, rs10.getString(1),Types.INTEGER); 
+          	stmt11.setObject(2, rs10.getString(2),Types.INTEGER); 
+          	stmt11.executeUpdate();
+          }
+          
+          stmt10=conn.prepareStatement("SELECT pr1,pr2,pr3,pr4,ka FROM Perelom");
+          rs10=stmt10.executeQuery();
+          while(rs10.next()){
+          	pr1=rs10.getInt(1);
+              pr2=rs10.getInt(2);
+              pr3=rs10.getInt(3);
+              pr4=rs10.getInt(4);
+              summ=pr1+pr2+pr3+pr4;
+              stmt11=conn.prepareStatement("UPDATE Perelom SET sum=? WHERE ka=?");
+              stmt11.setObject(1, summ,Types.INTEGER); 
+          	stmt11.setObject(2, rs10.getString(5),Types.INTEGER); 
+          	stmt11.executeUpdate();
+          }
+            
+          stmt10 = conn.prepareStatement("SELECT Shifr,F,I,O,ko,sum,pr1,pr2,pr3,pr4,op,ind,ka,nld,pp FROM Perelom ORDER BY sum DESC, pr1 DESC, pr2 DESC, pr3 DESC, pr4 DESC, pp DESC");
+          rs10=stmt10.executeQuery();
+         N=1;
+         num=nomer+total_amount;
+         // stmt = conn.createStatement();
+        //  rs = stmt.executeQuery(query.toString());
+          while(rs10.next()) {
+        	  if(nomer<num){
+        	  nomer++;
+        	  }
+        	  report.write("\\fs24\\intbl\\qc "+(nomer)+"\\cell\n");
+        	  report.write("\\intbl\\qc "+rs10.getString(14)+"\\cell\n"); // NLD
+              report.write("\\intbl\\qc "+rs10.getString(1)+"\\cell\n"); // NLD
+              report.write("\\intbl\\ql "+rs10.getString(2)+" "+rs10.getString(3).substring(0,1)+"."+rs10.getString(4).substring(0,1)+"."+"\\cell\n"); // FAMIL I.O.
+              report.write("\\intbl\\qc "+rs10.getString(5)+"\\cell\n"); // SHIFR LICHNOGO DELA
+              report.write("\\intbl\\qc "+rs10.getString(11)+"\\cell\n");
+              report.write("\\intbl\\qc "+rs10.getString(12)+"\\cell\n"); // ATTESTAT (KOPIJA)
+              report.write("\\intbl\\qc "+rs10.getString(7)+"\\cell\n");
+              report.write("\\intbl\\qc "+rs10.getString(8)+"\\cell\n");
+              report.write("\\intbl\\qc "+rs10.getString(9)+"\\cell\n");
+              if(z==rs10.getString(10)){
+            	  report.write("\\intbl\\qc{0}\\cell\n");
+            	
+              }else{
+              report.write("\\intbl\\qc "+rs10.getString(10)+"\\cell\n");
+              }
+              report.write("\\intbl\\qc "+rs10.getString(6)+"\\cell\n"); // LGOTA
+              
+              
+            report.write("\\intbl\\row\n");
+
+    //Добавляем код абитуриента в список исключения для того, чтобы он появлялся в отчете только один раз
+     
+            excludeList.append(","+rs10.getString(13));
+            if((++tselev_nomer) <= total_amount) ++N;
+          }
+
+    // Добавляем строки целевиков с надписью "вакантно"
+          for(;tselev_nomer<total_amount;tselev_nomer++) {
+
+            report.write("\\fs24\\intbl\\qc\\cell\n");      // №
+            report.write("\\intbl\\qc\\cell\n");  
+            report.write("\\intbl\\qc\\cell\n"); 
+            report.write("\\intbl\\ql{вакантно}\\cell\n"); // NLD
+            report.write("\\intbl\\qc\\cell\n");                          // SHIFR LICHNOGO DELA
+                           // FAMIL I.O.
+            report.write("\\intbl\\qc\\cell\n");                          // ATTESTAT (KOPIJA)
+            report.write("\\intbl\\qc\\cell\n");                          // KOD TSELEVOGO PRIEMA
+            report.write("\\intbl\\qc\\cell\n");                          // SUMMA Ege
+            report.write("\\intbl\\qc\\cell\n");  
+            report.write("\\intbl\\qc\\cell\n");  
+            report.write("\\intbl\\qc\\cell\n");  
+            report.write("\\intbl\\qc\\cell\n");  
+            report.write("\\intbl\\row\n");
+          }
+
+          if(header) report.write("\\pard\\par\n");
+        }
+        stmt10 = conn.prepareStatement("DELETE FROM Perelom WHERE 1=1");
+        stmt10.executeUpdate();
+
+    }
+
+
+
+
+// По СУММЕ НАБРАННЫХ БАЛЛОВ
+
+    header = false;
+
+    only_one_run = true;
+
+    boolean evidence_exist = false;
+    
+    oldBallAbt = -1;
+
+// В первом запросе объединения исключаются ВСЕ "Сурские таланты" и олимпиадники вообще
+
+    query = new StringBuffer("SELECT a.KodAbiturienta,a.NomerLichnogoDela,a.Familija,a.Imja,a.Otchestvo,m.ShifrMedali,a.TipDokSredObraz,SUM(zso.OtsenkaEge)\"SummaEge\",kon.NomerLichnogoDela,'-' FROM Abiturient a,ZajavlennyeShkolnyeOtsenki zso, Spetsialnosti s, Medali m,Lgoty l, NazvanijaPredmetov np,Kursy k,EkzamenyNaSpetsialnosti ens,Forma_Obuch fo,Konkurs kon WHERE kon.KodAbiturienta=a.KodAbiturienta AND kon.KodSpetsialnosti=s.KodSpetsialnosti AND fo.KodFormyOb=a.KodFormyOb AND k.KodKursov=a.KodKursov AND a.KodAbiturienta=zso.KodAbiturienta AND a.KodMedali=m.KodMedali AND a.KodLgot=l.KodLgot AND kon.KodSpetsialnosti=ens.KodSpetsialnosti AND zso.KodPredmeta=np.KodPredmeta AND a.KodAbiturienta=zso.KodAbiturienta AND ens.KodPredmeta=zso.KodPredmeta AND kon.KodSpetsialnosti LIKE '"+rs2.getString(5)+"' AND a.DokumentyHranjatsja LIKE 'д' AND a.KodAbiturienta NOT IN ("+excludeList.toString()+") ");
+    query1= new StringBuffer("SELECT a.KodAbiturienta,a.NomerLichnogoDela,a.Familija,a.Imja,a.Otchestvo,m.ShifrMedali,a.TipDokSredObraz,SUM(zso.OtsenkaEge)\"SummaEge\",pr.preemptiveright,'-',kon.NomerLichnogoDela,pr.pr FROM Abiturient a,ZajavlennyeShkolnyeOtsenki zso, Spetsialnosti s, Medali m,Lgoty l, NazvanijaPredmetov np,Kursy k,EkzamenyNaSpetsialnosti ens,Forma_Obuch fo,Konkurs kon, PR pr WHERE pr.kodabiturienta=a.kodabiturienta AND kon.KodAbiturienta=a.KodAbiturienta AND kon.KodSpetsialnosti=s.KodSpetsialnosti AND fo.KodFormyOb=a.KodFormyOb AND k.KodKursov=a.KodKursov AND a.KodAbiturienta=zso.KodAbiturienta AND a.KodMedali=m.KodMedali AND a.KodLgot=l.KodLgot AND kon.KodSpetsialnosti=ens.KodSpetsialnosti AND zso.KodPredmeta=np.KodPredmeta AND a.KodAbiturienta=zso.KodAbiturienta AND ens.KodPredmeta=zso.KodPredmeta AND kon.KodSpetsialnosti LIKE "+rs2.getString(5)+" AND a.DokumentyHranjatsja LIKE 'д' AND a.KodAbiturienta NOT IN ("+excludeList.toString()+")");
+    query.append("AND kon.Prioritet LIKE '"+priority_query+"' ");
+    query1.append("AND kon.Prioritet LIKE '"+priority_query+"' ");
+
+    query.append("AND l.shifrlgot NOT IN ('к') ");
+    query1.append("AND l.shifrlgot NOT IN ('о','к') ");
+
+    if(abit_SD.getSpecial2().equals("orig")){
+      query.append("AND a.TipDokSredObraz LIKE ('о') ");
+      query1.append("AND a.TipDokSredObraz LIKE ('о') ");
+    }
+    else if(abit_SD.getSpecial2().equals("copy")){
+      query.append("AND a.TipDokSredObraz LIKE ('к') ");
+      query1.append("AND a.TipDokSredObraz LIKE ('к') ");
+    }
+    if(abit_SD.getSpecial3().equals("rek")){
+      query.append("AND a.Prinjat LIKE ('р') ");
+    query1.append("AND a.Prinjat LIKE ('р') ");
+    }
+
+    if(abit_SD.getPriznakSortirovki().equals("budgetniki")){
+      query.append("AND (kon.Bud LIKE 'д')");
+//      query.append("AND kon.Forma_Ob IN ('о') AND (kon.Bud LIKE 'д')");
+//      query.append("AND fo.Sokr IN ('очная') AND (kon.Bud LIKE 'д')");
+//      query.append("AND fo.Sokr IN ('очная') AND (a.NomerPlatnogoDogovora IS NULL)");
+    query1.append("AND (kon.Bud LIKE 'д')");
+//    else if(abit_SD.getPriznakSortirovki().equals("kontraktniki"))
+    }else{
+      query.append("AND (kon.Dog LIKE 'д')");
+      query1.append("AND (kon.Dog LIKE 'д')");
+//      query.append("AND kon.Forma_Ob IN ('о') AND (kon.Dog LIKE 'д')");
+//      query.append("AND fo.Sokr IN ('очная') AND (kon.Dog LIKE 'д')");
+//      query.append("AND fo.Sokr IN ('очная') AND (a.NomerPlatnogoDogovora IS NOT NULL)");
+
+//    else if(abit_SD.getPriznakSortirovki().equals("z_budgetniki"))
+//      query.append("AND kon.Forma_Ob IN ('з','у','ф') AND (kon.Bud LIKE 'д')");
+//      query.append("AND fo.Sokr IN ('заочная','заочно-уск') AND (kon.Bud LIKE 'д')");
+//      query.append("AND fo.Sokr IN ('заочная','заочно-уск') AND (a.NomerPlatnogoDogovora IS NULL)");
+
+//    else 
+//      query.append("AND kon.Forma_Ob IN ('з','у','ф') AND (kon.Dog LIKE 'д')");
+//      query.append("AND fo.Sokr IN ('заочная','заочно-уск') AND (kon.Dog LIKE 'д')");
+//      query.append("AND fo.Sokr IN ('заочная','заочно-уск') AND (a.NomerPlatnogoDogovora IS NOT NULL)");
+    }
+    query.append(" GROUP BY a.KodAbiturienta,a.NomerLichnogoDela,a.Familija,a.Imja,a.Otchestvo,m.ShifrMedali,a.TipDokSredObraz,kon.NomerLichnogoDela");
+    query1.append(" GROUP BY a.KodAbiturienta,a.NomerLichnogoDela,a.Familija,a.Imja,a.Otchestvo,m.ShifrMedali,a.TipDokSredObraz,pr.preemptiveright,kon.NomerLichnogoDela,pr.pr");
+// Подсоединяем Сурские таланты и др. Олимпиадников с баллом по математике == 100 (ИСКУСТВЕННО, согласно правилам приема (хотя в БД не 100))
+
+    query.append(" UNION SELECT a.KodAbiturienta,a.NomerLichnogoDela,a.Familija,a.Imja,a.Otchestvo,m.ShifrMedali,a.TipDokSredObraz,100+SUM(zso.OtsenkaEge)\"SummaEge\",kon.NomerLichnogoDela,'(о)' FROM Abiturient a,ZajavlennyeShkolnyeOtsenki zso, Spetsialnosti s, Medali m,Lgoty l, NazvanijaPredmetov np,Kursy k,EkzamenyNaSpetsialnosti ens,Forma_Obuch fo,Konkurs kon WHERE kon.KodAbiturienta=a.KodAbiturienta AND kon.KodSpetsialnosti=s.KodSpetsialnosti AND fo.KodFormyOb=a.KodFormyOb AND k.KodKursov=a.KodKursov AND a.KodAbiturienta=zso.KodAbiturienta AND a.KodMedali=m.KodMedali AND a.KodLgot=l.KodLgot AND kon.KodSpetsialnosti=ens.KodSpetsialnosti AND zso.KodPredmeta=np.KodPredmeta AND a.KodAbiturienta=zso.KodAbiturienta AND ens.KodPredmeta=zso.KodPredmeta AND kon.KodSpetsialnosti LIKE '"+rs2.getString(5)+"' AND a.DokumentyHranjatsja LIKE 'д' AND a.KodAbiturienta NOT IN ("+excludeList.toString()+") ");
+    query1.append(" UNION SELECT a.KodAbiturienta,a.NomerLichnogoDela,a.Familija,a.Imja,a.Otchestvo,m.ShifrMedali,a.TipDokSredObraz,100+SUM(zso.OtsenkaEge)\"SummaEge\",pr.preemptiveright,'(о)',kon.NomerLichnogoDela,pr.pr FROM Abiturient a,ZajavlennyeShkolnyeOtsenki zso, Spetsialnosti s, Medali m,Lgoty l, NazvanijaPredmetov np,Kursy k,EkzamenyNaSpetsialnosti ens,Forma_Obuch fo,Konkurs kon,PR pr WHERE pr.kodabiturienta=a.kodabiturienta AND kon.KodAbiturienta=a.KodAbiturienta AND kon.KodSpetsialnosti=s.KodSpetsialnosti AND fo.KodFormyOb=a.KodFormyOb AND k.KodKursov=a.KodKursov AND a.KodAbiturienta=zso.KodAbiturienta AND a.KodMedali=m.KodMedali AND a.KodLgot=l.KodLgot AND kon.KodSpetsialnosti=ens.KodSpetsialnosti AND zso.KodPredmeta=np.KodPredmeta AND a.KodAbiturienta=zso.KodAbiturienta AND ens.KodPredmeta=zso.KodPredmeta AND kon.KodSpetsialnosti LIKE '"+rs2.getString(5)+"' AND a.DokumentyHranjatsja LIKE 'д' AND a.KodAbiturienta NOT IN ("+excludeList.toString()+") ");
+    query.append("AND kon.Prioritet LIKE '"+priority_query+"' ");
+    query1.append("AND kon.Prioritet LIKE '"+priority_query+"' ");
+    query.append("AND (l.shifrlgot IN ('о','к') AND np.Sokr NOT LIKE ('Мат') AND s.ShifrSpetsialnosti IN("+Constants.Sur_Talants_100B_MAT+"))");
+    query1.append("AND (l.shifrlgot IN ('о','к') AND np.Sokr NOT LIKE ('Мат') AND s.ShifrSpetsialnosti IN("+Constants.Sur_Talants_100B_MAT+"))");
+    if(abit_SD.getSpecial2().equals("orig")){
+      query.append("AND a.TipDokSredObraz LIKE ('о') ");
+    query1.append("AND a.TipDokSredObraz LIKE ('о') ");
+    }
+    else if(abit_SD.getSpecial2().equals("copy")){
+      query.append("AND a.TipDokSredObraz LIKE ('к') ");
+    query1.append("AND a.TipDokSredObraz LIKE ('к') ");
+    }
+    if(abit_SD.getSpecial3().equals("rek")){
+      query.append("AND a.Prinjat LIKE ('р') ");
+      query1.append("AND a.Prinjat LIKE ('р') ");
+    }
+    if(abit_SD.getPriznakSortirovki().equals("budgetniki")){
+      query.append("AND (kon.Bud LIKE 'д')");
+    query1.append("AND (kon.Bud LIKE 'д')");
+//      query.append("AND kon.Forma_Ob IN ('о') AND (kon.Bud LIKE 'д')");
+//      query.append("AND fo.Sokr IN ('очная') AND (kon.Bud LIKE 'д')");
+//      query.append("AND fo.Sokr IN ('очная') AND (a.NomerPlatnogoDogovora IS NULL)");
+    }
+//    else if(abit_SD.getPriznakSortirovki().equals("kontraktniki"))
+    else{
+      query.append("AND (kon.Dog LIKE 'д')");
+    query1.append("AND (kon.Dog LIKE 'д')");
+    }
+//      query.append("AND kon.Forma_Ob IN ('о') AND (kon.Dog LIKE 'д')");
+//      query.append("AND fo.Sokr IN ('очная') AND (kon.Dog LIKE 'д')");
+//      query.append("AND fo.Sokr IN ('очная') AND (a.NomerPlatnogoDogovora IS NOT NULL)");
+
+//    else if(abit_SD.getPriznakSortirovki().equals("z_budgetniki"))
+//      query.append("AND kon.Forma_Ob IN ('з','у','ф') AND (kon.Bud LIKE 'д')");
+//      query.append("AND fo.Sokr IN ('заочная','заочно-уск') AND (kon.Bud LIKE 'д')");
+//      query.append("AND fo.Sokr IN ('заочная','заочно-уск') AND (a.NomerPlatnogoDogovora IS NULL)");
+
+//    else 
+//      query.append("AND kon.Forma_Ob IN ('з','у','ф') AND (kon.Dog LIKE 'д')");
+//      query.append("AND fo.Sokr IN ('заочная','заочно-уск') AND (kon.Dog LIKE 'д')");
+//      query.append("AND fo.Sokr IN ('заочная','заочно-уск') AND (a.NomerPlatnogoDogovora IS NOT NULL)");
+
+    query.append(" GROUP BY a.KodAbiturienta,a.NomerLichnogoDela,a.Familija,a.Imja,a.Otchestvo,m.ShifrMedali,a.TipDokSredObraz,kon.NomerLichnogoDela");
+    query1.append(" GROUP BY a.KodAbiturienta,a.NomerLichnogoDela,a.Familija,a.Imja,a.Otchestvo,m.ShifrMedali,a.TipDokSredObraz,pr.preemptiveright,kon.NomerLichnogoDela,pr.pr");
+  //System.out.println(query.toString());
+      
+
+// Подсоединяем Сурские таланты и др. Олимпиадников с их РЕАЛЬНЫМИ БАЛЛАМИ для СПЕЦИАЛЬНОСТЕЙ НЕ ИЗ ЛЬГОТНОГО СПИСКА
+
+    query.append(" UNION SELECT a.KodAbiturienta,a.NomerLichnogoDela,a.Familija,a.Imja,a.Otchestvo,m.ShifrMedali,a.TipDokSredObraz,SUM(zso.OtsenkaEge)\"SummaEge\",kon.NomerLichnogoDela,'-' FROM Abiturient a,ZajavlennyeShkolnyeOtsenki zso, Spetsialnosti s, Medali m,Lgoty l, NazvanijaPredmetov np,Kursy k,EkzamenyNaSpetsialnosti ens,Forma_Obuch fo,Konkurs kon WHERE kon.KodAbiturienta=a.KodAbiturienta AND kon.KodSpetsialnosti=s.KodSpetsialnosti AND fo.KodFormyOb=a.KodFormyOb AND k.KodKursov=a.KodKursov AND a.KodAbiturienta=zso.KodAbiturienta AND a.KodMedali=m.KodMedali AND a.KodLgot=l.KodLgot AND kon.KodSpetsialnosti=ens.KodSpetsialnosti AND zso.KodPredmeta=np.KodPredmeta AND a.KodAbiturienta=zso.KodAbiturienta AND ens.KodPredmeta=zso.KodPredmeta AND kon.KodSpetsialnosti LIKE '"+rs2.getString(5)+"' AND a.DokumentyHranjatsja LIKE 'д' AND a.KodAbiturienta NOT IN ("+excludeList.toString()+") ");
+    query1.append(" UNION SELECT a.KodAbiturienta,a.NomerLichnogoDela,a.Familija,a.Imja,a.Otchestvo,m.ShifrMedali,a.TipDokSredObraz,SUM(zso.OtsenkaEge)\"SummaEge\",pr.preemptiveright,'-',kon.NomerLichnogoDela,pr.pr FROM Abiturient a,ZajavlennyeShkolnyeOtsenki zso, Spetsialnosti s, Medali m,Lgoty l, NazvanijaPredmetov np,Kursy k,EkzamenyNaSpetsialnosti ens,Forma_Obuch fo,Konkurs kon,PR pr WHERE pr.kodabiturienta=a.kodabiturienta AND kon.KodAbiturienta=a.KodAbiturienta AND kon.KodSpetsialnosti=s.KodSpetsialnosti AND fo.KodFormyOb=a.KodFormyOb AND k.KodKursov=a.KodKursov AND a.KodAbiturienta=zso.KodAbiturienta AND a.KodMedali=m.KodMedali AND a.KodLgot=l.KodLgot AND kon.KodSpetsialnosti=ens.KodSpetsialnosti AND zso.KodPredmeta=np.KodPredmeta AND a.KodAbiturienta=zso.KodAbiturienta AND ens.KodPredmeta=zso.KodPredmeta AND kon.KodSpetsialnosti LIKE '"+rs2.getString(5)+"' AND a.DokumentyHranjatsja LIKE 'д' AND a.KodAbiturienta NOT IN ("+excludeList.toString()+") ");
+    query.append("AND kon.Prioritet LIKE '"+priority_query+"' ");
+    query1.append("AND kon.Prioritet LIKE '"+priority_query+"' ");
+    query.append("AND (l.shifrlgot IN ('о','к') AND s.ShifrSpetsialnosti NOT IN("+Constants.Sur_Talants_100B_MAT+"))");
+    query1.append("AND (l.shifrlgot IN ('о','к') AND s.ShifrSpetsialnosti NOT IN("+Constants.Sur_Talants_100B_MAT+"))");
+    if(abit_SD.getSpecial2().equals("orig")){
+      query.append("AND a.TipDokSredObraz LIKE ('о') ");
+      query1.append("AND a.TipDokSredObraz LIKE ('о') ");
+    }
+    else if(abit_SD.getSpecial2().equals("copy")){
+      query.append("AND a.TipDokSredObraz LIKE ('к') ");
+      query1.append("AND a.TipDokSredObraz LIKE ('к') ");
+    }
+
+    if(abit_SD.getSpecial3().equals("rek")){
+      query.append("AND a.Prinjat LIKE ('р') ");
+      query1.append("AND a.Prinjat LIKE ('р') ");
+    }
+
+    if(abit_SD.getPriznakSortirovki().equals("budgetniki")){
+      query.append("AND (kon.Bud LIKE 'д')");
+      query1.append("AND (kon.Bud LIKE 'д')");
+    }
+//      query.append("AND kon.Forma_Ob IN ('о') AND (kon.Bud LIKE 'д')");
+//      query.append("AND fo.Sokr IN ('очная') AND (kon.Bud LIKE 'д')");
+//      query.append("AND fo.Sokr IN ('очная') AND (a.NomerPlatnogoDogovora IS NULL)");
+    else{
+      query.append("AND (kon.Dog LIKE 'д')");
+      query1.append("AND (kon.Dog LIKE 'д')");
+    }
+//    else if(abit_SD.getPriznakSortirovki().equals("kontraktniki"))
+//      query.append("AND kon.Forma_Ob IN ('о') AND (kon.Dog LIKE 'д')");
+//      query.append("AND fo.Sokr IN ('очная') AND (kon.Dog LIKE 'д')");
+//      query.append("AND fo.Sokr IN ('очная') AND (a.NomerPlatnogoDogovora IS NOT NULL)");
+
+//    else if(abit_SD.getPriznakSortirovki().equals("z_budgetniki"))
+//      query.append("AND kon.Forma_Ob IN ('з','у','ф') AND (kon.Bud LIKE 'д')");
+//      query.append("AND fo.Sokr IN ('заочная','заочно-уск') AND (kon.Bud LIKE 'д')");
+//      query.append("AND fo.Sokr IN ('заочная','заочно-уск') AND (a.NomerPlatnogoDogovora IS NULL)");
+
+//    else 
+//      query.append("AND kon.Forma_Ob IN ('з','у','ф') AND (kon.Dog LIKE 'д')");
+//      query.append("AND fo.Sokr IN ('заочная','заочно-уск') AND (kon.Dog LIKE 'д')");
+//      query.append("AND fo.Sokr IN ('заочная','заочно-уск') AND (a.NomerPlatnogoDogovora IS NOT NULL)");
+
+    query.append(" GROUP BY a.KodAbiturienta,a.NomerLichnogoDela,a.Familija,a.Imja,a.Otchestvo,m.ShifrMedali,a.TipDokSredObraz,kon.NomerLichnogoDela");
+    query1.append(" GROUP BY a.KodAbiturienta,a.NomerLichnogoDela,a.Familija,a.Imja,a.Otchestvo,m.ShifrMedali,a.TipDokSredObraz,pr.preemptiveright,kon.NomerLichnogoDela,pr.pr");
+    query.append(" ORDER BY SummaEge DESC,a.TipDokSredObraz DESC,m.ShifrMedali ASC,a.Familija,a.Imja,a.Otchestvo");
+    query1.append(" ORDER BY SummaEge DESC,a.KodAbiturienta,a.Familija,a.Imja,a.Otchestvo,pr.preemptiveright,pr.pr");
+
+//System.out.println(query);
+    
+    stmt9 = conn.createStatement();
+
+    rs9 = stmt9.executeQuery(query1.toString());
+    while(rs9.next()) {
+    	stmt10 = conn.prepareStatement("INSERT INTO Perelom(N,Shifr,F,I,O,ind,ko,sum,op,ka,s,nld,pp) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)");
+    	N++;
+        stmt10.setObject(1, N,Types.INTEGER);
+        stmt10.setObject(2, rs9.getString(2),Types.VARCHAR);
+        stmt10.setObject(3, rs9.getString(3),Types.VARCHAR);
+        stmt10.setObject(4, rs9.getString(4),Types.VARCHAR);
+        stmt10.setObject(5, rs9.getString(5),Types.VARCHAR);
+        stmt10.setObject(6, rs9.getString(6),Types.VARCHAR);
+        stmt10.setObject(7, rs9.getString(7),Types.VARCHAR);
+        stmt10.setObject(8, new Integer(rs9.getString(8)),Types.INTEGER);
+        stmt10.setObject(9, rs9.getString(9),Types.VARCHAR);
+        stmt10.setObject(10, new Integer(rs9.getString(1)),Types.INTEGER);
+        stmt10.setObject(11, rs9.getString(10),Types.VARCHAR);
+        stmt10.setObject(12, rs9.getString(11),Types.VARCHAR);
+        stmt10.setObject(13, rs9.getString(12),Types.VARCHAR);
+        stmt10.executeUpdate();
+    }
+    
+    stmt10=conn.prepareStatement("SELECT DISTINCT zso.OtsenkaEge,p.ka FROM Perelom p, ZajavlennyeShkolnyeOtsenki zso, abiturient a, ekzamenynaspetsialnosti ens WHERE p.ka=a.kodabiturienta AND ens.kodspetsialnosti LIKE "+rs2.getString(5)+" AND ens.kodpredmeta=zso.kodpredmeta AND zso.kodabiturienta=p.ka AND ens.prioritet LIKE '1'");
+    rs10=stmt10.executeQuery();
+    while(rs10.next()){
+    	stmt11=conn.prepareStatement("UPDATE Perelom SET pr1=? WHERE ka=?");
+    	stmt11.setObject(1, rs10.getString(1),Types.INTEGER); 
+    	stmt11.setObject(2, rs10.getString(2),Types.INTEGER); 
+    	stmt11.executeUpdate();
+    }
+    stmt10=conn.prepareStatement("SELECT DISTINCT zso.OtsenkaEge,p.ka FROM Perelom p, ZajavlennyeShkolnyeOtsenki zso, abiturient a, ekzamenynaspetsialnosti ens WHERE p.ka=a.kodabiturienta AND ens.kodspetsialnosti LIKE "+rs2.getString(5)+" AND ens.kodpredmeta=zso.kodpredmeta AND zso.kodabiturienta=p.ka AND ens.prioritet LIKE '2'");
+    rs10=stmt10.executeQuery();
+    while(rs10.next()){
+    	stmt11=conn.prepareStatement("UPDATE Perelom SET pr2=? WHERE ka=?");
+    	stmt11.setObject(1, rs10.getString(1),Types.INTEGER); 
+    	stmt11.setObject(2, rs10.getString(2),Types.INTEGER); 
+    	stmt11.executeUpdate();
+    }
+    stmt10=conn.prepareStatement("SELECT DISTINCT zso.OtsenkaEge,p.ka FROM Perelom p, ZajavlennyeShkolnyeOtsenki zso, abiturient a, ekzamenynaspetsialnosti ens WHERE p.ka=a.kodabiturienta AND ens.kodspetsialnosti LIKE "+rs2.getString(5)+" AND ens.kodpredmeta=zso.kodpredmeta AND zso.kodabiturienta=p.ka AND ens.prioritet LIKE '3'");
+    rs10=stmt10.executeQuery();
+    while(rs10.next()){
+    	stmt11=conn.prepareStatement("UPDATE Perelom SET pr3=? WHERE ka=?");
+    	stmt11.setObject(1, rs10.getString(1),Types.INTEGER); 
+    	stmt11.setObject(2, rs10.getString(2),Types.INTEGER); 
+    	stmt11.executeUpdate();
+    }
+    stmt10=conn.prepareStatement("SELECT DISTINCT zso.OtsenkaEge,p.ka FROM Perelom p, ZajavlennyeShkolnyeOtsenki zso, abiturient a, ekzamenynaspetsialnosti ens WHERE p.ka=a.kodabiturienta AND ens.kodspetsialnosti LIKE "+rs2.getString(5)+" AND ens.kodpredmeta=zso.kodpredmeta AND zso.kodabiturienta=p.ka AND ens.prioritet LIKE '4'");
+    rs10=stmt10.executeQuery();
+    while(rs10.next()){
+    	stmt11=conn.prepareStatement("UPDATE Perelom SET pr4=? WHERE ka=?");
+    	stmt11.setObject(1, rs10.getString(1),Types.INTEGER); 
+    	stmt11.setObject(2, rs10.getString(2),Types.INTEGER); 
+    	stmt11.executeUpdate();
+    }
+    
+    stmt10=conn.prepareStatement("SELECT pr1,pr2,pr3,pr4,ka FROM Perelom");
+    rs10=stmt10.executeQuery();
+    while(rs10.next()){
+    	pr1=rs10.getInt(1);
+        pr2=rs10.getInt(2);
+        pr3=rs10.getInt(3);
+        pr4=rs10.getInt(4);
+        summ=pr1+pr2+pr3+pr4;
+        stmt11=conn.prepareStatement("UPDATE Perelom SET sum=? WHERE ka=?");
+        stmt11.setObject(1, summ,Types.INTEGER); 
+    	stmt11.setObject(2, rs10.getString(5),Types.INTEGER); 
+    	stmt11.executeUpdate();
+    }
+    lgn=0;
+    stmt10 = conn.prepareStatement("SELECT Shifr,F,I,O,ko,sum,pr1,pr2,pr3,pr4,op,ind,s,ka,nld,pp FROM Perelom ORDER BY sum DESC, pr1 DESC, pr2 DESC, pr3 DESC, pr4 DESC, pp DESC");
+    rs10=stmt10.executeQuery();
+    stmt = conn.createStatement();
+    rs = stmt.executeQuery(query.toString());
+   // while(rs.next()) {
+    while(rs10.next()){
+      if(header == false) {
+        header = true;
+        N=1;
+        report.write("\\pard\\par\n");
+        if(abit_SD.getPriznakSortirovki().equals("budgetniki")){
+        report.write("\\b1\\ql\\fs28{Перечень лиц, поступающих по общему конкурсу на места в рамках контрольных цифр приема}\\b0\\par\\par\n");
+        }else{
+        	report.write("\\b1\\ql\\fs28{Перечень лиц, подавших документы по договору об оказании платных образовательных услуг}\\b0\\par\\par\n");
+        }
+        report.write("\\fs22\\b1 \\trowd \\trqc\\trgaph108\\trrh280\\trleft36\\trhdr\n");
+        report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx600\n");
+        report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx2000\n");
+        report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx3400\n");
+        report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx5300\n");
+        report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx5800\n");
+        report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx6500\n");
+        report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx7200\n");
+        report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx7900\n"); 
+        report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx8600\n"); 
+        report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx9300\n"); 
+        report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx10000\n"); 
+        report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx10700\n");  
+  
+
+        report.write("\\intbl\\qc{№}\\cell\n");
+        report.write("\\intbl{Шифр}\\cell\n");
+        report.write("\\intbl{Номер}\\par{личного}\\par{дела}\\cell\n");
+        report.write("\\intbl{Фамилия И.О.}\\cell\n");
+        report.write("\\intbl{Копия-оригинал}\\cell\n");
+        report.write("\\intbl{Преим.пр.}\\cell\n");
+        report.write("\\intbl{Инд.дост.}\\cell\n");
+        report.write("\\intbl{Первый}\\par{экзамен}\\cell\n");
+        report.write("\\intbl{Второй}\\par{экзамен}\\cell\n");
+        report.write("\\intbl{Третий}\\par{экзамен}\\cell\n");
+        report.write("\\intbl{Четвёртый}\\par{экзамен}\\cell\n");
+        report.write("\\intbl{Сумма}\\par{баллов}\\cell\n");
+        report.write("\\intbl\\row\n");
+
+        report.write("\\b1 \\trowd \\trqc\\trgaph108\\trrh280\\trleft36\\trhdr\n");
+        report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx600\n");
+        report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx2000\n");
+        report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx3400\n");
+        report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx5300\n");
+        report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx5800\n");
+        report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx6500\n");
+        report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx7200\n");
+        report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx7900\n"); 
+        report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx8600\n"); 
+        report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx9300\n"); 
+        report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx10000\n"); 
+        report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx10700\n"); 
+
+        report.write("\\intbl\\cell\n");
+        report.write("\\intbl\\cell\n");
+        report.write("\\intbl\\cell\n");
+        report.write("\\intbl\\cell\n");
+        report.write("\\intbl\\cell\n");
+        report.write("\\intbl\\cell\n");
+        report.write("\\intbl\\cell\n");
+kl=0;
+        stmt3 = conn.createStatement();
+        rs3 = stmt3.executeQuery("SELECT np.Sokr,ens.prioritet FROM NazvanijaPredmetov np, ekzamenynaspetsialnosti ens, spetsialnosti s WHERE np.kodpredmeta=ens.kodpredmeta AND s.kodspetsialnosti=ens.kodspetsialnosti AND s.KodSpetsialnosti LIKE '"+rs2.getString(5)+"' ORDER BY ens.prioritet ASC");
+        while(rs3.next()) {
+        	kl++;
+        	report.write("\\intbl "+rs3.getString(1)+" \\cell\n");
+        }
+        if(kl!=4)
+        {report.write("\\intbl\\cell\n");}
+
+        report.write("\\intbl\\cell\n");
+        report.write("\\intbl \\row\n");
+
+        report.write("\\b0\\trowd \\trqc\\trgaph108\\trrh280\\trleft36\n");
+      // report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx700\n");
+        
+     //   report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx1900\n");
+      //  report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx4000\n");
+      //  report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx4500\n");
+      //  report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx5300\n");
+     //   report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx6000\n");
+        
+        
+       report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx600\n"); 
+       report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx2000\n"); 
+       report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx3400\n"); 
+       report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx5300\n"); 
+       report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx5800\n"); 
+       report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx6500\n"); 
+       report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx7200\n"); 
+       report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx7900\n"); 
+       report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx8600\n"); 
+       report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx9300\n"); 
+       report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx10000\n"); 
+       report.write("\\clvmgf\\clvertalc \\clbrdrt\\brdrs\\brdrw20\\brdrcf1 \\clbrdrl\\brdrs\\brdrw20\\brdrcf1 \\clbrdrb\\brdrs\\brdrw20\\brdrcf1 \\clbrdrr\\brdrs\\brdrw20\\brdrcf1 \\cellx10700\n");  
+      }
+
+    //  if(nomer >= StringUtil.toInt(PP, 0) && (rs.getInt(8) == oldBallAbt) && only_one_run ) { nomer+=0; evidence_exist = true; }
+
+    //  else {
+
+     //   nomer+=1;
+
+   //     if(evidence_exist && (rs.getInt(8) != oldBallAbt)) only_one_run = false;
+
+    //    oldBallAbt = rs.getInt(8);
+   //   }
+//System.out.println("PlanPriema="+PP+" Nomer="+nomer+" oldBall="+oldBallAbt+" CurrBall="+rs.getString(8));
+nomer++;
+lgn++;
+      report.write("\\fs24\\intbl\\qc "+(nomer)+"\\cell\n");
+      report.write("\\intbl\\qc "+rs10.getString(15)+"\\cell\n"); // NLD
+      report.write("\\intbl\\qc "+rs10.getString(1)+"\\cell\n"); // NLD
+      report.write("\\intbl\\ql "+rs10.getString(2)+" "+rs10.getString(3).substring(0,1)+"."+rs10.getString(4).substring(0,1)+"."+"\\cell\n"); // FAMIL I.O.
+      report.write("\\intbl\\qc "+rs10.getString(5)+"\\cell\n"); // SHIFR LICHNOGO DELA
+      report.write("\\intbl\\qc "+rs10.getString(11)+"\\cell\n");
+      report.write("\\intbl\\qc "+rs10.getString(12)+"\\cell\n"); // ATTESTAT (KOPIJA)
+      stmt3 = conn.createStatement();
+      rs3 = stmt3.executeQuery("SELECT zso.OtsenkaEge,np.Sokr FROM ZajavlennyeShkolnyeOtsenki zso,Spetsialnosti sp,NazvanijaPredmetov np WHERE np.KodPredmeta=zso.KodPredmeta AND zso.KodPredmeta=sp.KodPredmeta AND sp.KodSpetsialnosti LIKE '"+rs2.getString(5)+"' AND zso.KodAbiturienta LIKE "+rs10.getString(14)+" ORDER BY zso.KodPredmeta,np.Sokr ASC");
+      if(rs3.next()) {
+        if(rs10.getString(13).equals("(о)") && rs3.getString(2).equals("Мат")) {
+       report.write("\\intbl\\qc{100*}\\cell\n");
+       primechanie = true; 
+        }
+        else
+         report.write("\\intbl\\qc{"+rs10.getString(7)+"}\\cell\n");           // OtsenkaEge
+         }
+     // report.write("\\intbl\\qc "+rs10.getString(7)+"\\cell\n");
+      report.write("\\intbl\\qc "+rs10.getString(8)+"\\cell\n");
+      report.write("\\intbl\\qc "+rs10.getString(9)+"\\cell\n");
+      
+      if(z==rs10.getString(10)){
+    	  report.write("\\intbl\\qc{0}\\cell\n");
+    	
+      }else{
+      report.write("\\intbl\\qc "+rs10.getString(10)+"\\cell\n");
+      }
+     report.write("\\intbl\\qc "+rs10.getString(6)+"\\cell\n"); // LGOTA
+     
+
+      report.write("\\intbl\\row\n");
+      N++;
+    }
+    stmt10 = conn.prepareStatement("DELETE FROM Perelom WHERE 1=1");
+    stmt10.executeUpdate();
+    if(!abit_SD.getPriznakSortirovki().equals("budgetniki")){
+    	for(;lgn<total_lgn;lgn++) {
+
+            report.write("\\fs24\\intbl\\qc "+(++nomer)+"\\cell\n");      // №
+            report.write("\\intbl\\qc\\cell\n");  
+            report.write("\\intbl\\qc\\cell\n");  
+            report.write("\\intbl\\ql{вакантно}\\cell\n"); // NLD
+            report.write("\\intbl\\qc\\cell\n");                          // SHIFR LICHNOGO DELA
+                           // FAMIL I.O.
+            report.write("\\intbl\\qc\\cell\n");                          // ATTESTAT (KOPIJA)
+            report.write("\\intbl\\qc\\cell\n");                          // KOD TSELEVOGO PRIEMA
+            report.write("\\intbl\\qc\\cell\n");                          // SUMMA Ege
+            report.write("\\intbl\\qc\\cell\n");  
+            report.write("\\intbl\\qc\\cell\n");  
+            report.write("\\intbl\\qc\\cell\n");  
+            report.write("\\intbl\\qc\\cell\n");  
+            report.write("\\intbl\\row\n");
+          }
+    }
+    if(header) report.write("\\pard\n");
+
+    if(primechanie) report.write("\\par\\fs24\\ql\\tab\\tab{* - балл установлен согласно п.3.8. правил приёма ПГУ}\\par\n");
+
+
+// Подпись Ректора
+
+    report.write("\\pard\\par\\par\\par");
+
+    report.write("\\b0\\trowd\\trqc\\trgaph108\\trrh280\\trleft36\n");
+    report.write("\\clvertalc\\cellx4000\n");
+    report.write("\\clvertalc\\cellx5700\n");
+    report.write("\\clvertalc\\cellx8200\n");
+
+    report.write("\\intbl\\qr{Председатель приемной комиссии: }\\cell\n");
+
+    pstmt = conn.prepareStatement("SELECT Facsimile FROM NazvanieVuza WHERE KodVuza LIKE ?");
+    pstmt.setObject(1,session.getAttribute("kVuza"),Types.VARCHAR);
+    rs = pstmt.executeQuery();
+    if(rs.next()) {
+      report.write("\\intbl\\qc{"+rs.getString(1)+"}\\cell\n");
+    } else {
+      report.write("\\intbl\\cell\n");
+    }
+
+    String rektor = new String();
+    pstmt = conn.prepareStatement("SELECT Doljnost, Fio FROM Otvetstvennyelitsa WHERE Doljnost LIKE '%Ректор%'");
+    rs = pstmt.executeQuery();
+    if(rs.next()) {
+      report.write("\\intbl\\ql{  / "+rs.getString(2)+" /}\\cell\n");
+    } else {
+      report.write("\\intbl\\cell\n");
+    }
+
+    report.write("\\intbl\\row\n");
+    report.write("\\pard\\par\\i1");
+
+    report.write("\\par\\fs20\\ql\\tab\\tab\\b1{Примечание.}\\b0\n");
+    report.write("\\par\\fs20\\ql\\tab\\tab{ В случае равного количества набранных баллов при прочих равных условиях}\n");
+    report.write("\\par\\fs20\\ql\\tab\\tab{зачисляются лица, имеющие более высокий балл по профильному предмету.}\\par\n");
+    report.write("\\par\\fs20\\ql\\tab\\tab{ Коды целевого приёма:}\n");
+    report.write("\\par\\fs20\\ql\\tab\\tab\\'ab{а}\\'bb{ - прием в интересах предприятий Росатома}\n");
+   // report.write("\\par\\fs20\\ql\\tab\\tab\\'ab{к}\\'bb{ - прием в интересах предприятий Роскосмоса}\n");
+    report.write("\\par\\fs20\\ql\\tab\\tab\\'ab{т}\\'bb{ - прием в интересах предприятий Минпромторга}\n");
+  //  report.write("\\par\\fs20\\ql\\tab\\tab\\'ab{ф}\\'bb{ - прием в интересах войсковой части}\n");
+    report.write("\\par\\fs20\\ql\\tab\\tab\\'ab{к}\\'bb{ - прием в интересах предприятий РосКосмоса}\n");
+
+    report.write("\\par\\i0");
+
+    report.write("\\page");
+    stmt10 = conn.prepareStatement("DELETE FROM Perelom");
+	  stmt10.executeUpdate();
+
+   } // Перебор специальностей выбранного факультета
+
+  report.write("}"); 
+  report.close();
+  form.setAction(us.getClientIntName("new_rep","crt"));
+  return mapping.findForward("rep_brw");
+
+  }
+
+ }      catch ( SQLException e ) {
+          request.setAttribute("SQLException", e);
+          return mapping.findForward("error");
+        }
+        catch ( java.lang.Exception e ) {
+          request.setAttribute("JAVAexception", e);
+          return mapping.findForward("error");
+        }
+        finally {
+          if ( rs != null ) {
+               try {
+                     rs.close();
+                   } catch (Exception e) {
+                    ;
+                                         }
+          }
+          if ( stmt != null ) {
+               try {
+                     stmt.close();
+                   } catch (Exception e) {
+                    ;
+                                         }
+          }
+          if ( rs2 != null ) {
+               try {
+                     rs2.close();
+                   } catch (Exception e) {
+                    ;
+                                         }
+          }
+          if ( rs3 != null ) {
+               try {
+                     rs3.close();
+                   } catch (Exception e) {
+                    ;
+                                         }
+          }
+          if ( stmt2 != null ) {
+               try {
+                     stmt2.close();
+                   } catch (Exception e) {
+                    ;
+                                         }
+          }
+          if ( conn != null ) {
+               try {
+                     conn.close();
+                   } catch (Exception e) {
+                    ;
+                                         }
+          }
+        }
+        request.setAttribute("abit_SD", abit_SD);
+        request.setAttribute("abits_SD", abits_SD);
+        request.setAttribute("abit_SD_S1", abit_SD_S1);
+        request.setAttribute("abit_SD_S2", abit_SD_S2);
+      }
+        if(f!=null) return f;
+        if(error) return mapping.findForward("error");
+        if(lists_dec_ege_f) return mapping.findForward("lists_dec_ege_f");
+        return mapping.findForward("success");
+    }
+}
