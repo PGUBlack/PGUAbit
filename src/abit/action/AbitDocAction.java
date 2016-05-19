@@ -73,6 +73,7 @@ public class AbitDocAction extends Action {
     abit_A.setFileName1("-");
     abit_A.setFileName2("-");
     abit_A.setFileName3("-");   
+    abit_A.setFileName4("-");    
 
 // Получение из БД дополнительных сведений по коду абитуриента
 
@@ -3152,10 +3153,6 @@ report.write("\\ql\\fs24\\b\\i\\tab{по заочной форме обучения}\\i0\\b0\n");
 	           }
 	         }
 	         report.write("\\i0\n");
-	         //КРЫМ 01.03.2016
-	         report.write("\\b0\\fs6\\par\n");
-	         report.write("\\par\\ql\\fs22{Являюсь лицом, постоянно проживающим в Крыму }:  ");
-	         
 	         
 	         
 	        // Select * from abitdopinf where kodabiturienta LIKE '66' and (ballAtt not in ('null', '0', 'нет') or ballSGTO  not in ('null', '0', 'нет') or ballZGTO  not in ('null', '0', 'нет') or ballSoch  not in ('null', '0', 'нет') or ballPOI  not in ('null', '0', 'нет') or TrudovajaDejatelnost  not in ('null', '0', 'нет')) 
@@ -3360,12 +3357,12 @@ report.write("\\ql\\fs24\\b\\i\\tab{по заочной форме обучения}\\i0\\b0\n");
 	         report.write("\\par\\par\\ql\\fs22\\tab{направлениям подготовки                                                                                          }\\i{_________________}\\i0\n");
 	         report.write("\\par\\qc\\fs16\\tab\\tab\\tab\\tab\\tab\\tab\\tab\\tab\\tab\\tab{(подпись поступающего)}\n");
 	         report.write("\\par\\par\\par\n");
-	        
+	         
 	         report.write("\\par\\par\\ql\\fs22\\tab{Подтверждаю подачу заявления о приеме на основании соответствующего особого права только в ПГУ и}\n");
 	         report.write("\\par\\par\\ql\\fs22\\tab{только на одну образовательную программу.                                                         }\\i{_________________}\\i0\n");
 	         report.write("\\par\\qc\\fs16\\tab\\tab\\tab\\tab\\tab\\tab\\tab\\tab\\tab\\tab{(подпись поступающего)}\n");
 	         report.write("\\par\\par\\par\n");
-
+	         
 		     // ДОБАВЛЕНО 29 ФЕВРАЛЯ 2016 Г.
 	         report.write("\\par\\par\\ql\\fs22\\tab{Подтверждаю факт подачи заявления о приёме на условиях, установленных пунктом 14.1 Правил }\n");
 	         report.write("\\par\\par\\ql\\fs22\\tab{приёма не более чем в 3 организации высшего образования, включая организацию, в которую подаётся }\n");
@@ -3379,7 +3376,7 @@ report.write("\\ql\\fs24\\b\\i\\tab{по заочной форме обучения}\\i0\\b0\n");
 	         //report.write("\\par\\qj\\fs22\\tab{С Лицензией на право осуществления образовательной деятельности серия 90ЛО1 №0000704, от 21 марта 2013 г., свидетельством о государственной аккредитации от 25.06.2012 серия 90АО1 № 000007 рег.№0007 и приложений к ним, программами вступительных испытаний, правилами приёма ПГУ, правилами проведения апелляций ознакомлен(а).}\n");
 	         //report.write("\\par\n");
 	         //report.write("\\par\\par\\qr\\fs22{________________________________}\n");
-	         //report.write("\\par\\qc\\fs16\\tab\\tab\\tab\\tab\\tab\\tab\\tab\\tab\\tab\\tab{(подпись поступающего)}\n");*/
+	         //report.write("\\par\\qc\\fs16\\tab\\tab\\tab\\tab\\tab\\tab\\tab\\tab\\tab\\tab{(подпись поступающего)}\n");
 
 	   /************************************************/
 
@@ -3399,100 +3396,16 @@ report.write("\\ql\\fs24\\b\\i\\tab{по заочной форме обучения}\\i0\\b0\n");
 
 	         report.write("\\par\\par\n");
 	         report.write("\\par\\ql\\fs22\\tab{Дата: "+StringUtil.CurrDate(".")+"г.}\n");
-	         
-	      // ДОБАВЛЕНО 29 ФЕВРАЛЯ - 2 МАРТА 2016 Г.
-	         report.write("\\par\\par\n");
-	         report.write("\\par\\qc\\fs22\\tab\\tab\\tab\\tab\\tab\\tab{Председателю приёмной комиссии ПГУ, ректору А.Д. Гулякову}\n");        
-
-	      // ДОБАВЛЕНО 29 ФЕВРАЛЯ - 2 МАРТА 2016 Г.
-	         String tip_Dok2 = new String();
-	         boolean oblastIsEmpty2 = false;
-	         stmt = conn.prepareStatement("SELECT kodOblastiP FROM Abiturient where kodAbiturienta = ?");
-	         stmt.setObject(1,abit_A.getKodAbiturienta(),Types.INTEGER);
-	         rs = stmt.executeQuery();
-	         if(rs.next()){
-	        	 if(rs.getString(1).equals("-")) oblastIsEmpty = true;
-	         }
-	         
-	      // ДОБАВЛЕНО 29 ФЕВРАЛЯ - 2 МАРТА 2016 Г.
-	         if (oblastIsEmpty){
-	         stmt = conn.prepareStatement("SELECT Familija,Imja,Otchestvo,Grajdanstvo,DataRojdenija,a.gorod_prop,Ulica_Prop,Dom_Prop,Kvart_Prop,TipDokumenta,SeriaDokumenta,NomerDokumenta,KemVydDokument,DataVydDokumenta,Tel,MestoRojdenija FROM Abiturient a WHERE KodAbiturienta LIKE ?");
-	   	      	 
-	         }
-	         else{
-	         stmt = conn.prepareStatement("SELECT Familija,Imja,Otchestvo,Grajdanstvo,DataRojdenija,k.name,Ulica_Prop,Dom_Prop,Kvart_Prop,TipDokumenta,SeriaDokumenta,NomerDokumenta,KemVydDokument,DataVydDokumenta,Tel,MestoRojdenija FROM Abiturient a, kladr k WHERE KodAbiturienta LIKE ? and k.code = a.gorod_prop");
-	         }
-	         stmt.setObject(1,abit_A.getKodAbiturienta(),Types.INTEGER);
-	         rs = stmt.executeQuery();
-	         if(rs.next()) {
-
-	         report.write("\\par\\qc\\fs22\\tab\\tab\\tab{  абитуриента }\\i{"+rs.getString(1)+" "+rs.getString(2)+" "+rs.getString(3)+"}\\i0,\n");
-	         }
-	      // ДОБАВЛЕНО 29 ФЕВРАЛЯ - 2 МАРТА 2016 Г.
-	         report.write("\\par\\qc\\fs22\\tab\\tab\\tab\\tab\\tab{подавшего заявление на участие в конкурсе на обучение}\n");  
-	         
-	         report.write("\\par\\qc\\fs22\\tab{         по образовательной программе  }\n");
-	         report.write("\\par\\par\n");
-	         
-
-	         // ДОБАВЛЕНО 29 ФЕВРАЛЯ - 2 МАРТА 2016 Г.
-	         stmt = conn.prepareStatement("SELECT s.ShifrSpetsialnosti, s.NazvanieSpetsialnosti, e.name, ko.Forma_ob from konkurs ko, spetsialnosti s, edulevel e where ko.kodabiturienta like ? and ko.kodspetsialnosti=s.kodspetsialnosti and e.socr = s.edulevel");
-	         
-	         stmt.setObject(1,abit_A.getKodAbiturienta(),Types.INTEGER);
-	         rs = stmt.executeQuery();
-	         if(rs.next()) {
-
-	           report.write("\\tab\\tab\\tab\\tab\\tab\\fs22\\ql{ }\\i{"+rs.getString(1)+", "+rs.getString(2)+", "+rs.getString(3)+", "+rs.getString(4)+"}\\i0\n");
-	           report.write("\\qc\\fs6\\par\\par\\fs22");
-	         }
-	      // ДОБАВЛЕНО 29 ФЕВРАЛЯ - 2 МАРТА 2016 Г.
-	         stmt = conn.prepareStatement("select nomerlichnogodela from abiturient where kodabiturienta like ?");
-	         
-	         stmt.setObject(1,abit_A.getKodAbiturienta(),Types.INTEGER);
-	         rs = stmt.executeQuery();
-	         if(rs.next()) {
-
-	           report.write("\\tab\\fs22\\ql{Личное дело № }\\i{"+rs.getString(1)+"}\\i0\n");
-	           report.write("\\qc\\fs6\\par\\par\\fs22");
-	           report.write("\\par\\par\n");
-	           report.write("\\par\\par\n");
-	           
-	         }
-	      // ДОБАВЛЕНО 29 ФЕВРАЛЯ - 2 МАРТА 2016 Г.           
-	         report.write("\\qc\\fs28\\b{ЗАЯВЛЕНИЕ}\\b0\n");
-	         report.write("\\par\\par\n");
-	         report.write("\\par\\par\\ql\\fs22\\tab{Прошу учесть моё согласие о зачислении на обучение по программе}\n");
-	         report.write("\\par\\par\\ql\\fs22\\tab\\i{___________________________________________________________________________________________}\\i0\n");
-	         report.write("\\qc\\fs16\\b{(код, НП, форма обучения)}\\b0\n");
-	         report.write("\\par\\par\\ql\\fs22\\tab\\i{___________________________________________________________________________________________}\\i0\n");
-	         report.write("\\par\\par\\ql\\fs22\\tab\\i{___________________________________________________________________________________________}\\i0\n");
-	         report.write("\\par\\par\\ql\\fs22\\tab\\i{___________________________________________________________________________________________}\\i0\n");
-	         
-	         report.write("\\par\\par\\ql\\fs22\\tab{При приёме на обучение на места по договорам с оплатой стоимости обучения:}\n");
-	         report.write("\\par\\par\\ql\\fs22\\tab\\tab{- по общему конкурсу.}\n");
-	        
-	         report.write("\\par\\par\\ql\\fs22\\tab{К данному заявлению прилагаю}\n");
-	         report.write("\\par\\par\\ql\\fs22\\tab\\i{___________________________________________________________________________________________}\\i0\n");
-	         report.write("\\qc\\fs16\\b{(название документа об образовании, серия, рег. №)}\\b0\n");
-	         report.write("\\par\\par\\ql\\fs22\\tab\\i{___________________________________________________________________________________________}\\i0\n");
-	         report.write("\\par\\par\\ql\\fs22\\tab{выдан______________________________________________________________________________________}\\i0\n");
-	         report.write("\\qc\\fs16\\b{(название образовательной организации, выдавшей документ, дата выдачи:)}\\b0\n");	
-	         report.write("\\par\\par\\ql\\fs22\\tab\\i{___________________________________________________________________________________________}\\i0\n");
-	         report.write("\\qc\\fs16\\b{(оригинал, копия, заверенная нотариально / приёмной комиссией (ненужное вычеркнуть))}\\b0\n");
-	         report.write("\\par\\par\\ql\\fs22\\tab\\i{___________________________________________________________________________________________}\\i0\n");
-	      
-	         report.write("\\par\\par\n");
-	         report.write("\\par\\par\n");
-	         report.write("\\par\\par\n");
-	         report.write("\\par\\par\\ql\\fs22\\tab{(Ф.И.О.)                                                                                                             }\\i{(подпись)}\\i0\n");
-	         report.write("\\par\\par\\ql\\fs22\\tab{''___''________________ 2016 г.}\n");
-	         
+	                 
 	         report.write("}"); 
+	         
+
 	         report.close();
 
 	   //System.out.println("Doc-!->6");
 
-	      }
+
+    	 }
    
 /***********************************************************/
 /***********************************************************/
@@ -5310,6 +5223,7 @@ if(rs.getString(4).equals("д")){
       report.write("\\clvertalt\\cltxlrtb\\cellx14730\\row }\\pard\\ql\\itap0\n");
       report.write("}\n");
       report.close();
+      
 
 /************************************************/
 /**** ПОДГОТОВКА ДАННЫХ ДЛЯ ВЫВОДА НА ЭКРАН *****/
@@ -5328,7 +5242,7 @@ if(rs.getString(4).equals("д")){
       form.setAction(us.getClientIntName("pakdoc","reports"));
 //      return mapping.findForward("rep_brw");
     }
-
+ 
  /************************************************/
  /************************************************/
  /******             ЧАСТЬ 3               *******/
@@ -5439,9 +5353,149 @@ if(rs.getString(4).equals("д")){
        
 
        report.close();
+        
+
 
  //System.out.println("Doc-!->6");
 
+        
+        
+        /************************************************/
+        /************************************************/
+        /******             ЧАСТЬ 4               *******/
+        /************************************************/
+        /************************************************/
+
+              String file_con2 = new String("ege"+abit_A.getKodAbiturienta()+".rtf");
+         
+              String file_name2 = (request.getRealPath(request.getContextPath())).substring(0,request.getRealPath(request.getContextPath()).lastIndexOf('\\'))+Constants.RELATIVE_PATH_ABT+"\\"+file_con2;
+
+              abit_A.setFileName4(file_con2);
+
+              BufferedWriter report2 = new BufferedWriter(new FileWriter(file_name2)); 
+
+        /************************************************/
+
+              report2.write("{\\rtf1\\ansi{\\colortbl;\\red0\\green0\\blue0;\\red0\\green0\\blue255;\\red0\\green255\\blue255;\\red0\\green255\\blue0;\\red255\\green0\\blue255;\\red255\\green0\\blue0;\\red255\\green255\\blue0;\\red255\\green255\\blue255;\\red0\\green0\\blue128;\\red0\\green128\\blue128;\\red0\\green128\\blue0;\\red128\\green0\\blue128;\\red128\\green0\\blue0;\\red128\\green128\\blue0;\\red128\\green128\\blue128;\\red192\\green192\\blue192;\\ctextone\\ctint255\\cshade255\\red0\\green0\\blue0;}\n");
+              report2.write("\\paperw11906\\paperh16838\\margl567\\margr567\\margt567\\margb567\\widowctrl\\ftnbj\\aenddoc\\noxlattoyen\\expshrtn\\noultrlspc\\dntblnsbdb\\nospaceforul\\formshade\\dghspace100\\dgvspace180\\dghorigin1701\\dgvorigin1984\\dghshow0\\dgvshow0\\jexpand\\viewkind1\\viewscale90\\viewzk2\\pgbrdrhead\\pgbrdrfoot\\nolnhtadjtbl\n");
+
+              report2.write("\\par\\qc\\fs22\\tab\\b{СПРАВКА}\\b0\n");        
+              report2.write("\\par\\qc\\fs18\\tab\\b{о результатах единого государственного экзамена}\\b0\\n");   
+               
+             
+              // Добавление ФИО
+              String tip_Dok3 = new String();
+              boolean oblastIsEmpty3 = false;
+              stmt = conn.prepareStatement("SELECT kodOblastiP FROM Abiturient where kodAbiturienta = ?");
+              stmt.setObject(1,abit_A.getKodAbiturienta(),Types.INTEGER);
+              rs = stmt.executeQuery();
+              if(rs.next()){
+             	 if(rs.getString(1).equals("-")) oblastIsEmpty3 = true;
+              }
+              
+              // Добавление ФИО
+              if (oblastIsEmpty3){
+              stmt = conn.prepareStatement("SELECT Familija,Imja,Otchestvo,Grajdanstvo,DataRojdenija,a.gorod_prop,Ulica_Prop,Dom_Prop,Kvart_Prop,TipDokumenta,SeriaDokumenta,NomerDokumenta,KemVydDokument,DataVydDokumenta,Tel,MestoRojdenija FROM Abiturient a WHERE KodAbiturienta LIKE ?");
+        	      	 
+              }
+              else{
+              stmt = conn.prepareStatement("SELECT Familija,Imja,Otchestvo,Grajdanstvo,DataRojdenija,k.name,Ulica_Prop,Dom_Prop,Kvart_Prop,TipDokumenta,SeriaDokumenta,NomerDokumenta,KemVydDokument,DataVydDokumenta,Tel,MestoRojdenija FROM Abiturient a, kladr k WHERE KodAbiturienta LIKE ? and k.code = a.gorod_prop");
+              }
+              stmt.setObject(1,abit_A.getKodAbiturienta(),Types.INTEGER);
+              rs = stmt.executeQuery();
+              if(rs.next()) {
+
+              report2.write("\\par\\qc\\fs22\\tab{ }\\b{"+rs.getString(1)+" "+rs.getString(2)+" "+rs.getString(3)+"}\\b0\n");
+              
+              
+              report2.write("\\par\\qc\\fs18\\tab{документ, удостоверяющий личность:  }{"+rs.getString(11)+"  "+rs.getString(12)+"}\n"); 
+              } 
+              report2.write("\\par\\qc\\fs18\\tab{ }\n"); 
+              report2.write("\\par\\qc\\fs18\\tab{по результатам сдачи единого государственного экзамена обнаружил(а)}\n");
+              report2.write("\\par\\qc\\fs18\\tab{следующие знания по общеобразовательным предметам:}\n");
+                         
+              // сформировать таблицу по 3 предметам ЕГЭ
+              report2.write("\\par\\qc\\fs18\\tab{ }\n"); 
+
+	           {
+
+	            report2.write("\\par\\fs20\\trowd \\trqc\\trgaph108\\trrh280\\trleft36\n");
+	           report2.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw10 \\clbrdrb\\brdrs\\brdrw10 \\clbrdrl\\brdrs\\brdrw10 \\clbrdrr\\brdrs\\brdrw10 \\cellx9000\n");
+	           report2.write("\\intbl\\qc\\b{Общеобразовательные предметы}\\b0\\cell\n");
+	           report2.write("\\intbl\\row\n");
+
+	           report2.write("\\fs20\\trowd \\trqc\\trgaph108\\trrh280\\trleft36\n");
+	           report2.write("\\clvmgf\\clvertalc \\clbrdrl\\brdrs\\brdrw10 \\clbrdrb\\brdrs\\brdrdb \\clbrdrr\\brdrs\\brdrw10 \\cellx2500\n");
+	           report2.write("\\clvmgf\\clvertalc \\clbrdrl\\brdrs\\brdrw10 \\clbrdrb\\brdrs\\brdrdb \\clbrdrr\\brdrs\\brdrw10 \\cellx4000\n");	 
+	           report2.write("\\clvmgf\\clvertalc \\clbrdrl\\brdrs\\brdrw10 \\clbrdrb\\brdrs\\brdrdb \\clbrdrr\\brdrs\\brdrw10 \\cellx5500\n");
+	           report2.write("\\clvmgf\\clvertalc \\clbrdrl\\brdrs\\brdrw10 \\clbrdrb\\brdrs\\brdrdb \\clbrdrr\\brdrs\\brdrw10 \\cellx7000\n");	 
+	           report2.write("\\clvertalc \\clbrdrl\\brdrs\\brdrw10 \\clbrdrb\\brdrs\\brdrdb \\clbrdrr\\brdrs\\brdrw10 \\cellx9000\n");
+
+	           report2.write("\\intbl\\ql{\\tab\\b{       Наименование предмета}\\b0}\\cell\n");
+	           report2.write("\\intbl\\qc\\b{Балл}\\b0\\cell\n");
+	           report2.write("\\intbl\\qc\\b{Год сдачи}\\b0\\cell\n");
+	           report2.write("\\intbl\\qc\\b{Статус результата}\\b0\\cell\n");           
+	           report2.write("\\intbl\\qc\\b{Номер свидетельства}\\b0\\cell\n");	           
+	           report2.write("\\intbl\\row\n");
+
+	           report2.write("\\b0\\trowd \\trqc\\trgaph108\\trrh280\\trleft36\n");
+	           report2.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw10 \\clbrdrl\\brdrs\\brdrw10 \\clbrdrb\\brdrs\\brdrw10 \\clbrdrr\\brdrs\\brdrw10 \\cellx2500\n");
+	           report2.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw10 \\clbrdrl\\brdrs\\brdrw10 \\clbrdrb\\brdrs\\brdrw10 \\clbrdrr\\brdrs\\brdrw10 \\cellx4000\n");	
+	           report2.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw10 \\clbrdrl\\brdrs\\brdrw10 \\clbrdrb\\brdrs\\brdrw10 \\clbrdrr\\brdrs\\brdrw10 \\cellx5500\n");	
+	           report2.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw10 \\clbrdrl\\brdrs\\brdrw10 \\clbrdrb\\brdrs\\brdrw10 \\clbrdrr\\brdrs\\brdrw10 \\cellx7000\n");
+	           report2.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw10 \\clbrdrl\\brdrs\\brdrw10 \\clbrdrb\\brdrs\\brdrw10 \\clbrdrr\\brdrs\\brdrw10 \\cellx9000\n");
+
+	             int first_line = 0;
+	             stmt = conn.prepareStatement("SELECT DISTINCT np.Predmet,zso.OtsenkaEge,ens.KodPredmeta,zso.god FROM Konkurs kon,EkzamenyNaSpetsialnosti ens,ZajavlennyeShkolnyeOtsenki zso,NazvanijaPredmetov np WHERE np.KodPredmeta=ens.KodPredmeta AND zso.KodAbiturienta=kon.KodAbiturienta AND zso.KodPredmeta=ens.KodPredmeta AND kon.KodSpetsialnosti=ens.KodSpetsialnosti AND kon.KodAbiturienta LIKE ? AND OtsenkaEge NOT LIKE '0' ORDER BY ens.KodPredmeta ASC");
+	             stmt.setObject(1,abit_A.getKodAbiturienta(),Types.INTEGER);
+	             rs = stmt.executeQuery();
+	             while(rs.next()) {
+	                if(first_line++ > 0) {
+	                  report2.write("\\b0\\trowd \\trqc\\trgaph108\\trrh280\\trleft36\n");
+	                  report2.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw10 \\clbrdrl\\brdrs\\brdrw10 \\clbrdrb\\brdrs\\brdrw10 \\clbrdrr\\brdrs\\brdrw10 \\cellx2500\n");
+	                  report2.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw10 \\clbrdrl\\brdrs\\brdrw10 \\clbrdrb\\brdrs\\brdrw10 \\clbrdrr\\brdrs\\brdrw10 \\cellx4000\n");
+	                  report2.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw10 \\clbrdrl\\brdrs\\brdrw10 \\clbrdrb\\brdrs\\brdrw10 \\clbrdrr\\brdrs\\brdrw10 \\cellx5500\n");
+	                  report2.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw10 \\clbrdrl\\brdrs\\brdrw10 \\clbrdrb\\brdrs\\brdrw10 \\clbrdrr\\brdrs\\brdrw10 \\cellx7000\n");
+	                  report2.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw10 \\clbrdrl\\brdrs\\brdrw10 \\clbrdrb\\brdrs\\brdrw10 \\clbrdrr\\brdrs\\brdrw10 \\cellx9000\n");                  
+	                }
+	    
+	                report2.write("\\intbl\\ql{"+rs.getString(1)+"}\\cell\n");
+	                report2.write("\\intbl\\qc{"+rs.getString(2)+"}\\cell\n");
+	                report2.write("\\intbl\\qc{"+rs.getString(4)+"}\\cell\n");
+	                report2.write("\\intbl\\qc{ }\\cell\n");
+	                report2.write("\\intbl\\qc{ }\\cell\n");
+	                report2.write("\\intbl\\row\n");
+	             
+	         	  }
+	           
+	           
+	           
+	           report2.write("\\pard\\par\n");
+        }
+	           
+
+              report2.write("\\par\\par\\ql\\fs22\\tab{Справка для личного дела абитуриента сформирована из ФИС ГИА и приема для образовательной организации:}\n");
+              report2.write("\\par\\par\\ql\\fs22\\tab{Федеральное государственное бюджетное образовательное учреждение высшего профессионального образования ''Пензенский государственный университет''}\n");
+              report2.write("\\par\\par\\ql\\fs22\\tab{Дата и время формирования справки: }{"+StringUtil.CurrDate(".")+"}{    }{"+StringUtil.CurrTime(".")+"}\n");
+              report2.write("\\par\\par\\ql\\fs22\\tab{ }\n");  
+              report2.write("\\par\\par\\ql\\fs22\\tab{Лицо, сформировавшее справку: }\n");             
+              report2.write("\\par\\par\\ql\\fs22\\tab\\i{____________________}{                    }{____________________}{                    }{____________________}\\i0\n");
+              report2.write("\\par\\qc\\fs2\\tab{ }\n");
+              report2.write("\\ql\\fs16\\tab\\b{(должность)}\\tab\\tab\\tab\\tab\\b{(подпись)}\\tab\\tab\\tab\\tab\\b{(Фамилия И.О.)}\\b0\n");
+              report2.write("\\par\\par\\ql\\fs22\\tab{Ответственное лицо приёмной комиссии: }\n");             
+              report2.write("\\par\\par\\ql\\fs22\\tab\\i{____________________}{                    }{____________________}{                    }{____________________}\\i0\n");
+              report2.write("\\par\\qc\\fs2\\tab{ }\n");
+              report2.write("\\ql\\fs16\\tab\\b{(должность)}\\tab\\tab\\tab\\tab\\b{(подпись)}\\tab\\tab\\tab\\tab\\b{(Фамилия И.О.)}\\b0\n");
+              report2.write("\\par\\qc\\fs22\\tab{ }\n"); 
+              report2.write("\\par\\qc\\fs22\\tab{ }\n");
+              report2.write("\\par\\qc\\fs22\\tab{М.П.}\n"); 
+              report2.write("\\par\\qc\\fs22\\tab{ }\n");
+              report2.write("\\par\\qc\\fs22\\tab{ }\n");
+              report2.write("\\par\\par\\ql\\fs22\\tab{Дата выдачи ''___''________________ ____ г.   регистрационный № ______________}\n");             
+              
+              report2.write("}"); 
+
+              report2.close();
         }
         catch ( SQLException e ) {
           request.setAttribute("SQLException", e);

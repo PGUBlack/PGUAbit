@@ -488,6 +488,13 @@ public class AbiturientBean extends IDBean {
         fileName3 = value;
     }
 /****************************************************************************/
+    public String getFileName4() {
+        return fileName4;
+    }
+    public void setFileName4(String value) {
+        fileName4 = value;
+    }
+/****************************************************************************/
     public String getOlimp_1() {
         return olimp_1;
     }
