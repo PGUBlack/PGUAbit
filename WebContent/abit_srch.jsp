@@ -86,55 +86,10 @@ var teamLength
 
 function checkFields(){
 //-------------------------------------------------------------------------------------------------
-for(var i=0; i<document.forms(0).nazvanieRajona.value.length; i++) {
-   temp = "" + document.forms(0).nazvanieRajona.value.substring(i, i+1)
-   if(valid9.indexOf(temp) == "-1") {
-      alert("Поле ''Район'' может состоять только из букв русского алфавита или цифр")
-      document.forms(0).nazvanieRajona.focus()
-      return false
-   }
-}
-if(document.forms(0).gdePoluchilSrObrazovanie.value == "Г") {
-  if(document.forms(0).nazvanie.value == "каменка"  || document.forms(0).nazvanie.value == "Каменка" ||
-     document.forms(0).nazvanie.value == "кузнецк"  || document.forms(0).nazvanie.value == "Кузнецк" ||
-     document.forms(0).nazvanie.value == "заречный" || document.forms(0).nazvanie.value == "Заречный" ||
-     document.forms(0).nazvanie.value == "сердобск" || document.forms(0).nazvanie.value == "Сердобск")
-     return true 
-  else {
-   alert("Поле ''Населенный пункт'' может содержать значения: (''кузнецк'',''заречный'',''сердобск'',''каменка'')")
-    document.forms(0).nazvanieRajona.focus()
-    return false
-  }
-}
+
 }
 
-function autoInit(){
-  if(document.forms(0).gdePoluchilSrObrazovanie.value == "-") {
-    document.forms(0).nazvanieOblasti.value = "*"
-    document.forms(0).nazvanie.value = "*"
-    document.forms(0).nazvanieRajona.value = "*"
-  }
-  if(document.forms(0).gdePoluchilSrObrazovanie.value == "п") {
-    document.forms(0).nazvanieOblasti.value = "пензенская"
-    document.forms(0).nazvanie.value = "Пенза"
-    document.forms(0).nazvanieRajona.value = "*"
-  }
-  if(document.forms(0).gdePoluchilSrObrazovanie.value == "г") {
-    document.forms(0).nazvanieOblasti.value = "пензенская"
-    document.forms(0).nazvanie.value = "*"
-    document.forms(0).nazvanieRajona.value = "*"
-  }
-  if(document.forms(0).gdePoluchilSrObrazovanie.value == "с") {
-    document.forms(0).nazvanieOblasti.value = "пензенская"
-    document.forms(0).nazvanie.value = "*"
-    document.forms(0).nazvanieRajona.value = "*"
-  }
-  if(document.forms(0).gdePoluchilSrObrazovanie.value == "о") {
-    document.forms(0).nazvanieOblasti.value = "*"
-    document.forms(0).nazvanie.value = "*"
-    document.forms(0).nazvanieRajona.value = "*"
-  }
-}
+
 
 function autoInit1(){
  var temp = "";
@@ -146,34 +101,13 @@ function autoInit1(){
       document.forms(0).nomerLichnogoDela.value = document.forms(0).special1.options[index].text.toLowerCase()+"*";
 }
 
-function autoInit2(){
-    if(document.forms(0).nazvanie.value == "Кузнецк" || document.forms(0).nazvanie.value == "кузнецк"){
-      document.forms(0).nazvanieRajona.value = "кузнецкий"
-      document.forms(0).tipOkonchennogoZavedenija.focus()
-    } 
-    if(document.forms(0).nazvanie.value == "Каменка" || document.forms(0).nazvanie.value == "каменка"){
-      document.forms(0).nazvanieRajona.value = "каменский"
-      document.forms(0).tipOkonchennogoZavedenija.focus()
-    }
-    if(document.forms(0).nazvanie.value == "Сердобск" || document.forms(0).nazvanie.value == "сердобск"){
-      document.forms(0).nazvanieRajona.value = "сердобский"
-      document.forms(0).tipOkonchennogoZavedenija.focus()
-    }
-    if(document.forms(0).nazvanie.value == "Заречный" || document.forms(0).nazvanie.value == "заречный"){
-      document.forms(0).nazvanieRajona.value = ""
-      document.forms(0).tipOkonchennogoZavedenija.focus()
-    }
-}
 
 function exec() {
 if(document.forms(0).special1 != null &&
    document.forms(0).shifrFakulteta != null &&
    document.forms(0).pol != null &&
-   document.forms(0).gdePoluchilSrObrazovanie != null &&
    document.forms(0).polnoeNaimenovanieZavedenija != null &&
-   document.forms(0).shifrMedali != null &&
   // document.forms(0).shifrLgot != null &&
-   document.forms(0).shifrKursov != null &&
    document.forms(0).kodTselevogoPriema != null) {
 
     teamLength = document.forms(0).special1.options.length
@@ -186,11 +120,11 @@ if(document.forms(0).special1 != null &&
     document.forms(0).shifrFakulteta.selectedIndex=0
     document.forms(0).special1.selectedIndex=0
     document.forms(0).pol.selectedIndex=0
-    document.forms(0).gdePoluchilSrObrazovanie.selectedIndex=0
+
     document.forms(0).polnoeNaimenovanieZavedenija.selectedIndex=0
-    document.forms(0).shifrMedali.selectedIndex=0
+
    // document.forms(0).shifrLgot.selectedIndex=0
-    document.forms(0).shifrKursov.selectedIndex=0
+
     document.forms(0).kodTselevogoPriema.selectedIndex=0
     fillSelect(document.forms(0).shifrFakulteta.value);
     document.forms(0).shifrFakulteta.focus()
@@ -639,17 +573,7 @@ function help_me() {
 
 <%-------------------- Строка таблицы -------------------------%>
 <tr>
-<td><html:radio name="abit_A" property="priznakSortirovki" value="GdePoluchilSrObrazovanie"/>
-<td valign=center><font class="text_9">&nbsp;Где получил ср. образ.:</font></td>
-<td valign=center>
-    <html:select onchange="autoInit();" styleClass="select_f3" name="abit_A" property="gdePoluchilSrObrazovanie" tabindex="24">
-    <html:option value="*" />
-    <html:option value="п" />
-    <html:option value="г" />
-    <html:option value="с" />
-    <html:option value="о" />
-    </html:select>
-</td>
+
 <td width=1%></td>
 <td><html:radio name="abit_A" property="priznakSortirovki" value="DokumentyHranjatsja"/>
 <td valign=center><font class="text_9">&nbsp;Документы хранятся:</font></td>
@@ -663,15 +587,7 @@ function help_me() {
 </tr>
 
 <%-------------------- Строка таблицы -------------------------%>
-<tr>
-<td><html:radio name="abit_A" property="priznakSortirovki" value="Nazvanie"/>
-<td valign=center><font class="text_9">&nbsp;Населенный пункт:</font></td>
-<td valign=center>
-    <html:text accesskey="г" onchange="autoInit2();" styleClass="text_f9" name="abit_A" property="nazvanie" 
-               maxlength="150" size="25" tabindex="25" value="*"/>
-</td>
 
-</tr>
 
 <%-------------------- Строка таблицы -------------------------%>
 <tr>
