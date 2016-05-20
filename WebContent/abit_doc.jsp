@@ -87,6 +87,13 @@ function exec() {
                        &nbsp;Согласие&nbsp;о&nbsp;зачислении&nbsp;на&nbsp;обучение&nbsp;</html:link>&nbsp;</font></td>
  </tr>
  
+   <tr>
+   <td height="22" align="center" valign="middle"><font class="text_10">&nbsp;4.&nbsp;</font</td>
+   <bean:define id="f_name4" name="abit_A" property="fileName4"/>
+   <td height="22" align="left" valign="middle"><font class="text_10">&nbsp;<html:link href="<%="http://"+request.getServerName()+":"+request.getServerPort()+request.getContextPath()+"/packets/"+f_name4%>" target="wndReportNew" styleClass="link_hov_blue">
+                       &nbsp;Справка&nbsp;о&nbsp;результатах&nbsp;единого&nbsp;государственного&nbsp;экзамена&nbsp;</html:link>&nbsp;</font></td>
+ </tr>
+ 
 </tbody>
 </table>
 <BR>
