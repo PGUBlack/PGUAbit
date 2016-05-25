@@ -345,13 +345,25 @@ StringBuffer sel_grps_query = new StringBuffer("SELECT g.KodGruppy,COUNT(g.KodGr
            noteQuery.append(")");
           }
 
-//ограничение по "где сдает экзамен"
+        //ограничение по "где сдает экзамен"
 
-          if(!((""+session.getAttribute("Examen")).equals("%"))) {
-           noteQuery.append(" AND (zso.Examen LIKE '"+session.getAttribute("Examen")+"'");
-//           noteQuery.append(" OR zso.Examen IS NULL");
-           noteQuery.append(")");
-          }
+          /*       if(!((""+session.getAttribute("Examen")).equals("%"))) {
+                  noteQuery.append(" AND (zso.Examen LIKE '"+session.getAttribute("Examen")+"'");
+//                  noteQuery.append(" OR zso.Examen IS NULL");
+                  noteQuery.append(")");
+                 }*/
+                 if((""+session.getAttribute("Examen")).equals("+")) {
+                     noteQuery.append(" AND zso.Examen LIKE '+' ");
+//                   noteQuery.append(")");
+                    }
+                 if((""+session.getAttribute("Examen")).equals("*")) {
+                     noteQuery.append(" AND zso.Examen LIKE '*' ");
+//                   noteQuery.append(")");
+                    }
+                 if((""+session.getAttribute("Examen")).equals("егэ")) {
+                     noteQuery.append(" AND zso.Examen is null ");
+//                   noteQuery.append(")");
+                    }
 
 //ограничение по кодам предметов
 
@@ -967,13 +979,25 @@ if(abit_A.getDokumentyHranjatsja()!=null && session.getAttribute("resrch")==null
                     noteQuery.append(")");
                    }
 
-//ограничение по "где сдает экзамен"
+                 //ограничение по "где сдает экзамен"
 
-                   if(!((""+session.getAttribute("Examen")).equals("%"))) {
-                    noteQuery.append(" AND (zso.Examen LIKE '"+session.getAttribute("Examen")+"'");
-//                    noteQuery.append(" OR zso.Examen IS NULL");
-                    noteQuery.append(")");
-                   }
+                   /*       if(!((""+session.getAttribute("Examen")).equals("%"))) {
+                           noteQuery.append(" AND (zso.Examen LIKE '"+session.getAttribute("Examen")+"'");
+//                           noteQuery.append(" OR zso.Examen IS NULL");
+                           noteQuery.append(")");
+                          }*/
+                          if((""+session.getAttribute("Examen")).equals("+")) {
+                              noteQuery.append(" AND zso.Examen LIKE '+' ");
+//                            noteQuery.append(")");
+                             }
+                          if((""+session.getAttribute("Examen")).equals("*")) {
+                              noteQuery.append(" AND zso.Examen LIKE '*' ");
+//                            noteQuery.append(")");
+                             }
+                          if((""+session.getAttribute("Examen")).equals("егэ")) {
+                              noteQuery.append(" AND zso.Examen is null ");
+//                            noteQuery.append(")");
+                             }
 
 //ограничение по кодам предметов
 

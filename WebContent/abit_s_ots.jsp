@@ -448,24 +448,24 @@ function help_me() {
 </tr>
 
 <%-------------------- Строка таблицы -------------------------%>
-<tr>
-<td><html:radio name="abit_A" property="priznakSortirovki" value="Imja"/>
-<td valign=center><font class="text_9">&nbsp;Имя:</font></td>
-<td valign=center>
-    <html:text accesskey="и" styleClass="text_f9" name="abit_A" property="imja" 
-               maxlength="50" size="25" tabindex="8" value="*"/>
-</td>
-<td width=1%></td>
-<td>&nbsp;</td>
-<td valign=center><font class="text_9">&nbsp;Где сдаёт экзамен:</font></td>
-<td valign=center>
-    <html:select styleClass="select_f3" name="abit_A" property="examen" tabindex="29">
-    <html:option value="*" />
-    <html:option value="е" />
-    <html:option value="в" />
-    </html:select>
-</td>
-</tr>
+						<tr>
+							<td><html:radio name="abit_A" property="priznakSortirovki"
+									value="Imja" />
+							<td valign=center><font class="text_9">&nbsp;Имя:</font></td>
+							<td valign=center><html:text accesskey="и"
+									styleClass="text_f9" name="abit_A" property="imja"
+									maxlength="50" size="25" tabindex="8" value="*" /></td>
+							<td width=1%></td>
+							<td>&nbsp;</td>
+							<td valign=center><font class="text_9">&nbsp;Где
+									сдаёт экзамен:</font></td>
+							<td valign=center><html:select styleClass="select_f3"
+									name="abit_A" property="examen" tabindex="29">
+									<html:option value="*" />
+									<html:option value="+" />
+									<html:option value="егэ" />
+								</html:select></td>
+						</tr>
 
 <%-------------------- Строка таблицы -------------------------%>
 <tr>
