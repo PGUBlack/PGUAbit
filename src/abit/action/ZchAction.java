@@ -5,11 +5,15 @@ import java.util.Enumeration;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.sql.*;
+
 import javax.servlet.*;
 import javax.servlet.http.*;
+
 import org.apache.struts.action.*;
+
 import javax.naming.*;
 import javax.sql.*;
+
 import abit.bean.*;
 import abit.Constants;
 import abit.util.*;
@@ -39,6 +43,7 @@ public class ZchAction extends Action {
         String            kRajona       = null;
         String            kOblasti      = null;
         Integer           kAbiturienta  = null;
+        String           kodab         = null;
         ArrayList         abits_A       = new ArrayList();
         ArrayList         abit_A_S1     = new ArrayList();
         ArrayList         abit_A_S2     = new ArrayList();
@@ -167,39 +172,59 @@ public class ZchAction extends Action {
 //****************** ОБНОВЛЕНИЕ ДАННЫХ В БД *********************
 //***************************************************************
 
- } if( form.getAction().equals("updatebase")) {
+          } if( form.getAction().equals("updatebase")) {
+        	  		String pr= new String();
+        	     int row_id,col_id;
+        	     String row ="",col="";
+        	     Enumeration paramNames = request.getParameterNames();
+        	     while(paramNames.hasMoreElements()) {
+        	        String paramName = (String)paramNames.nextElement();
+        	        String paramValue[] = request.getParameterValues(paramName);
+        	        if(paramName.indexOf("cells1") != -1) {
+        	          row = new String(paramName.substring(paramName.indexOf("%")+1,paramName.lastIndexOf("%")));
+        	          col = new String(paramName.substring(paramName.lastIndexOf("%")+1,paramName.indexOf("|")));
+        	        
+        	          if(row.equals("0")){        	        	
+        	        	stmt = conn.prepareStatement("UPDATE Abiturient SET Prinjat=? WHERE KodAbiturienta LIKE ?");
+      	                stmt.setObject(1,StringUtil.toDB(paramValue[0]),Types.VARCHAR);
+        	            stmt.setObject(2,col,Types.INTEGER);
+        	            stmt.executeUpdate();   
+        	            pr=StringUtil.toDB(paramValue[0]);
+        	                    	          }
+        	          if(row.equals("1")){
+        	            stmt = conn.prepareStatement("SELECT KodSpetsialnosti FROM Spetsialnosti WHERE Abbreviatura LIKE ?");
+        	            stmt.setObject(1,StringUtil.toDB((paramValue[0]+"")),Types.VARCHAR);
+        	            rs = stmt.executeQuery();
+        	            if(rs.next()){
+        	              stmt = conn.prepareStatement("UPDATE Abiturient SET KodSpetsialnZach=? WHERE KodAbiturienta LIKE ?");
+        	              stmt.setObject(1,rs.getString(1),Types.INTEGER);
+        	              stmt.setObject(2,col,Types.INTEGER);
+        	              stmt.executeUpdate();
+        	              if(pr!=null && !pr.equals("н")){
+        	              stmt = conn.prepareStatement("UPDATE Konkurs SET Zach = 'д' WHERE KodAbiturienta LIKE ? and   kodspetsialnosti like  ? ");
+        	              stmt.setObject(1,col,Types.INTEGER);
+        	              System.out.println(rs.getString(1));
+          	              stmt.setObject(2,rs.getString(1),Types.INTEGER);        
+          	              stmt.executeUpdate();        	 
+        	              stmt = conn.prepareStatement("update Konkurs set Zach='в' where zach is null and kodabiturienta in (select kodabiturienta  from konkurs where zach like 'д')");
+        	              //stmt.setObject(1,col,Types.INTEGER);
+        	              stmt.executeUpdate();
+        	              pr=null;
+        	              }else{
+        	            	  stmt = conn.prepareStatement("UPDATE Konkurs SET Zach = NULL WHERE KodAbiturienta LIKE ?");
+            	              stmt.setObject(1,col,Types.INTEGER);    	            
+              	              stmt.executeUpdate();        	 
+        	              }
+        	            } else {
 
-     int row_id,col_id;
-     String row ="",col="";
-     Enumeration paramNames = request.getParameterNames();
-     while(paramNames.hasMoreElements()) {
-        String paramName = (String)paramNames.nextElement();
-        String paramValue[] = request.getParameterValues(paramName);
-        if(paramName.indexOf("cells1") != -1) {
-          row = new String(paramName.substring(paramName.indexOf("%")+1,paramName.lastIndexOf("%")));
-          col = new String(paramName.substring(paramName.lastIndexOf("%")+1,paramName.indexOf("|")));
-          if(row.equals("0")){
-            stmt = conn.prepareStatement("UPDATE Abiturient SET Prinjat=? WHERE KodAbiturienta LIKE ?");
-            stmt.setObject(1,StringUtil.toDB(paramValue[0]),Types.VARCHAR);
-            stmt.setObject(2,col,Types.INTEGER);
-            stmt.executeUpdate();
-          }
-          if(row.equals("1")){
-            stmt = conn.prepareStatement("SELECT KodSpetsialnosti FROM Spetsialnosti WHERE Abbreviatura LIKE ?");
-            stmt.setObject(1,StringUtil.toDB((paramValue[0]+"")),Types.VARCHAR);
-            rs = stmt.executeQuery();
-            if(rs.next()){
-              stmt = conn.prepareStatement("UPDATE Abiturient SET KodSpetsialnZach=? WHERE KodAbiturienta LIKE ?");
-              stmt.setObject(1,rs.getString(1),Types.INTEGER);
-              stmt.setObject(2,col,Types.INTEGER);
-              stmt.executeUpdate();
-
-            } else {
 
 // сброс специальности зачисления
                stmt = conn.prepareStatement("UPDATE Abiturient SET KodSpetsialnZach=NULL WHERE KodAbiturienta LIKE ?");
                stmt.setObject(1,col,Types.INTEGER);
                stmt.executeUpdate();
+               stmt = conn.prepareStatement("UPDATE Konkurs SET Zach = NULL WHERE KodAbiturienta LIKE ?");
+	              stmt.setObject(1,col,Types.INTEGER);    	            
+	              stmt.executeUpdate(); 
             }
          }
       }
