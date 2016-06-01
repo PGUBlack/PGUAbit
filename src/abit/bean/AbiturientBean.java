@@ -2027,6 +2027,36 @@ public class AbiturientBean extends IDBean {
     	planPriemaIG = value;
     }
     
+/****************************************************************************/    
+
+    public Integer getPpDogLgot() {
+    	return ppDogLgot;
+    }
+    
+    public void setPpDogLgot(Integer value) {
+    	ppDogLgot = value;
+    }    
+    
+/****************************************************************************/    
+
+    public Integer getPpKrimDog() {
+    	return ppKrimDog;
+    }
+    
+    public void setPpKrimDog(Integer value) {
+    	ppKrimDog = value;
+    }   
+    
+/****************************************************************************/    
+
+    public Integer getPpKrimDogLgot() {
+    	return ppKrimDogLgot;
+    }
+    
+    public void setPpKrimDogLgot(Integer value) {
+    	ppKrimDogLgot = value;
+    }   
+    
 /****************************************************************************/
 
     public Integer getPlanPriemaT2() {

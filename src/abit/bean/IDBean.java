@@ -388,6 +388,9 @@ public class IDBean {
     protected Integer   krimok							 = null;
     protected Integer   krimcp							 = null;
     protected Integer   planPriemaIG					 = null;
+    protected Integer 	ppDogLgot						 = null;
+    protected Integer 	ppKrimDog						 = null;  
+    protected Integer 	ppKrimDogLgot					 = null;    
     
     protected String   special27                        = null;
     protected String   special28                        = null;

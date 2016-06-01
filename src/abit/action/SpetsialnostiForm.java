@@ -2,7 +2,9 @@ package abit.action;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
+
 import org.apache.struts.action.*;
+
 import abit.bean.AbiturientBean;
 import abit.util.StringUtil;
 
@@ -39,6 +41,9 @@ public class SpetsialnostiForm extends ActionForm {
     private Integer krimok							  = null;
     private Integer krimcp							  = null;
     private Integer planPriemaIG					  = null;
+    private Integer ppDogLgot						  = null;
+    private Integer ppKrimDog						  = null;  
+    private Integer ppKrimDogLgot					  = null;  
     private Integer fisId                         = null;
     private String  formaOb                          = null;
     private Integer idNews = null;
@@ -76,6 +81,9 @@ public class SpetsialnostiForm extends ActionForm {
     public Integer getKrimok()							 { return krimok;							}
     public Integer getKrimcp()							 { return krimcp;							}
     public Integer getPlanPriemaIG()						 { return planPriemaIG;						}
+    public Integer getPpDogLgot()						 { return ppDogLgot;						}
+    public Integer getPpKrimDog()						 { return ppKrimDog;						}    
+    public Integer getPpKrimDogLgot()						 { return ppKrimDogLgot;						}   
     public Integer getFisId()     { return fisId;     }
     public String getFormaOb()     { return formaOb;     }
     public Integer getIdNews()     { return idNews;     }
@@ -115,6 +123,9 @@ public class SpetsialnostiForm extends ActionForm {
     public void setKrimok(Integer value)						   { krimok							  = value;		  }
     public void setKrimcp(Integer value)						   { krimcp							  = value;		  }
     public void setPlanPriemaIG(Integer value)					   { planPriemaIG					  = value;		  }
+    public void setPpDogLgot(Integer value)					   { ppDogLgot					  = value;		  }    
+    public void setPpKrimDog(Integer value)					   { ppKrimDog					  = value;		  }    
+    public void setPpKrimDogLgot(Integer value)					   { ppKrimDogLgot					  = value;		  }   
     
  public void reset(ActionMapping mapping, HttpServletRequest request )
     {
@@ -151,6 +162,9 @@ public class SpetsialnostiForm extends ActionForm {
         krimok							 =  null;
         krimcp							 =  null;
         planPriemaIG					 =  null;
+        ppDogLgot						 =  null;      
+        ppKrimDog						 =  null;
+        ppKrimDogLgot					 =  null;
     }
 
  public void setBean(AbiturientBean bean,HttpServletRequest request,ActionErrors errors) throws ServletException {
@@ -188,6 +202,12 @@ public class SpetsialnostiForm extends ActionForm {
             krimcp = bean.getKrimcp();
             
             planPriemaIG = bean.getPlanPriemaIG();
+            
+            ppDogLgot = bean.getPpDogLgot();
+            
+            ppKrimDog = bean.getPpKrimDog();
+            
+            ppKrimDogLgot = bean.getPpKrimDogLgot();
             
             fisId = bean.getFisId();
             formaOb = bean.getFormaOb();
@@ -275,8 +295,13 @@ public class SpetsialnostiForm extends ActionForm {
         bean.setKrimcp(krimcp);
         
         bean.setPlanPriemaIG(planPriemaIG);
-
-
+        
+        bean.setPpDogLgot(ppDogLgot);
+        
+        bean.setPpKrimDog(ppKrimDog);
+        
+        bean.setPpKrimDogLgot(ppKrimDogLgot);
+        
         bean.setPoluProhodnoiBall(poluProhodnoiBall);
 
         bean.setProhodnoiBallNaSpetsialnosti(prohodnoiBallNaSpetsialnosti);
