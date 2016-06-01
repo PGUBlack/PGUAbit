@@ -159,7 +159,7 @@ public class SpetsialnostiAction extends Action {
                     if(rs.next()) kSp = rs.getInt(1)+1;
                      else kSp = 2;
 
-                    stmt = conn.prepareStatement("INSERT Spetsialnosti(KodSpetsialnosti,KodFakulteta,NazvanieSpetsialnosti,Abbreviatura,ShifrSpetsialnosti,ShifrSpetsialnostiOKSO,PlanPriema,Sobesedovanie,KodPredmeta,JekzamenZachet,PoluProhodnoiBall,ProhodnoiBallNaSpetsialnosti,KodKonGruppy,Tip_Spec,TselPr_PGU,TselPr_ROS,TselPr_1,TselPr_2,TselPr_3, PlanPriemaLg, PlanPriemaDog, eduLevel, fisId,krim_obshee,krim_ok,krim_cp,planpriemaig) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+                    stmt = conn.prepareStatement("INSERT Spetsialnosti(KodSpetsialnosti,KodFakulteta,NazvanieSpetsialnosti,Abbreviatura,ShifrSpetsialnosti,ShifrSpetsialnostiOKSO,PlanPriema,Sobesedovanie,KodPredmeta,JekzamenZachet,PoluProhodnoiBall,ProhodnoiBallNaSpetsialnosti,KodKonGruppy,Tip_Spec,TselPr_PGU,TselPr_ROS,TselPr_1,TselPr_2,TselPr_3, PlanPriemaLg, PlanPriemaDog, eduLevel, fisId,krim_obshee,krim_ok,krim_cp,planpriemaig,ppdoglgot,ppkrimdog,ppkrimdoglgot) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
                     stmt.setObject(1, new Integer(""+kSp),Types.INTEGER);
                     stmt.setObject(2, new Integer(abit_Spec.getSpecial1().substring(0,abit_Spec.getSpecial1().indexOf("%"))),Types.INTEGER);
                     stmt.setObject(3, abit_Spec.getNazvanieSpetsialnosti(),Types.VARCHAR);
@@ -200,6 +200,9 @@ public class SpetsialnostiAction extends Action {
                     stmt.setObject(25, abit_Spec.getKrimok(),Types.INTEGER);
                     stmt.setObject(26, abit_Spec.getKrimcp(),Types.INTEGER);
                     stmt.setObject(27, abit_Spec.getPlanPriemaIG(),Types.INTEGER);
+                    stmt.setObject(28, abit_Spec.getPpDogLgot(),Types.INTEGER);     
+                    stmt.setObject(29, abit_Spec.getPpKrimDog(),Types.INTEGER);    
+                    stmt.setObject(30, abit_Spec.getPpKrimDogLgot(),Types.INTEGER);                       
                     stmt.executeUpdate();
                     
                  /*   stmt = conn.prepareStatement("INSERT specFisId(KodSpetsialnosti, eduLevel, fisId) VALUES (?,?,?)");
@@ -227,7 +230,7 @@ public class SpetsialnostiAction extends Action {
                       session.setAttribute("priznakSortirovki", request.getParameter("priznakSortirovki"));
                    }
 
-                 String query = new String("SELECT NazvanieSpetsialnosti,Abbreviatura,ShifrSpetsialnosti,shifrSpetsialnostiOKSO,PlanPriema,Sobesedovanie,Predmet,JekzamenZachet,PoluProhodnoiBall,ProhodnoiBallNaSpetsialnosti,KodSpetsialnosti,KonGruppa.Nazvanie,Tip_Spec,TselPr_PGU,TselPr_ROS,TselPr_1,TselPr_2,TselPr_3,PlanPriemaLg,PlanPriemaDog,krim_obshee,krim_ok,krim_cp,planPriemaIG  FROM NazvanijaPredmetov,Spetsialnosti,Fakultety,KonGruppa WHERE KonGruppa.KodKonGruppy=Spetsialnosti.KodKonGruppy AND NazvanijaPredmetov.KodPredmeta=Spetsialnosti.KodPredmeta AND Spetsialnosti.KodFakulteta LIKE Fakultety.KodFakulteta AND Fakultety.KodVuza LIKE ");
+                 String query = new String("SELECT NazvanieSpetsialnosti,Abbreviatura,ShifrSpetsialnosti,shifrSpetsialnostiOKSO,PlanPriema,Sobesedovanie,Predmet,JekzamenZachet,PoluProhodnoiBall,ProhodnoiBallNaSpetsialnosti,KodSpetsialnosti,KonGruppa.Nazvanie,Tip_Spec,TselPr_PGU,TselPr_ROS,TselPr_1,TselPr_2,TselPr_3,PlanPriemaLg,PlanPriemaDog,krim_obshee,krim_ok,krim_cp,planPriemaIG,ppdoglgot,ppkrimdog,ppkrimdoglgot  FROM NazvanijaPredmetov,Spetsialnosti,Fakultety,KonGruppa WHERE KonGruppa.KodKonGruppy=Spetsialnosti.KodKonGruppy AND NazvanijaPredmetov.KodPredmeta=Spetsialnosti.KodPredmeta AND Spetsialnosti.KodFakulteta LIKE Fakultety.KodFakulteta AND Fakultety.KodVuza LIKE ");
 
                    query += session.getAttribute("kVuza");
 
@@ -272,6 +275,9 @@ public class SpetsialnostiAction extends Action {
                      abit_TMP.setKrimok( new Integer(rs.getInt(22)) );
                      abit_TMP.setKrimcp( new Integer(rs.getInt(23)) );
                      abit_TMP.setPlanPriemaIG( new Integer(rs.getInt(24)) );
+                     abit_TMP.setPpDogLgot( new Integer(rs.getInt(25)) );
+                     abit_TMP.setPpKrimDog( new Integer(rs.getInt(26)) );
+                     abit_TMP.setPpKrimDogLgot( new Integer(rs.getInt(27)) );                 
                      abits_Spec.add(abit_TMP);
                    }
 
@@ -286,7 +292,7 @@ public class SpetsialnostiAction extends Action {
 /*******************  Если action="mod_del", то зачитываем одну запись из БД ********************/
 
             } else if ( form.getAction().equals("mod_del") ) {
-                stmt = conn.prepareStatement("SELECT DISTINCT AbbreviaturaFakulteta,NazvanieSpetsialnosti,Abbreviatura,ShifrSpetsialnosti,ShifrSpetsialnostiOKSO,PlanPriema,Sobesedovanie,KodPredmeta,JekzamenZachet,PoluProhodnoiBall,ProhodnoiBallNaSpetsialnosti,Fakultety.KodFakulteta,ShifrFakulteta,Fakultet,KodKonGruppy,Tip_Spec,TselPr_PGU,TselPr_ROS,TselPr_1,TselPr_2,TselPr_3, PlanPriemaLg, PlanPriemaDog, eduLevel,fisId, krim_obshee,krim_ok,krim_cp,planpriemaig FROM Spetsialnosti,Fakultety WHERE Spetsialnosti.KodFakulteta = Fakultety.KodFakulteta AND KodSpetsialnosti LIKE ?");
+                stmt = conn.prepareStatement("SELECT DISTINCT AbbreviaturaFakulteta,NazvanieSpetsialnosti,Abbreviatura,ShifrSpetsialnosti,ShifrSpetsialnostiOKSO,PlanPriema,Sobesedovanie,KodPredmeta,JekzamenZachet,PoluProhodnoiBall,ProhodnoiBallNaSpetsialnosti,Fakultety.KodFakulteta,ShifrFakulteta,Fakultet,KodKonGruppy,Tip_Spec,TselPr_PGU,TselPr_ROS,TselPr_1,TselPr_2,TselPr_3, PlanPriemaLg, PlanPriemaDog, eduLevel,fisId, krim_obshee,krim_ok,krim_cp,planpriemaig,ppdoglgot,ppkrimdog,ppkrimdoglgot FROM Spetsialnosti,Fakultety WHERE Spetsialnosti.KodFakulteta = Fakultety.KodFakulteta AND KodSpetsialnosti LIKE ?");
                 stmt.setObject(1,abit_Spec.getKodSpetsialnosti(),Types.INTEGER);
                 rs = stmt.executeQuery();
                 if(rs.next()) {
@@ -321,6 +327,9 @@ public class SpetsialnostiAction extends Action {
                      abit_Spec.setKrimok( new Integer(rs.getInt(27)) );
                      abit_Spec.setKrimcp( new Integer(rs.getInt(28)) );
                      abit_Spec.setPlanPriemaIG( new Integer(rs.getInt(29)) );
+                     abit_Spec.setPpDogLgot( new Integer(rs.getInt(30)) );
+                     abit_Spec.setPpKrimDog( new Integer(rs.getInt(31)) );
+                     abit_Spec.setPpKrimDogLgot( new Integer(rs.getInt(32)) );
                      
                 }
                 
@@ -400,7 +409,7 @@ public class SpetsialnostiAction extends Action {
 
             } else if ( form.getAction().equals("change") && request.getParameter("delete") == null ) {
                   form.setAction(us.getClientIntName("change","act"));
-                  stmt = conn.prepareStatement("UPDATE Spetsialnosti SET KodFakulteta=?,NazvanieSpetsialnosti=?,Abbreviatura=?,ShifrSpetsialnosti=?,ShifrSpetsialnostiOKSO=?,PlanPriema=?,Sobesedovanie=?,KodPredmeta=?,JekzamenZachet=?,PoluProhodnoiBall=?,ProhodnoiBallNaSpetsialnosti=?,KodKonGruppy=?,Tip_Spec=?,TselPr_PGU=?,TselPr_ROS=?,TselPr_1=?,TselPr_2=?,TselPr_3=?,PlanPriemaLg=?,PlanPriemaDog=?,  eduLevel=?, fisId=?, Krim_obshee=?, krim_ok=?, krim_cp=?,planpriemaIG=? WHERE KodSpetsialnosti LIKE ?");
+                  stmt = conn.prepareStatement("UPDATE Spetsialnosti SET KodFakulteta=?,NazvanieSpetsialnosti=?,Abbreviatura=?,ShifrSpetsialnosti=?,ShifrSpetsialnostiOKSO=?,PlanPriema=?,Sobesedovanie=?,KodPredmeta=?,JekzamenZachet=?,PoluProhodnoiBall=?,ProhodnoiBallNaSpetsialnosti=?,KodKonGruppy=?,Tip_Spec=?,TselPr_PGU=?,TselPr_ROS=?,TselPr_1=?,TselPr_2=?,TselPr_3=?,PlanPriemaLg=?,PlanPriemaDog=?,  eduLevel=?, fisId=?, Krim_obshee=?, krim_ok=?, krim_cp=?,planpriemaIG=?, ppdoglgot=?,ppkrimdog=?,ppkrimdoglgot=? WHERE KodSpetsialnosti LIKE ?");
                   stmt.setObject(1,new Integer((abit_Spec.getSpecial1()+"").substring(0,(abit_Spec.getSpecial1()+"").indexOf("%"))),Types.INTEGER);
                   stmt.setObject(2,abit_Spec.getNazvanieSpetsialnosti(),Types.VARCHAR);
                   stmt.setObject(3,abit_Spec.getAbbreviatura(),Types.VARCHAR);
@@ -422,7 +431,7 @@ public class SpetsialnostiAction extends Action {
                   stmt.setObject(19,abit_Spec.getPlanPriemaLg(),Types.INTEGER);
                   stmt.setObject(20,abit_Spec.getPlanPriemaDog(),Types.INTEGER);
                  
-                  stmt.setObject(27,abit_Spec.getKodSpetsialnosti(),Types.INTEGER);
+                  stmt.setObject(30,abit_Spec.getKodSpetsialnosti(),Types.INTEGER);
               //  stmt.setObject(23,abit_Spec.getIdNews(),Types.INTEGER);
                   
                   String eduLevelFromShifr = abit_Spec.getShifrSpetsialnosti().substring(3, 5);
@@ -444,7 +453,10 @@ public class SpetsialnostiAction extends Action {
                   stmt.setObject(24,abit_Spec.getKrimok(),Types.INTEGER);
                   stmt.setObject(25,abit_Spec.getKrimcp(),Types.INTEGER);
                   stmt.setObject(26,abit_Spec.getPlanPriemaIG(),Types.INTEGER);
-                  
+                		  
+                  stmt.setObject(27,abit_Spec.getPpDogLgot(),Types.INTEGER);
+                  stmt.setObject(28,abit_Spec.getPpKrimDog(),Types.INTEGER);
+                  stmt.setObject(29,abit_Spec.getPpKrimDogLgot(),Types.INTEGER);
                   
                   stmt.executeUpdate();
                   spetsialnosti_f  = true;

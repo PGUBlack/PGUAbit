@@ -376,7 +376,19 @@ if(document.forms(0).special1.value != "-"){
                      
 <tr><td><font class="text_10">План приема (договор ин. гр.):</font></td>
       <td><html:text accesskey="п" name="abit_Spec" styleClass="text_f10_short" property="planPriemaIG" 
-                     maxlength="3" size="3" tabindex="8" value=""/>                                                               
+                     maxlength="3" size="3" tabindex="8" value=""/>         
+                     
+ <tr><td><font class="text_10">План приема (дог. льготы):</font></td>
+      <td><html:text accesskey="п" name="abit_Spec" styleClass="text_f10_short" property="ppDogLgot" 
+                     maxlength="3" size="3" tabindex="8" value=""/>       
+                     
+ <tr><td><font class="text_10">План приема (Крым дог.):</font></td>
+      <td><html:text accesskey="п" name="abit_Spec" styleClass="text_f10_short" property="ppKrimDog" 
+                     maxlength="3" size="3" tabindex="8" value=""/>      
+                     
+  <tr><td><font class="text_10">План приема (Крым дог. льготы):</font></td>
+      <td><html:text accesskey="п" name="abit_Spec" styleClass="text_f10_short" property="ppKrimDogLgot" 
+                     maxlength="3" size="3" tabindex="8" value=""/>                                                                                             
                      
   <tr><td><font class="text_10">План приёма (льготы):</font></td>
       <td><html:text accesskey="п" name="abit_Spec" styleClass="text_f10_short" property="planPriemaLg" 
@@ -475,7 +487,10 @@ if(document.forms(0).special1.value != "-"){
     <td rowspan=2 align=center height=30><font class="text_th">&nbsp;План&nbsp; &nbsp;приёма&nbsp;(Крым&nbsp;общ.)&nbsp;</font></td>
     <td rowspan=2 align=center height=30><font class="text_th">&nbsp;План&nbsp; &nbsp;приёма&nbsp;(Крым&nbsp;особая&nbsp;квота)&nbsp;</font></td>  
     <td rowspan=2 align=center height=30><font class="text_th">&nbsp;План&nbsp; &nbsp;приёма&nbsp;(Крым&nbsp;целевой&nbsp;приём)&nbsp;</font></td>
-    <td rowspan=2 align=center height=30><font class="text_th">&nbsp;План&nbsp; &nbsp;приёма&nbsp;(договор&nbsp;ин.&nbsp;гр.)&nbsp;</font></td>             
+    <td rowspan=2 align=center height=30><font class="text_th">&nbsp;План&nbsp; &nbsp;приёма&nbsp;(договор&nbsp;ин.&nbsp;гр.)&nbsp;</font></td> 
+    <td rowspan=2 align=center height=30><font class="text_th">&nbsp;План&nbsp; &nbsp;приёма&nbsp;(дог.&nbsp;льготы)&nbsp;</font></td>         
+    <td rowspan=2 align=center height=30><font class="text_th">&nbsp;План&nbsp; &nbsp;приёма&nbsp;(Крым&nbsp;дог.)&nbsp;</font></td>      
+    <td rowspan=2 align=center height=30><font class="text_th">&nbsp;План&nbsp; &nbsp;приёма&nbsp;(Крым&nbsp;дог.&nbsp;льготы)&nbsp;</font></td>             
     <td rowspan=2 align=center height=30><font class="text_th">&nbsp;План&nbsp;цел.&nbsp; &nbsp;пр.&nbsp;(ПГУ)&nbsp;</font></td>
     <td rowspan=2 align=center height=30><font class="text_th">&nbsp;План&nbsp;цел.&nbsp; &nbsp;пр.&nbsp;(ВСЕ)&nbsp;</font></td>
     <td rowspan=2 align=center height=30><font class="text_th">&nbsp;План&nbsp;ЦП&nbsp; &nbsp;РосАтом&nbsp;(а)&nbsp;</font></td>
@@ -506,6 +521,9 @@ if(document.forms(0).special1.value != "-"){
   <td align=center valign=center>&nbsp;<font class="text_10"><bean:write name="abit_Spec" property="krimok"/></font>&nbsp;</td>
   <td align=center valign=center>&nbsp;<font class="text_10"><bean:write name="abit_Spec" property="krimcp"/></font>&nbsp;</td>
   <td align=center valign=center>&nbsp;<font class="text_10"><bean:write name="abit_Spec" property="planPriemaIG"/></font>&nbsp;</td>
+  <td align=center valign=center>&nbsp;<font class="text_10"><bean:write name="abit_Spec" property="ppDogLgot"/></font>&nbsp;</td>
+  <td align=center valign=center>&nbsp;<font class="text_10"><bean:write name="abit_Spec" property="ppKrimDog"/></font>&nbsp;</td>  
+  <td align=center valign=center>&nbsp;<font class="text_10"><bean:write name="abit_Spec" property="ppKrimDogLgot"/></font>&nbsp;</td>    
   <td align=center valign=center>&nbsp;<font class="text_10"><bean:write name="abit_Spec" property="planPriemaT1"/></font>&nbsp;</td>
   <td align=center valign=center>&nbsp;<font class="text_10"><bean:write name="abit_Spec" property="planPriemaT2"/></font>&nbsp;</td>
   <td align=center valign=center>&nbsp;<font class="text_10"><bean:write name="abit_Spec" property="planPriemaT3"/></font>&nbsp;</td>
@@ -616,9 +634,33 @@ if(document.forms(0).special1.value != "-"){
       <td><html:text accesskey="п" name="abit_Spec" styleClass="text_f10_short" property="planPriema" 
                      size="3" maxlength="3" tabindex="8"/>
                      
-   <tr><td><font class="text_10">План приема (после Техникума):</font></td>
-      <td><html:text accesskey="п" name="abit_Spec" styleClass="text_f10_short" property="idNews" 
-                     size="3" maxlength="3" tabindex="8"/>
+<tr><td><font class="text_10">План приёма (Крым общ.):</font></td>
+      <td><html:text accesskey="п" name="abit_Spec" styleClass="text_f10_short" property="krimobshee" 
+                     maxlength="3" size="3" tabindex="8"/>
+                     
+<tr><td><font class="text_10">План приёма (Крым особая квота):</font></td>
+      <td><html:text accesskey="п" name="abit_Spec" styleClass="text_f10_short" property="krimok" 
+                     maxlength="3" size="3" tabindex="8"/>
+                     
+<tr><td><font class="text_10">План приёма (Крым целевой приём):</font></td>
+      <td><html:text accesskey="п" name="abit_Spec" styleClass="text_f10_short" property="krimcp" 
+                     maxlength="3" size="3" tabindex="8"/>
+                     
+<tr><td><font class="text_10">План приема (договор ин. гр.):</font></td>
+      <td><html:text accesskey="п" name="abit_Spec" styleClass="text_f10_short" property="planPriemaIG" 
+                     maxlength="3" size="3" tabindex="8"/>        
+                     
+ <tr><td><font class="text_10">План приема (дог. льготы):</font></td>
+      <td><html:text accesskey="п" name="abit_Spec" styleClass="text_f10_short" property="ppDogLgot" 
+                     maxlength="3" size="3" tabindex="8"/>                     
+                     
+ <tr><td><font class="text_10">План приема (Крым дог.):</font></td>
+      <td><html:text accesskey="п" name="abit_Spec" styleClass="text_f10_short" property="ppKrimDog" 
+                     maxlength="3" size="3" tabindex="8"/>    
+                     
+ <tr><td><font class="text_10">План приема (Крым дог. льготы):</font></td>
+      <td><html:text accesskey="п" name="abit_Spec" styleClass="text_f10_short" property="ppKrimDogLgot" 
+                     maxlength="3" size="3" tabindex="8"/>    
                      
  <tr><td><font class="text_10">План приема (льготы):</font></td>
       <td><html:text accesskey="п" name="abit_Spec" styleClass="text_f10_short" property="planPriemaLg" 
