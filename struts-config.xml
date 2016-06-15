@@ -1,0 +1,1942 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+
+<!DOCTYPE struts-config PUBLIC
+          "-//Apache Software Foundation//DTD Struts Configuration 1.1//EN"
+          "http://jakarta.apache.org/struts/dtds/struts-config_1_1.dtd">
+
+<struts-config>
+
+  <!-- ========== Form Bean Definitions =================================== -->
+ <form-beans>
+   <form-bean name="FillCGsForm" type="abit.ajax.FillCGsForm"/>
+   
+   <form-bean name="KladrForm" type="abit.ajax.KladrForm"/>
+ 
+    <form-bean      name="abiturientForm"
+                    type="abit.action.AbiturientForm"/>
+
+    <form-bean      name="apelljatsijaForm"
+                    type="abit.action.ApelljatsijaForm"/>
+
+    <form-bean      name="badAttForm"
+                    type="abit.action.BadAttForm"/>
+
+    <form-bean      name="ballPotokForm"
+                    type="abit.action.BallPotokForm"/>
+
+    <form-bean      name="blankForm"
+                    type="abit.action.BlankForm"/>
+
+    <form-bean      name="copyldForm"
+                    type="abit.action.CopyLdForm"/>
+
+    <form-bean      name="editSertForm"
+                    type="abit.action.EditSertForm"/>
+            <form-bean      name="editSochForm"
+                    type="abit.action.EditSertForm"/>
+
+    <form-bean      name="ekzamenyNaSpetsialnostiForm"
+                    type="abit.action.EkzamenyNaSpetsialnostiForm"/>
+
+    <form-bean      name="errorForm"
+                    type="abit.action.ErrorForm"/>
+
+    <form-bean      name="fakultetyForm"
+                    type="abit.action.FakultetyForm"/>
+
+    <form-bean      name="fisConnectForm"
+                    type="abit.action.FisConnectForm"/>
+                    
+     <form-bean      name="fisInterfaceForm"
+                    type="abit.action.FisInterfaceForm"/>                
+                    
+    <form-bean      name="fisImportForm"
+                    type="abit.action.FisImportForm"/>
+                    
+    <form-bean      name="fisCompaignForm"
+                    type="abit.action.FisCompaignForm"/>
+                    
+    <form-bean      name="fisDeleteForm"
+                    type="abit.action.FisDeleteForm"/>
+
+    <form-bean      name="fGruppyForm"
+                    type="abit.action.FGruppyForm"/>
+
+    <form-bean      name="forma_6_Form"
+                    type="abit.action.Forma_6_Form"/>
+
+    <form-bean      name="forma_2_Form"
+                    type="abit.action.Forma_2_Form"/>
+
+    <form-bean      name="genEgeForm"
+                    type="abit.action.GenEgeForm"/>
+
+<form-bean      name="prioritetForm"
+                    type="abit.action.EkzamenyNaSpetsialnostiForm"/>
+    <form-bean      name="goFBSForm"
+                    type="abit.action.GoFBSForm"/>
+
+    <form-bean      name="gruppyForm"
+                    type="abit.action.GruppyForm"/>
+
+    <form-bean      name="injazFakForm"
+                    type="abit.action.InjazFakForm"/>
+
+    <form-bean      name="infoBallsForm"
+                    type="abit.action.InfoBallsForm"/>
+
+    <form-bean      name="kursyForm"
+                    type="abit.action.KursyForm"/>
+
+    <form-bean      name="logoutForm"
+                    type="abit.action.LogoutForm"/>
+
+    <form-bean      name="lgotyForm"
+                    type="abit.action.LgotyForm"/>
+
+    <form-bean      name="lich_adjForm"
+                    type="abit.action.LichAdjustForm"/>
+
+    <form-bean      name="listSertEgeForm"
+                    type="abit.action.ListSertEgeForm"/>
+
+    <form-bean      name="listsAttrsForm"
+                    type="abit.action.ListsAttrsForm"/>
+
+    <form-bean      name="listsDecForm"
+                    type="abit.action.ListsDecForm"/>
+
+    <form-bean      name="listsGroupsForm"
+                    type="abit.action.ListsGroupsForm"/>
+
+    <form-bean      name="listsSpecForm"
+                    type="abit.action.ListsSpecForm"/>
+                    
+    <form-bean      name="listsInfoForm"
+                    type="abit.action.ListsInfoForm"/>                    
+
+    <form-bean      name="listsDoneForm"
+                    type="abit.action.ListsDoneForm"/>
+
+    <form-bean      name="listsFakultsForm"
+                    type="abit.action.ListsFakultsForm"/>
+
+    <form-bean      name="listSpecForm"
+                    type="abit.action.ListSpecForm"/>
+
+    <form-bean      name="loginForm"
+                    type="abit.action.LoginForm"/>
+
+    <form-bean      name="medaliForm"
+                    type="abit.action.MedaliForm"/>
+
+    <form-bean      name="medConfirmForm"
+                    type="abit.action.MedConfirmForm"/>
+
+    <form-bean      name="konGrForm"
+                    type="abit.action.KonGrForm"/>
+
+    <form-bean      name="nazvanijaPredmetovForm"
+                    type="abit.action.NazvanijaPredmetovForm"/>
+
+    <form-bean      name="nazvanieVuzaForm"
+                    type="abit.action.NazvanieVuzaForm"/>
+
+    <form-bean      name="newsForm"
+                    type="abit.action.NewsForm"/>
+
+    <form-bean      name="oblastiForm"
+                    type="abit.action.OblastiForm"/>
+
+    <form-bean      name="otsenkiForm"
+                    type="abit.action.OtsenkiForm"/>
+
+    <form-bean      name="otvetstvennyeLitsaForm"
+                    type="abit.action.OtvetstvennyeLitsaForm"/>
+
+    <form-bean      name="podtvMedForm"
+                    type="abit.action.PodtvMedForm"/>
+
+    <form-bean      name="prikazForm"
+                    type="abit.action.PrikazForm"/>
+
+    <form-bean      name="punktyForm"
+                    type="abit.action.PunktyForm"/>
+                    
+   <form-bean      name="paymentContractForm"
+                    type="abit.action.PaymentContractForm"/>
+                    
+   <form-bean      name="checkEGEForm"
+                    type="abit.action.CheckEGEForm"/>
+
+    <form-bean      name="raspisanieForm"
+                    type="abit.action.RaspisanieForm"/>
+
+    <form-bean      name="rajonyForm"
+                    type="abit.action.RajonyForm"/>
+
+    <form-bean      name="repAllZachOtsForm"
+                    type="abit.action.AllZachOtsForm"/>
+
+    <form-bean      name="rep_analiz_kgForm"
+                    type="abit.action.BallPotokForm"/>
+
+    <form-bean      name="reportsBrowserForm"
+                    type="abit.action.ReportsBrowserForm"/>
+
+    <form-bean      name="rep_medForm"
+                    type="abit.action.ListsMedForm"/>
+
+    <form-bean      name="rep_kgballForm"
+                    type="abit.action.ListsKgBallForm"/>
+
+    <form-bean      name="shfrLichDelForm"
+                    type="abit.action.ShfrLichDelForm"/>
+
+    <form-bean      name="spetsialnostiForm"
+                    type="abit.action.SpetsialnostiForm"/>
+
+    <form-bean      name="sqlrepForm"
+                    type="abit.action.ReportsBrowserForm"/>
+
+    <form-bean      name="summaryForm"
+                    type="abit.action.SummaryForm"/>
+
+    <form-bean      name="totalMedForm"
+                    type="abit.action.TotalMedForm"/>
+
+    <form-bean      name="tselevojPriemForm"
+                    type="abit.action.TselevojPriemForm"/>
+
+    <form-bean      name="twinsForm"
+                    type="abit.action.TwinsForm"/>
+
+    <form-bean      name="usersForm"
+                    type="abit.action.UsersForm"/>
+
+    <form-bean      name="user_sessForm"
+                    type="abit.action.UserSessForm"/>
+
+    <form-bean      name="vedOtsForm"
+                    type="abit.action.VedOtsForm"/>
+
+    <form-bean      name="zavedenijaForm"
+                    type="abit.action.ZavedenijaForm"/>
+
+    <form-bean      name="zchForm"
+                    type="abit.action.ZchForm"/>
+                    
+     
+                   
+ </form-beans>
+
+
+  <!-- ========== Global Forward Definitions ============================== -->
+ <global-forwards>
+ 	<forward name='umu_excel'          path='/umu_excel.do'      redirect='false'/>
+ 	 	<forward name='umu_excel_f1'          path='/umu_excel_f1.do'      redirect='false'/>
+ 	 	<forward name='umu_excel_f3'          path='/umu_excel_f3.do'      redirect='false'/>
+ 	 	<forward name='umu_excel_f2'          path='/umu_excel_f2.do'      redirect='false'/>
+ 	 	<forward name='umu_excel_f4'          path='/umu_excel_f4.do'      redirect='false'/>
+ 	 	<forward name='umu_excel_monitor241'  path='/umu_excel_monitor241.do' redirect='false'/>
+ 	 	
+ 	<forward name='ajaxKladr'          path='/ajaxKladr.do'      redirect='false'/>
+ 	<forward name='ajaxFillCGs'          path='/ajaxFillCGs.do'      redirect='false'/>
+    <forward name='abiturient'              path='/abiturient.do'              redirect='false'/>
+    <forward name='abit_doc'                path='/abit_doc.do'                redirect='false'/>
+    <forward name='abit_srch'               path='/abit_srch.do'               redirect='false'/>
+     <forward name='umu_search'               path='/umu_search.do'               redirect='false'/>
+    <forward name='abit_srch_online'               path='/abit_srch_online.do'               redirect='false'/>
+   
+    <forward name='abit_s_ots'              path='/abit_s_ots.do'              redirect='false'/>
+    <forward name='abit_md'                 path='/abit_md.do'                 redirect='false'/>
+    <forward name='abit_md_online'                 path='/abit_md_online.do'                 redirect='false'/>
+   
+    <forward name='apelljatsija'            path='/apelljatsija.do'            redirect='false'/>
+    <forward name='badatt'                  path='/badatt.do'                  redirect='false'/>
+    <forward name='copy_ld'                 path='/copy_ld.do'                 redirect='false'/>
+     <forward name='dateValidation'          path='/dateValidation.do'         redirect='false'/>
+    <forward name='edit_sert'               path='/edit_sert.do'               redirect='false'/>
+    <forward name='edit_soch'               path='/edit_soch.do'               redirect='false'/>
+    <forward name='edit_rek'                path='/edit_rek.do'                redirect='false'/>
+    <forward name='ekzamenynaspetsialnosti' path='/ekzamenynaspetsialnosti.do' redirect='false'/>
+    <forward name='error'                   path='/error.do'                   redirect='false'/>  
+    <forward name='fakultety'               path='/fakultety.do'               redirect='false'/>
+    <forward name='fis_import'             path='/fis_import.do'             redirect='false'/>
+    <forward name='fis_compaign'             path='/fis_compaign.do'             redirect='false'/>
+     <forward name='fis_delete'             path='/fis_delete.do'             redirect='false'/>
+    <forward name='fis_connect'             path='/fis_connect.do'             redirect='false'/>
+     <forward name='fis_bd_update'             path='/fis_bd_update.do'             redirect='false'/>
+     <forward name='fis_interface'             path='/fis_interface.do'             redirect='false'/>
+    <forward name='fgruppy'                 path='/fgruppy.do'                 redirect='false'/>
+    <forward name='gener_ege'               path='/gener_ege.do'               redirect='false'/>
+    <forward name='prioritet'               path='/prioritet.do'               redirect='false'/>
+    <forward name='goFBS'                   path='/goFBS.do'                   redirect='false'/>
+    <forward name='gruppy'                  path='/gruppy.do'                  redirect='false'/>
+    <forward name='index'                   path='/index.do'                   redirect='false'/>
+    <forward name='info_abits'              path='/info_abits.do'              redirect='false'/>
+     <forward name='ukaction'          path='/ukaction.do'          redirect='false'/>
+     <forward name='krym'          path='/krym.do'          redirect='false'/>
+      <forward name='mk'          path='/mk.do'          redirect='false'/>
+      <forward name='soch'          path='/soch.do'          redirect='false'/>
+    <forward name='info_zach_abits'         path='/info_zach_abits.do'         redirect='false'/>
+    <forward name='kontrol_dog_abits'       path='/kontrol_dog_abits.do'       redirect='false'/>
+    <forward name='kontrol_tp_abits'        path='/kontrol_tp_abits.do'        redirect='false'/>
+    <forward name='kontrol_zso_abits'       path='/kontrol_zso_abits.do'       redirect='false'/>
+    <forward name='lich_adj'                path='/lich_adj.do'                redirect='false'/>  
+    <forward name='lists_attrs'             path='/lists_attrs.do'             redirect='false'/>
+    <forward name='lists_dec_ege'           path='/lists_dec_ege.do'           redirect='false'/>
+    <forward name='lists_spec'              path='/lists_spec.do'              redirect='false'/>
+    <forward name='lists_info'              path='/lists_info.do'              redirect='false'/>
+    <forward name='lists_groups'            path='/lists_groups.do'            redirect='false'/>
+    <forward name='login'                   path='/login.do'                   redirect='false'/>
+    <forward name='logoff'                  path='/logoff.do'                  redirect='false'/>
+    <forward name='lgoty'                   path='/lgoty.do'                   redirect='false'/>
+    <forward name='kursy'                   path='/kursy.do'                   redirect='false'/>
+    <forward name='medali'                  path='/medali.do'                  redirect='false'/>
+    <forward name='kongruppa'               path='/kongruppa.do'               redirect='false'/>
+    <forward name='nazvanievuza'            path='/nazvanievuza.do'            redirect='false'/>
+    <forward name='nazvanijapredmetov'      path='/nazvanijapredmetov.do'      redirect='false'/>
+    <forward name='news'                    path='/news.do'                    redirect='false'/>
+    <forward name='oblasti'                 path='/oblasti.do'                 redirect='false'/>
+    <forward name='otsenki'                 path='/otsenki.do'                 redirect='false'/>
+    <forward name='otvetstvennyelitsa'      path='/otvetstvennyelitsa.do'      redirect='false'/>
+    <forward name='punkty'                  path='/punkty.do'                  redirect='false'/>
+    <forward name='payment_contract'        path='/payment_contract.do'        redirect='false'/>
+    <forward name='raspisanie'              path='/raspisanie.do'              redirect='false'/>
+    <forward name='raspredballs'            path='/raspredballs.do'            redirect='false'/>
+    <forward name='rajony'                  path='/rajony.do'                  redirect='false'/>
+    <forward name='rep_zachkgots'           path='/rep_zachkgots.do'           redirect='false'/>
+    <forward name='rep_all_zach_ots'        path='/rep_all_zach_ots.do'        redirect='false'/>
+    <forward name='rep_analiz_kg'           path='/rep_analiz_kg.do'           redirect='false'/>
+    <forward name='rep_ball_potok'          path='/rep_ball_potok.do'          redirect='false'/>
+    <forward name='rep_ball_potok_kon_grp'  path='/rep_ball_potok_kon_grp.do'  redirect='false'/>
+    <forward name='rep_blank'               path='/rep_blank.do'               redirect='false'/>
+    <forward name='rep_browser'             path='/rep_browser.do'             redirect='false'/>
+    <forward name='rep_ex_list'             path='/rep_ex_list.do'             redirect='false'/>
+    <forward name='rep_forma_6'             path='/rep_forma_6.do'             redirect='false'/>
+    <forward name='rep_forma_6f'            path='/rep_forma_6f.do'            redirect='false'/>
+    <forward name='rep_forma_6k'            path='/rep_forma_6k.do'            redirect='false'/>
+    <forward name='rep_forma_6z'            path='/rep_forma_6z.do'            redirect='false'/>
+    <forward name='rep_forma_7'             path='/rep_forma_7.do'             redirect='false'/>
+    <forward name='rep_forma_8'             path='/rep_forma_8.do'             redirect='false'/>
+    <forward name='rep_forma_2'             path='/rep_forma_2.do'             redirect='false'/>
+    <forward name='rep_forma_2f'            path='/rep_forma_2f.do'            redirect='false'/>
+    <forward name='rep_forma_2z'            path='/rep_forma_2z.do'            redirect='false'/>
+    <forward name='rep_forma_2k'            path='/rep_forma_2k.do'            redirect='false'/>
+    <forward name='rep_info_balls'          path='/rep_info_balls.do'          redirect='false'/>
+    <forward name='rep_itogi_zach'          path='/rep_itogi_zach.do'          redirect='false'/>
+    <forward name='rep_itogi_priema'        path='/rep_itogi_priema.do'        redirect='false'/>
+    <forward name='rep_injaz_fak'           path='/rep_injaz_fak.do'           redirect='false'/>
+    <forward name='rep_konkurs'             path='/rep_konkurs.do'             redirect='false'/>
+    <forward name='rep_podtv_med'           path='/rep_podtv_med.do'           redirect='false'/>
+    <forward name='rep_sld'                 path='/rep_sld.do'                 redirect='false'/>
+    <forward name='rep_list_sert_ege'       path='/rep_list_sert_ege.do'       redirect='false'/>
+    <forward name='rep_lists_done'          path='/rep_lists_done.do'          redirect='false'/>
+    <forward name='rep_lists_edone'         path='/rep_lists_edone.do'         redirect='false'/>
+    <forward name='rep_lists_fakults'       path='/rep_lists_fakults.do'       redirect='false'/>
+    <forward name='rep_list_spec'           path='/rep_list_spec.do'           redirect='false'/> 
+    <forward name='rep_med_confirm'         path='/rep_med_confirm.do'         redirect='false'/>
+    <forward name='rep_med'                 path='/rep_med.do'                 redirect='false'/>
+    <forward name='rep_kgball'              path='/rep_kgball.do'              redirect='false'/>
+    <forward name='rep_kgruk'               path='/rep_kgruk.do'               redirect='false'/>
+    <forward name='rep_prikaz'              path='/rep_prikaz.do'              redirect='false'/>
+    <forward name='rep_total_m_p'           path='/rep_total_m_p.do'           redirect='false'/>
+      <forward name='asp'          path='/asp.do'          redirect='false'/>
+      <forward name='ord'          path='/ord.do'          redirect='false'/>
+      <forward name='or'          path='/or.do'          redirect='false'/>
+      
+      <forward name='int'          path='/int.do'          redirect='false'/>
+    
+    
+    <forward name='rep_wave_first'          path='/rep_wave_first.do'          redirect='false'/>
+    <forward name='rep_wave_second'         path='/rep_wave_second.do'         redirect='false'/>
+    <forward name='rep_wave_third'          path='/rep_wave_third.do'          redirect='false'/>
+    <forward name='rep_wave_fourth'         path='/rep_wave_fourth.do'         redirect='false'/>
+    <forward name='rep_wave_fifth'          path='/rep_wave_fifth.do'          redirect='false'/>
+    <forward name='rep_zhurnal'             path='/rep_zhurnal.do'             redirect='false'/>
+    <forward name='search_rtf'              path='/search_rtf.do'              redirect='false'/>
+     <forward name='search_excel'              path='/search_excel.do'         redirect='false'/>
+    <forward name='search_rtf_ots'          path='/search_rtf_ots.do'          redirect='false'/>
+    <forward name='search_txt'              path='/search_txt.do'              redirect='false'/>
+    <forward name='spetsialnosti'           path='/spetsialnosti.do'           redirect='false'/>
+    <forward name='sqlrep'                  path='/sqlrep.do'                  redirect='false'/>
+    <forward name='summary'                 path='/summary.do'                 redirect='false'/>
+    <forward name='tselevojpriem'           path='/tselevojpriem.do'           redirect='false'/>
+    <forward name='twins'                   path='/twins.do'                   redirect='false'/>
+    <forward name='users'                   path='/users.do'                   redirect='false'/>
+    <forward name='user_sess'               path='/user_sess.do'               redirect='false'/>
+    <forward name='ved_ots'                 path='/rep_ved_ots.do'             redirect='false'/>
+    <forward name='zachislen'               path='/zachislen.do'               redirect='false'/>
+    <forward name='zavedenija'              path='/zavedenija.do'              redirect='false'/>
+    <forward name='zachLgotnikov'           path='/zachLgotnikov.do'         redirect='false'/>
+      <forward name='zachZelevikov'          path='/zachZelevikov.do'         redirect='false'/>
+      <forward name='fjs_pr'          path='/fis_pr.do'         redirect='false'/>
+      <forward name='checkEGE'          path='/checkEGE.do'         redirect='false'/>
+      
+      <forward name='moodle_export'           path='/moodle_export.do'           redirect='false'/>
+    <forward name='moodle_import'           path='/moodle_import.do'           redirect='false'/>  
+    
+ </global-forwards>
+
+
+  <!-- ========== Action Mapping Definitions ============================== -->
+  <action-mappings>
+  
+  <action    path = "/umu_excel"
+      	       type = "abit.umu.UmuExcelAction" >
+     <forward name = "success"  path = "/reports.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+    
+  </action>
+  
+    <action    path = "/umu_excel_f1"
+      	       type = "abit.umu.UmuExcelF1Action" >
+       <forward name = "success"  path = "/forms_doc.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
+    
+  </action>
+  
+      <action    path = "/umu_excel_f3"
+      	       type = "abit.umu.UmuExcelF3Action" >
+       <forward name = "success"  path = "/forms_doc.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
+    
+  </action>
+  
+   <action    path = "/umu_excel_f4"
+      	       type = "abit.umu.UmuExcelF4Action" >
+       <forward name = "success"  path = "/forms_doc.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
+    
+  </action>
+  
+    <action    path = "/umu_excel_f2"
+      	       type = "abit.umu.UmuExcelF2Action" >
+     <forward name = "success"  path = "/reports.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
+    
+  </action>
+  
+      <action    path = "/umu_excel_monitor241"
+      	       type = "abit.umu.UmuExcelMonitor241Action" >
+       <forward name = "success"  path = "/forms_doc.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
+    
+  </action>
+  
+  
+    <action    path = "/umu_excel_2016_2111"
+      	       type = "abit.umu.UmuExcel20162111Action" >
+     <forward name = "success"  path = "/forms_doc.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
+    
+  </action>
+  
+        <action    path = "/umu_excel_2016_2112"
+      	       type = "abit.umu.UmuExcel20162112Action" >
+     <forward name = "success"  path = "/forms_doc.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
+    
+  </action>
+  
+          <action    path = "/umu_excel_2016_2121"
+      	       type = "abit.umu.UmuExcel20162121Action" >
+     <forward name = "success"  path = "/forms_doc.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
+    
+  </action>
+  
+            <action    path = "/umu_excel_2016_2122"
+      	       type = "abit.umu.UmuExcel20162122Action" >
+     <forward name = "success"  path = "/forms_doc.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
+    
+  </action>
+  
+            <action    path = "/umu_excel_2016_2131"
+      	       type = "abit.umu.UmuExcel20162131Action" >
+     <forward name = "success"  path = "/forms_doc.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
+    
+  </action>
+  
+              <action    path = "/umu_excel_2016_2132"
+      	       type = "abit.umu.UmuExcel20162132Action" >
+     <forward name = "success"  path = "/forms_doc.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
+    
+  </action>
+  
+              <action    path = "/umu_excel_2016_2141"
+      	       type = "abit.umu.UmuExcel20162141Action" >
+     <forward name = "success"  path = "/forms_doc.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
+    
+  </action>
+  
+               <action    path = "/umu_excel_2016_2142"
+      	       type = "abit.umu.UmuExcel20162142Action" >
+     <forward name = "success"  path = "/forms_doc.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
+    
+  </action>
+  
+                 <action    path = "/umu_excel_2016_23"
+      	       type = "abit.umu.UmuExcel201623Action" >
+     <forward name = "success"  path = "/forms_doc.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
+    
+  </action>
+  
+               <action    path = "/umu_excel_2016_2_10"
+      	       type = "abit.umu.UmuExcel2016_2_10Action" >
+     <forward name = "success"  path = "/forms_doc.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
+    
+  </action>
+  
+		<action    path = "/umu_excel_2016_2_11"
+      	       type = "abit.umu.UmuExcel2016_2_11Action" >
+     <forward name = "success"  path = "/forms_doc.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
+    
+  </action>
+  
+  
+  
+  <action name="KladrForm" path="/ajaxKladr" input="/abiturient.jsp"   type="abit.ajax.KladrAction"/>
+   
+  <action name="FillCGsForm" path="/ajaxFillCGs" input="/spetsialnosti.jsp"   type="abit.ajax.FillCGsAction"/>
+   
+  <action    path = "/dateValidation"
+      	         type = "abit.action.DateValidationAction">
+      <forward name = "success"  path = "/date_validation.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+    
+    </action>
+  
+  	 <action    path = "/zachLgotnikov"
+      	         type = "abit.action.ZachLgotnikovAction">
+      <forward name = "success"  path = "/rep_etaps.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+    
+    </action>
+    
+    <action    path = "/zachZelevikov"
+      	       type = "abit.action.ZachZelevikovAction" >
+     <forward name = "success"  path = "/rep_etaps.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+    
+    </action>
+
+    <action    path = "/abiturient"
+               type = "abit.action.AbiturientAction"
+               name = "abiturientForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"  path = "/abiturient.jsp"/>
+      <forward name = "abit_re"  path = "/abiturient.do?action=re_new"/>
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "back"     path = "/index.jsp"/>
+    </action>
+
+    <action    path = "/abit_doc"
+               type = "abit.action.AbitDocAction"
+               name = "abiturientForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"  path = "/abit_doc.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "menu"     path = "/index.jsp"/>
+    </action>
+
+    <action    path = "/abit_srch"
+               type = "abit.action.AbitSrchAction"
+               name = "abiturientForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"  path = "/abit_srch.jsp"/>
+      <forward name = "error"    path = "/error.jsp"  />
+      <forward name = "back"     path = "/index.jsp"/>
+    </action>
+    
+       <action    path = "/umu_search"
+               type = "abit.umu.UmuSrchAction"
+               name = "abiturientForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"  path = "/abit_srch.jsp"/>
+      <forward name = "error"    path = "/error.jsp"  />
+      <forward name = "back"     path = "/index.jsp"/>
+    </action>
+    
+     <action    path = "/abit_srch_online"
+               type = "abit.action.AbitSrchOnlineAction"
+               name = "abiturientForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"  path = "/abit_srch_online.jsp"/>
+      <forward name = "error"    path = "/error.jsp"  />
+      <forward name = "back"     path = "/index.jsp"/>
+    </action>
+
+    <action    path = "/abit_s_ots"
+               type = "abit.action.AbitSrchOtsAction"
+               name = "abiturientForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"  path = "/abit_s_ots.jsp"/>
+      <forward name = "error"    path = "/error.jsp"  />
+      <forward name = "back"     path = "/index.jsp"/>
+    </action>
+
+    <action    path = "/abit_md"
+               type = "abit.action.AbitModDelAction"
+               name = "abiturientForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"  path = "/abit_md.jsp"/>
+      <forward name = "result"   path = "/abit_md_res.jsp"/>
+      <forward name = "ots"      path = "/abit_md_ots.jsp"/>
+      <forward name = "error"    path = "/error.jsp"  />
+      <forward name = "goto"     path = "/abit_srch.do?action=searching"/>
+      <forward name = "back"     path = "/index.jsp"/>
+    </action>
+
+	 <action    path = "/abit_md_online"
+               type = "abit.action.AbitModDelOnlineAction"
+               name = "abiturientForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"  path = "/abit_md_online.jsp"/>
+      <forward name = "result"   path = "/abit_md_res.jsp"/>
+      <forward name = "ots"      path = "/abit_md_ots.jsp"/>
+      <forward name = "error"    path = "/error.jsp"  />
+      <forward name = "goto"     path = "/abit_srch.do?action=searching"/>
+      <forward name = "back"     path = "/index.jsp"/>
+    </action>
+	
+
+    <action    path = "/apelljatsija"
+               type = "abit.action.ApelljatsijaAction"
+               name = "apelljatsijaForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"  path = "/apelljatsija.jsp"/>
+      <forward name = "error"    path = "/error.jsp"  />
+      <forward name = "back"     path = "/abit_attr.jsp"/>
+    </action>
+
+    <action    path = "/badatt"
+               type = "abit.action.BadAttAction"
+               name = "badAttForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"   path = "/badatt.jsp"/>
+      <forward name = "error"     path = "/error.jsp"/>
+      <forward name = "back"      path = "/adjustment.jsp"  />
+      <forward name = "badAtt_f"  path = "/badatt.do?action=full" redirect="true"/>
+    </action>
+
+    <action    path = "/copy_ld"
+               type = "abit.action.CopyLdAction"
+               name = "copyldForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"  path = "/copy_ld.jsp"/>
+      <forward name = "error"    path = "/error.jsp"  />
+      <forward name = "back"     path = "/abit_attr.jsp"/>
+    </action>
+
+    <action    path = "/edit_rek"
+               type = "abit.action.EditRekAction"
+               name = "zchForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"  path = "/edit_rek.jsp"/>
+      <forward name = "error"    path = "/error.jsp"  />
+      <forward name = "back"     path = "/index.jsp"/>
+    </action>
+
+    <action    path = "/edit_sert"
+               type = "abit.action.EditSertAction"
+               name = "editSertForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"  path = "/edit_sert.jsp"/>
+      <forward name = "error"    path = "/error.jsp"  />
+      <forward name = "back"     path = "/abit_attr.jsp"/>
+    </action>
+    <action    path = "/edit_soch"
+               type = "abit.action.EditSochAction"
+               name = "editSochForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"  path = "/edit_soch.jsp"/>
+      <forward name = "error"    path = "/error.jsp"  />
+      <forward name = "back"     path = "/abit_attr.jsp"/>
+    </action>
+
+    <action    path = "/ekzamenynaspetsialnosti"
+               type = "abit.action.EkzamenyNaSpetsialnostiAction"
+               name = "ekzamenyNaSpetsialnostiForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"  path = "/ekzamenynaspetsialnosti.jsp"/>
+      <forward name = "error"    path = "/error.jsp"  />
+      <forward name = "back"     path = "/adjustment.jsp"/>
+    </action>
+
+    <action    path = "/error"
+               type = "abit.action.ErrorAction"
+               name = "errorForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "index"          path = "/index.jsp"/>
+      <forward name = "back"           path = "/index.jsp"/>
+      <forward name = "error_f"        path = "/error.do?action=full"/>
+      <forward name = "success"        path = "/error.jsp"/>
+    </action> 
+
+    <action    path = "/fakultety"
+               type = "abit.action.FakultetyAction"
+               name = "fakultetyForm"
+              scope = "request"
+           validate = "true">
+      <forward name = "success"      path = "/fakultety.jsp"/>
+      <forward name = "error"        path = "/error.jsp"  />
+      <forward name = "back"         path = "/adjustment.jsp"  />
+      <forward name = "fakultety_f"  path = "/fakultety.do?action=full" redirect="true"/>
+    </action>
+
+     <action    path = "/fis_import"
+               type = "abit.action.FisImportAction"
+               name = "fisImportForm"
+              scope = "request"
+           validate = "true">
+      <forward name = "success"        path = "/FisImport.jsp"/>
+      <forward name = "error"          path = "/error.jsp"  />
+      <forward name = "back"           path = "/adjustment.jsp"  />
+         </action>
+         
+         <action    path = "/fis_compaign"
+               type = "abit.action.FisCompaignAction"
+               name = "fisCompaignForm"
+              scope = "request"
+           validate = "true">
+      <forward name = "success"        path = "/fis_compaign.jsp"/>
+      <forward name = "error"          path = "/error.jsp"  />
+      <forward name = "back"           path = "/adjustment.jsp"  />
+         </action>
+         
+          <action    path = "/fis_delete"
+               type = "abit.action.FisDeleteAction"
+               name = "fisDeleteForm"
+              scope = "request"
+           validate = "true">
+      <forward name = "success"        path = "/FisDelete.jsp"/>
+      <forward name = "error"          path = "/error.jsp"  />
+      <forward name = "back"           path = "/adjustment.jsp"  />
+         </action>
+         
+      <action    path = "/fis_interface"
+               type = "abit.action.FisInterfaceAction"
+               name = "fisInterfaceForm"
+              scope = "request"
+           validate = "true">
+      <forward name = "success"        path = "/FisInterface.jsp"/>
+      <forward name = "error"          path = "/error.jsp"  />
+      <forward name = "back"           path = "/adjustment.jsp"  />
+      </action>
+         
+         
+           <action    path = "/fis_bd_update"
+               type = "abit.action.FisUpdateBDAction"
+              
+              scope = "request"
+           validate = "true">
+      <forward name = "success"        path = "/fis_connect.jsp"/>
+      <forward name = "error"          path = "/error.jsp"  />
+      <forward name = "back"           path = "/adjustment.jsp"  />
+         </action>
+    
+    
+    <action    path = "/fis_connect"
+               type = "abit.action.FisConnectAction"
+               name = "fisConnectForm"
+              scope = "request"
+           validate = "true">
+      <forward name = "success"        path = "/fis_connect.jsp"/>
+      <forward name = "error"          path = "/error.jsp"  />
+      <forward name = "back"           path = "/adjustment.jsp"  />
+      <forward name = "fis_connect_f"  path = "/fis_connect.do?action=full" redirect="true"/>
+    </action>
+
+    <action    path = "/fgruppy"
+               type = "abit.action.FGruppyAction"
+               name = "fGruppyForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"    path = "/fgruppy.jsp"/>
+      <forward name = "error"      path = "/error.jsp"  />
+      <forward name = "fgruppy_f"  path = "/fgruppy.do?action=full" redirect="true"/>
+      <forward name = "back"       path = "/index.jsp"/>
+    </action>
+
+    <action    path = "/gener_ege"
+               type = "abit.action.GenEgeAction"
+               name = "genEgeForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"  path = "/gener_ege.jsp"/>
+      <forward name = "error"    path = "/error.jsp"  />
+      <forward name = "back"     path = "/index.jsp"/>
+    </action>
+
+    <action    path = "/prioritet"
+               type = "abit.action.PrioritetAction"
+               name = "prioritetForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"  path = "/prioritet.jsp"/>
+      <forward name = "error"    path = "/error.jsp"  />
+      <forward name = "back"     path = "/adjustment.jsp"/>
+    </action>
+
+    <action    path = "/goFBS"
+               type = "abit.action.GoFBSAction"
+               name = "goFBSForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"   path = "/goFBS.jsp"/>
+      <forward name = "error"     path = "/error.jsp"/>
+      <forward name = "back"      path = "/abiturient.jsp"  />
+    </action>
+
+    <action    path = "/gruppy"
+               type = "abit.action.GruppyAction"
+               name = "gruppyForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"   path = "/gruppy.jsp"/>
+      <forward name = "error"     path = "/error.jsp"  />
+      <forward name = "gruppy_f"  path = "/gruppy.do?action=full" redirect="true"/>
+      <forward name = "back"      path = "/adjustment.jsp"/>
+    </action>
+
+    <action    path = "/index"
+               type = "abit.action.IndexViewAction">
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "success"  path = "/index.jsp"/>
+    </action>
+
+    <action    path = "/info_abits"
+               type = "abit.action.InfoAbitAction"
+               name = "forma_2_Form"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"  path = "/info_abits.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
+      <forward name = "back"     path = "/rep_analiz.jsp"/>
+    </action>
+
+    <action    path = "/info_zach_abits"
+               type = "abit.action.InfoZachAbitAction"
+               name = "forma_2_Form"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"  path = "/info_zach_abits.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
+      <forward name = "back"     path = "/rep_analiz.jsp"/>
+    </action>
+
+    <action    path = "/kontrol_dog_abits"
+               type = "abit.action.KontrolDogAbitAction"
+               name = "forma_2_Form"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"  path = "/kontrol_dog_abits.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
+      <forward name = "back"     path = "/rep_control.jsp"/>
+    </action>
+
+    <action    path = "/kontrol_tp_abits"
+               type = "abit.action.KontrolTPAbitAction"
+               name = "forma_2_Form"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"  path = "/kontrol_tp_abits.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
+      <forward name = "back"     path = "/rep_control.jsp"/>
+    </action>
+
+    <action    path = "/kontrol_zso_abits"
+               type = "abit.action.KontrolZSOAbitAction"
+               name = "forma_2_Form"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"  path = "/kontrol_zso_abits.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
+      <forward name = "back"     path = "/rep_control.jsp"/>
+    </action>
+
+    <action    path = "/kongruppa"
+               type = "abit.action.KonGrAction"
+               name = "konGrForm"
+              scope = "request"
+           validate = "true">
+      <forward name = "success"        path = "/kongruppa.jsp"/>
+      <forward name = "error"          path = "/error.jsp"  />
+      <forward name = "back"           path = "/adjustment.jsp"  />
+      <forward name = "kongruppa_f"    path = "/kongruppa.do?action=full" redirect="true"/>
+    </action>
+
+    <action    path = "/kursy"
+               type = "abit.action.KursyAction"
+               name = "kursyForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"  path = "/kursy.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "back"     path = "/adjustment.jsp"  />
+      <forward name = "kursy_f"  path = "/kursy.do?action=full" redirect="true"/>
+    </action>
+
+    <action    path = "/lich_adj"
+               type = "abit.action.LichAdjustAction"
+               name = "lich_adjForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "error"     path = "/error.jsp"/>
+      <forward name = "back"      path = "/index.jsp"/>
+      <forward name = "success"   path = "/lich_adj.jsp"/>
+    </action>
+
+    <action    path = "/lists_attrs"
+               type = "abit.action.ListsAttrsAction"
+               name = "listsAttrsForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"  path = "/rep_lists_attrs.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
+      <forward name = "back"     path = "/rep_lists.jsp"/>
+    </action>
+
+    <action    path = "/lists_dec_ege"
+               type = "abit.action.ListsDecEgeAction"
+               name = "listsDecForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"  path = "/rep_lists_dec_ege.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
+      <forward name = "back"     path = "/rep_reports.jsp"/>
+    </action>
+
+    <action    path = "/lists_groups"
+               type = "abit.action.ListsGroupsAction"
+               name = "listsGroupsForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"  path = "/rep_lists_groups.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
+      <forward name = "back"     path = "/rep_lists.jsp"/>
+    </action>
+
+    <action    path = "/lgoty"
+               type = "abit.action.LgotyAction"
+               name = "lgotyForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"  path = "/lgoty.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "back"     path = "/adjustment.jsp"  />
+      <forward name = "lgoty_f"  path = "/lgoty.do?action=full" redirect="true"/>
+    </action>
+
+    <action    path = "/lists_spec"
+               type = "abit.action.ListsSpecAction"
+               name = "listsSpecForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"  path = "/rep_lists_spec.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
+      <forward name = "back"     path = "/rep_reports.jsp"/>
+    </action>
+    
+        <action    path = "/lists_info"
+               type = "abit.action.ListsInfoAction"
+               name = "listsInfoForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"  path = "/rep_lists_info.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
+      <forward name = "back"     path = "/rep_reports.jsp"/>
+    </action>
+
+    <action    path = "/logoff"
+               type = "abit.action.LogoutViewAction">
+      <forward name = "success" path = "/logoff.jsp"/>
+      <forward name = "back"    path = "/index.jsp"/>
+    </action>
+
+    <!-- Process a logoff -->
+    <action    path = "/logout"
+               type = "abit.action.LogoutAction"
+               name = "logoutForm"
+              scope = "request">
+      <forward name = "success" path="/login.jsp" redirect="true"/>
+      <forward name = "back"  path = "/index.jsp"/>
+    </action>
+
+    <action    path = "/login"
+               type = "abit.action.LoginAction"
+               name = "loginForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"  path = "/login.jsp"/>
+      <forward name = "index"    path = "/index.jsp"/>
+      <forward name = "news"     path = "/news.jsp"/>
+      <forward name = "needSSL"  path = "/ssl.jsp"/>
+      <forward name = "noIE"     path = "/needie.jsp"/>
+      <forward name = "error"    path = "/login.jsp"/>
+      <forward name = "back"     path = "/hello.jsp"/>
+    </action>
+
+    <action    path = "/medali"
+               type = "abit.action.MedaliAction"
+               name = "medaliForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"   path = "/medali.jsp"/>
+      <forward name = "error"     path = "/error.jsp"/>
+      <forward name = "medali_f"  path = "/medali.do?action=full" redirect="true"/>
+      <forward name = "back"      path = "/adjustment.jsp"/>
+    </action>
+
+    <action    path = "/nazvanievuza"
+               type = "abit.action.NazvanieVuzaAction"
+               name = "nazvanieVuzaForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"         path = "/nazvanievuza.jsp"/>
+      <forward name = "error"           path = "/error.jsp"  />
+      <forward name = "nazvanievuza_f"  path = "/nazvanievuza.do?action=full" redirect="true"/>
+      <forward name = "back"            path = "/adjustment.jsp"/>
+    </action>
+
+    <action    path = "/nazvanijapredmetov"
+               type = "abit.action.NazvanijaPredmetovAction"
+               name = "nazvanijaPredmetovForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"               path = "/nazvanijapredmetov.jsp"/>
+      <forward name = "error"                 path = "/error.jsp"  />
+      <forward name = "nazvanijapredmetov_f"  path = "/nazvanijapredmetov.do?action=full" redirect="true"/>
+      <forward name = "back"                  path = "/adjustment.jsp"/>
+    </action>
+
+    <action    path = "/news"
+               type = "abit.action.NewsAction"
+               name = "newsForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"  path = "/news.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "back"     path = "/login.jsp"/>
+      <forward name = "next"     path = "/index.jsp"/>
+    </action>
+
+    <action    path = "/oblasti"
+               type = "abit.action.OblastiAction"
+               name = "oblastiForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"    path = "/oblasti.jsp"/>
+      <forward name = "error"      path = "/error.jsp"  />
+      <forward name = "oblasti_f"  path = "/oblasti.do?action=full" redirect="true"/>
+      <forward name = "back"       path = "/abit_attr.jsp"/>
+    </action>
+
+    <action    path = "/otsenki"
+               type = "abit.action.OtsenkiAction"
+               name = "otsenkiForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"  path = "/otsenki.jsp"/>
+      <forward name = "error"    path = "/error.jsp"  />
+      <forward name = "back"     path = "/abit_attr.jsp"/>
+    </action>
+
+    <action    path = "/otvetstvennyelitsa"
+               type = "abit.action.OtvetstvennyeLitsaAction"
+               name = "otvetstvennyeLitsaForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"               path = "/otvetstvennyelitsa.jsp"/>
+      <forward name = "error"                 path = "/error.jsp"  />
+      <forward name = "otvetstvennyelitsa_f"  path = "/otvetstvennyelitsa.do?action=full" redirect="true"/>
+      <forward name = "back"                  path = "/adjustment.jsp"/>
+    </action>
+
+    <action    path = "/punkty"
+               type = "abit.action.PunktyAction"
+               name = "punktyForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"   path = "/punkty.jsp"/>
+      <forward name = "error"     path = "/error.jsp"  />
+      <forward name = "punkty_f"  path = "/punkty.do?action=full" redirect="true"/>
+      <forward name = "back"      path = "/abit_attr.jsp"/>
+    </action>
+    
+        <action    path = "/payment_contract"
+               type = "abit.action.PaymentContractAction"
+               name = "paymentContractForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"  path = "/payment_contract.jsp"/>
+      <forward name = "error"    path = "/error.jsp"  />
+      <forward name = "back"     path = "/index.jsp"/>
+    </action>
+    
+    <action    path = "/checkEGE"
+               type = "abit.action.CheckEGEAction"
+               name = "checkEGEForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"  path = "/checkEGE.jsp"/>
+      <forward name = "error"    path = "/error.jsp"  />
+      <forward name = "back"     path = "/index.jsp"/>
+    </action>
+
+    <action    path = "/raspisanie"
+               type = "abit.action.RaspisanieAction"
+               name = "raspisanieForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"       path = "/raspisanie.jsp"/>
+      <forward name = "error"         path = "/error.jsp"  />
+      <forward name = "raspisanie_f"  path = "/raspisanie.do?action=full" redirect="true"/>
+      <forward name = "back"          path = "/adjustment.jsp"/>
+    </action>
+
+    <action    path = "/raspredballs"
+               type = "abit.action.RaspredBallsAction"
+               name = "zchForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"       path = "/raspredballs.jsp"/>
+      <forward name = "error"         path = "/error.jsp"  />
+      <forward name = "back"          path = "/rep_svs.jsp"/>
+    </action>
+
+    <action    path = "/rajony"
+               type = "abit.action.RajonyAction"
+               name = "rajonyForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"   path = "/rajony.jsp"/>
+      <forward name = "error"     path = "/error.jsp"  />
+      <forward name = "rajony_f"  path = "/rajony.do?action=full" redirect="true"/>
+      <forward name = "back"      path = "/abit_attr.jsp"/>
+    </action>
+
+    <action    path = "/rep_analiz_kg"
+               type = "abit.action.AnalizKgAction"
+               name = "rep_analiz_kgForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"  path = "/rep_analiz_kg.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
+      <forward name = "back"     path = "/rep_svs.jsp"/>
+    </action>
+
+    <action    path = "/rep_med"
+               type = "abit.action.ListsMedAction"
+               name = "rep_medForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"  path = "/rep_med.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
+      <forward name = "back"     path = "/rep_lists.jsp"/>
+    </action>
+
+    <action    path = "/rep_kgball"
+               type = "abit.action.ListsKgBallAction"
+               name = "rep_kgballForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"  path = "/rep_kgball.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
+      <forward name = "back"     path = "/rep_lists.jsp"/>
+    </action>
+
+    <action    path = "/rep_kgruk"
+               type = "abit.action.ListsKgRukAction"
+               name = "rep_kgballForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"  path = "/rep_kgruk.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
+      <forward name = "back"     path = "/rep_lists.jsp"/>
+    </action>
+
+    <action    path = "/rep_kgballall"
+               type = "abit.action.ListsKgBallAllAction"
+               name = "rep_kgballForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"  path = "/rep_kgballall.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
+      <forward name = "back"     path = "/rep_lists.jsp"/>
+    </action>
+
+    <action    path = "/rep_konkurs"
+               type = "abit.action.KonkursAction"
+               name = "forma_2_Form"
+              scope = "request">
+      <forward name = "success"  path = "/rep_konkurs.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
+      <forward name = "back"     path = "/rep_analiz.jsp"/>
+    </action>
+
+    <action    path = "/rep_zachkgots"
+               type = "abit.action.ZachKgOtsAction"
+               name = "repAllZachOtsForm"
+              scope = "request">
+      <forward name = "success"  path = "/rep_zachkgots.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
+      <forward name = "back"     path = "/rep_lists.jsp"/>
+    </action>
+
+    <action    path = "/rep_all_zach_ots"
+               type = "abit.action.AllZachOtsAction"
+               name = "repAllZachOtsForm"
+              scope = "request">
+      <forward name = "success"  path = "/rep_all_zach_ots.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
+      <forward name = "back"     path = "/rep_lists.jsp"/>
+    </action>
+
+    <action    path = "/rep_browser"
+               type = "abit.action.ReportsBrowserAction"
+               name = "reportsBrowserForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"   path = "/rep_browser.jsp"/>
+      <forward name = "error"     path = "/error.jsp"  />
+      <forward name = "back"      path = "/reports.jsp"/>
+    </action>
+
+    <action    path = "/rep_ball_potok"
+               type = "abit.action.BallPotokAction"
+               name = "ballPotokForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"  path = "/rep_ball_potok.jsp"/>
+      <forward name = "error"    path = "/error.jsp"  />
+      <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
+      <forward name = "back"     path = "/rep_svs.jsp"/>
+    </action>
+
+    <action    path = "/rep_ball_potok_kon_grp"
+               type = "abit.action.BallPotokKonGrpAction"
+               name = "ballPotokForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"  path = "/rep_ball_potok_kon_grp.jsp"/>
+      <forward name = "error"    path = "/error.jsp"  />
+      <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
+      <forward name = "back"     path = "/rep_svs.jsp"/>
+    </action>
+
+    <action    path = "/rep_blank"
+               type = "abit.action.BlankAction"
+               name = "blankForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"  path = "/rep_blank.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
+      <forward name = "back"     path = "/rep_prepare.jsp"/>
+    </action>
+
+    <action    path = "/rep_ex_list"
+               type = "abit.action.ExListAction"
+               name = "blankForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"  path = "/rep_ex_list.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
+      <forward name = "back"     path = "/rep_prepare.jsp"/>
+    </action>
+
+    <action    path = "/rep_forma_6"
+               type = "abit.action.Forma_6_Action"
+               name = "forma_6_Form"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"  path = "/rep_forma_6.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
+      <forward name = "back"     path = "/rep_forms.jsp"/>
+    </action>
+
+    <action    path = "/rep_itogi_zach"
+               type = "abit.action.Itogi_Zach_Action"
+               name = "forma_2_Form"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"  path = "/rep_itogi_zach.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
+      <forward name = "back"     path = "/rep_forms.jsp"/>
+    </action>
+    
+     <action    path = "/ukaction"
+               type = "abit.action.UKAction"
+               name = "listsDecForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"  path = "/ukaction.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
+      <forward name = "back"     path = "/rep_etaps.jsp"/>
+    </action>
+    
+    
+    <action    path = "/krym"
+               type = "abit.action.KrymAction"
+               name = "listsDecForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"  path = "/krym.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
+      <forward name = "back"     path = "/rep_etaps.jsp"/>
+    </action>
+    
+    
+    <action    path = "/mk"
+               type = "abit.action.MKAction"
+               name = "listsDecForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"  path = "/mk.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
+      <forward name = "back"     path = "/rep_etaps.jsp"/>
+    </action>
+    
+    <action    path = "/soch"
+               type = "abit.action.SochAction"
+               name = "listsDecForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"  path = "/soch.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
+      <forward name = "back"     path = "/reports.jsp"/>
+    </action>
+    
+
+    <action    path = "/rep_itogi_priema"
+               type = "abit.action.Itogi_Priema_Action"
+               name = "forma_2_Form"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"  path = "/rep_itogi_priema.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
+      <forward name = "back"     path = "/rep_forms.jsp"/>
+    </action>
+	
+    <action    path = "/rep_forma_6f"
+               type = "abit.action.Forma_6F_Action"
+               name = "forma_6_Form"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"  path = "/rep_forma_6f.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
+      <forward name = "back"     path = "/rep_forms.jsp"/>
+    </action>
+
+    <action    path = "/rep_forma_6k"
+               type = "abit.action.Forma_6K_Action"
+               name = "forma_6_Form"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"  path = "/rep_forma_6k.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
+      <forward name = "back"     path = "/rep_forms.jsp"/>
+    </action>
+
+    <action    path = "/rep_forma_6z"
+               type = "abit.action.Forma_6Z_Action"
+               name = "forma_6_Form"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"  path = "/rep_forma_6z.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
+      <forward name = "back"     path = "/rep_forms.jsp"/>
+    </action>
+
+    <action    path = "/rep_injaz_fak"
+               type = "abit.action.InjazFakAction"
+               name = "injazFakForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"  path = "/rep_injaz_fak.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
+      <forward name = "back"     path = "/rep_reports.jsp"/>
+    </action>
+
+    <action    path = "/rep_lists_fakults"
+               type = "abit.action.ListsFakultsAction"
+               name = "listsFakultsForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"         path = "/rep_lists_fakults.jsp"/>
+      <forward name = "listsFakults_f"  path = "/rep_lists_fakults.do?action=full" redirect="true"/>
+      <forward name = "error"           path = "/error.jsp"  />
+      <forward name = "rep_brw"         path = "/rep_browser.do?action=new"/>
+      <forward name = "back"            path = "/rep_lists.jsp"/>
+    </action>
+
+    <action    path = "/rep_list_spec"
+               type = "abit.action.ListSpecAction"
+               name = "listSpecForm"
+              scope = "request">
+      <forward name = "success"  path = "/rep_list_spec.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
+      <forward name = "back"     path = "/rep_lists.jsp"/>
+      <forward name = "browse"   path = "/list_spec.do?action=browse"/>
+	</action>
+
+    <action    path = "/rep_prikaz"
+               type = "abit.action.PrikazAction"
+               name = "prikazForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"  path = "/rep_prikaz.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
+      <forward name = "back"     path = "/rep_orders.jsp"/>
+    </action>
+
+    <action    path = "/rep_med_confirm"
+               type = "abit.action.MedConfirmAction"
+               name = "medConfirmForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"   path = "/rep_med_confirm.jsp"/>
+      <forward name = "error"     path = "/error.jsp"  />
+      <forward name = "rep_brw"   path = "/rep_browser.do?action=new"/>
+      <forward name = "back"      path = "/rep_reports.jsp"/>
+    </action>
+
+    <action    path = "/rep_total_m_p"
+               type = "abit.action.TotalMedAction"
+               name = "totalMedForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"   path = "/rep_total_m_p.jsp"/>
+      <forward name = "error"     path = "/error.jsp"  />
+      <forward name = "rep_brw"   path = "/rep_browser.do?action=new"/>
+      <forward name = "back"      path = "/rep_reports.jsp"/>
+    </action>
+ 
+    <action    path = "/rep_ved_ots"
+               type = "abit.action.VedOtsAction"
+               name = "vedOtsForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"  path = "/rep_ved_ots.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
+      <forward name = "back"     path = "/rep_reports.jsp"/>
+    </action>
+
+    <action    path = "/rep_list_sert_ege"
+               type = "abit.action.ListSertEgeAction"
+               name = "listSertEgeForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"  path = "/rep_list_sert_ege.jsp"/>
+      <forward name = "error"    path = "/error.jsp"  />
+      <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
+      <forward name = "back"     path = "/abit_attr.jsp"/>
+    </action>
+
+    <action    path = "/rep_forma_2"
+               type = "abit.action.Forma_2_Action"
+               name = "forma_2_Form"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"  path = "/rep_forma_2.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
+      <forward name = "back"     path = "/rep_forms.jsp"/>
+    </action>
+
+    <action    path = "/rep_forma_8"
+               type = "abit.action.Forma_8_Action"
+               name = "forma_2_Form"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"  path = "/rep_forma_8.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
+      <forward name = "back"     path = "/rep_forms.jsp"/>
+    </action>
+
+    <action    path = "/rep_forma_7"
+               type = "abit.action.Forma_7_Action"
+               name = "forma_2_Form"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"  path = "/rep_forma_7.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
+      <forward name = "back"     path = "/rep_forms.jsp"/>
+    </action>
+
+    <action    path = "/rep_forma_2f"
+               type = "abit.action.Forma_2F_Action"
+               name = "forma_2_Form"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"  path = "/rep_forma_2f.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
+      <forward name = "back"     path = "/rep_forms.jsp"/>
+    </action>
+
+    <action    path = "/rep_forma_2z"
+               type = "abit.action.Forma_2Z_Action"
+               name = "forma_2_Form"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"  path = "/rep_forma_2z.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
+      <forward name = "back"     path = "/rep_forms.jsp"/>
+    </action>
+
+    <action    path = "/rep_forma_2k"
+               type = "abit.action.Forma_2K_Action"
+               name = "forma_2_Form"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"  path = "/rep_forma_2k.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
+      <forward name = "back"     path = "/rep_forms.jsp"/>
+    </action>
+
+    <action    path = "/rep_info_balls"
+               type = "abit.action.InfoBallsAction"
+               name = "infoBallsForm"
+              scope = "request">
+      <forward name = "success"  path = "/rep_info_balls.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
+      <forward name = "back"     path = "/rep_reports.jsp"/>
+      <forward name = "browse"   path = "/rep_info_balls.do?action=browse"/>
+    </action>
+    
+    
+        <action    path = "/ord"
+               type = "abit.action.ORDAction"
+               name = "listsDecForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"  path = "/ord.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
+      <forward name = "back"     path = "/rep_etaps.jsp"/>
+    </action>
+        <action    path = "/or"
+               type = "abit.action.ORAction"
+               name = "listsDecForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"  path = "/or.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
+      <forward name = "back"     path = "/rep_etaps.jsp"/>
+    </action>
+    
+    <action    path = "/int"
+               type = "abit.action.INTAction"
+               name = "listsDecForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"  path = "/int.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
+      <forward name = "back"     path = "/rep_etaps.jsp"/>
+    </action>
+    
+        <action    path = "/asp"
+               type = "abit.action.ASPAction"
+               name = "listsDecForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"  path = "/asp.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
+      <forward name = "back"     path = "/rep_etaps.jsp"/>
+    </action>
+    
+    
+    
+
+    <action    path = "/rep_lists_done"
+               type = "abit.action.ListsDoneAction"
+               name = "listsDoneForm"
+              scope = "request">
+      <forward name = "success"  path = "/rep_lists_done.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
+      <forward name = "back"     path = "/rep_lists.jsp"/>
+      <forward name = "browse"   path = "/rep_lists_done.do?action=browse"/>
+    </action>
+
+    <action    path = "/rep_lists_edone"
+               type = "abit.action.ListsEdoneAction"
+               name = "listsDoneForm"
+              scope = "request">
+      <forward name = "success"  path = "/rep_lists_edone.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
+      <forward name = "back"     path = "/rep_lists.jsp"/>
+      <forward name = "browse"   path = "/rep_lists_edone.do?action=browse"/>
+    </action>
+
+    <action    path = "/rep_podtv_med"
+               type = "abit.action.PodtvMedAction"
+               name = "podtvMedForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"  path = "/rep_podtv_med.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
+      <forward name = "back"     path = "/rep_lists.jsp"/>
+    </action>
+
+    <action    path = "/rep_sld"
+               type = "abit.action.ShfrLichDelAction"
+               name = "shfrLichDelForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"  path = "/rep_sld.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
+      <forward name = "back"     path = "/rep_prepare.jsp"/>
+    </action>
+
+    <action    path = "/rep_wave_first"
+               type = "abit.action.WaveFirstAction"
+               name = "listsDecForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"  path = "/rep_wave_first.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
+      <forward name = "back"     path = "/rep_etaps.jsp"/>
+    </action>
+
+    <action    path = "/rep_wave_second"
+               type = "abit.action.WaveSecondAction"
+               name = "listsDecForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"  path = "/rep_wave_second.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
+      <forward name = "back"     path = "/rep_etaps.jsp"/>
+    </action>
+
+    <action    path = "/rep_wave_third"
+               type = "abit.action.WaveThirdAction"
+               name = "listsDecForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"  path = "/rep_wave_third.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
+      <forward name = "back"     path = "/rep_etaps.jsp"/>
+    </action>
+
+    <action    path = "/rep_wave_fourth"
+               type = "abit.action.WaveFourthAction"
+               name = "listsDecForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"  path = "/rep_wave_fourth.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
+      <forward name = "back"     path = "/rep_etaps.jsp"/>
+    </action>
+
+    <action    path = "/rep_wave_fifth"
+               type = "abit.action.WaveFifthAction"
+               name = "listsDecForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"  path = "/rep_wave_fifth.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
+      <forward name = "back"     path = "/rep_etaps.jsp"/>
+    </action>
+
+    <action    path = "/rep_zhurnal"
+               type = "abit.action.ZhurnalAction"
+               name = "shfrLichDelForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"  path = "/rep_zhurnal.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
+      <forward name = "back"     path = "/rep_reports.jsp"/>
+    </action>
+
+    <action    path = "/search_rtf"
+               type = "abit.action.SearchRTFAction"
+               name = "abiturientForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "st_dat"   path = "/st_dat.jsp"/>
+      <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
+      <forward name = "success"  path = "/search_rtf.jsp"/>
+      <forward name = "rep_err"  path = "/search_rtf.do"/>
+    </action>
+    
+      <action    path = "/search_excel"
+               type = "abit.umu.SearchExcelAction"
+               name = "abiturientForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "st_dat"   path = "/st_dat.jsp"/>
+      <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
+      <forward name = "success"  path = "/search_excel.jsp"/>
+      <forward name = "rep_err"  path = "/search_excel.do"/>
+    </action>
+
+    <action    path = "/search_rtf_ots"
+               type = "abit.action.SearchRTFOtsAction"
+               name = "abiturientForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "st_dat"   path = "/st_dat.jsp"/>
+      <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
+      <forward name = "success"  path = "/search_rtf_ots.jsp"/>
+      <forward name = "rep_err"  path = "/search_rtf_ots.do"/>
+    </action>
+
+    <action    path = "/search_txt"
+               type = "abit.action.SearchTXTAction"
+               name = "abiturientForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "st_dat"   path = "/st_dat.jsp"/>
+      <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
+      <forward name = "success"  path = "/search_txt.jsp"/>
+      <forward name = "rep_err"  path = "/search_txt.do"/>
+    </action>
+
+    <action    path = "/spetsialnosti"
+               type = "abit.action.SpetsialnostiAction"
+               name = "spetsialnostiForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"          path = "/spetsialnosti.jsp"/>
+      <forward name = "error"            path = "/error.jsp"  />
+      <forward name = "spetsialnosti_f"  path = "/spetsialnosti.do?action=full" redirect="true"/>
+      <forward name = "back"             path = "/adjustment.jsp"/>
+    </action>
+
+    <action    path = "/sqlrep"
+               type = "abit.action.SqlrepAction"
+               name = "sqlrepForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"   path = "/sqlrep.jsp"/>
+      <forward name = "error"     path = "/error.jsp"  />
+      <forward name = "back"      path = "/index.jsp"/>
+    </action>
+
+    <action    path = "/summary"
+               type = "abit.action.SummaryAction"
+               name = "summaryForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"  path = "/rep_summary.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
+      <forward name = "back"     path = "/rep_svs.jsp"/>
+    </action>
+
+    <action    path = "/tselevojpriem"
+               type = "abit.action.TselevojPriemAction"
+               name = "tselevojPriemForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"          path = "/tselevojpriem.jsp"/>
+      <forward name = "error"            path = "/error.jsp"  />
+      <forward name = "tselevojpriem_f"  path = "/tselevojpriem.do?action=full" redirect="true"/>
+      <forward name = "back"             path = "/adjustment.jsp"/>
+    </action>
+
+    <action    path = "/twins"
+               type = "abit.action.TwinsAction"
+               name = "twinsForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"  path = "/twins.jsp"/>
+      <forward name = "error"    path = "/error.jsp"  />
+      <forward name = "twins_f"  path = "/twins.do?action=full" redirect="true"/>
+      <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
+      <forward name = "back"     path = "/rep_lists.jsp"/>
+    </action>
+
+    <action    path = "/users"
+               type = "abit.action.UsersAction"
+               name = "usersForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"   path = "/users.jsp"/>
+      <forward name = "error"     path = "/error.jsp"/>
+      <forward name = "users_f"   path = "/users.do?action=full" redirect="true"/>
+      <forward name = "back"      path = "/access.jsp"/>
+    </action>
+
+    <action    path = "/user_sess"
+               type = "abit.action.UserSessAction"
+               name = "user_sessForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"   path = "/user_sess.jsp"/>
+      <forward name = "error"     path = "/error.jsp"/>
+      <forward name = "back"      path = "/access.jsp"/>
+    </action>
+
+    <action    path = "/zachislen"
+               type = "abit.action.ZchAction"
+               name = "zchForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"  path = "/zachislen.jsp"/>
+      <forward name = "error"    path = "/error.jsp"  />
+      <forward name = "back"     path = "/index.jsp"/>
+    </action>
+
+    <action    path = "/zavedenija"
+               type = "abit.action.ZavedenijaAction"
+               name = "zavedenijaForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"       path = "/zavedenija.jsp"/>
+      <forward name = "error"         path = "/error.jsp"  />
+      <forward name = "zavedenija_f"  path = "/zavedenija.do?action=full" redirect="true"/>
+      <forward name = "back"          path = "/abit_attr.jsp"/>
+    </action>
+    
+    <action    path = "/fis_pr"
+               type = "abit.action.PrAction"
+               name = "fisImportForm"
+              scope = "request"
+           validate = "true">
+      <forward name = "success"        path = "/fis_pr.jsp"/>
+      <forward name = "error"          path = "/error.jsp"  />
+      <forward name = "back"           path = "/adjustment.jsp"  />
+         </action>
+         
+             <action    path = "/moodle_export"
+      	       type = "abit.action.MoodleExportAction" 
+      	       scope = "request"
+       	       validate = "true">     	       
+      <forward name = "success"  path = "/tempblank.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "back"  path = "/moodle.jsp"/>
+    
+  </action>
+  
+      <action    path = "/moodle_import"
+      	       type = "abit.action.MoodleImportAction" 
+      	       scope = "request"
+      	       validate = "true">
+      <forward name = "success"  path = "/tempblank.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "back"  path = "/moodle.jsp"/>
+    
+  </action>
+    
+    <!-- The standard administrative actions available with Struts -->
+    <!-- These would be either omitted or protected by security -->
+    <!-- in a real application deployment -->
+
+    <action    path="/admin/addFormBean"
+               type="org.apache.struts.actions.AddFormBeanAction"/>
+    <action    path="/admin/addForward"
+               type="org.apache.struts.actions.AddForwardAction"/>
+    <action    path="/admin/addMapping"
+               type="org.apache.struts.actions.AddMappingAction"/>
+    <action    path="/admin/reload"
+               type="org.apache.struts.actions.ReloadAction"/>
+    <action    path="/admin/removeFormBean"
+               type="org.apache.struts.actions.RemoveFormBeanAction"/>
+    <action    path="/admin/removeForward"
+               type="org.apache.struts.actions.RemoveForwardAction"/>
+    <action    path="/admin/removeMapping"
+               type="org.apache.struts.actions.RemoveMappingAction"/>
+
+  </action-mappings>
+
+</struts-config>
