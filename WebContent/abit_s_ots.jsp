@@ -550,7 +550,7 @@ function help_me() {
 <td><html:radio name="abit_A" property="priznakSortirovki" value="PolnoeNaimenovanieZavedenija"/>
 <td valign=center><font class="text_9">&nbsp;Наименов-е оконч. завед.:</font></td>
 <td valign=center>
-    <html:select styleClass="select_f3" name="abit_A" property="polnoeNaimenovanieZavedenija" tabindex="13">
+    <html:select  style="width:180px" styleClass="select_f3" name="abit_A" property="polnoeNaimenovanieZavedenija" tabindex="13">
     <html:option value="*" />
     <html:options collection="abit_A_S8" property="polnoeNaimenovanieZavedenija" labelProperty="sokr" />
     </html:select>

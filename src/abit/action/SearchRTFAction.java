@@ -540,7 +540,7 @@ report.write("\\paperw16838\\paperh11906\\margl567\\margr567\\margt567\\margb567
   if((""+session.getAttribute("UseAllSpecs")).equals("yes"))
       query.append(",Familija,Imja,Otchestvo,NomerPlatnogoDogovora,DataRojdenija,Pol,SrokObuchenija,GodOkonchanijaSrObrazovanija,GdePoluchilSrObrazovanie,NomerShkoly,InostrannyjJazyk,NujdaetsjaVObschejitii,Grajdanstvo,PolnoeNaimenovanieZavedenija,TipOkonchennogoZavedenija,Abiturient.TrudovajaDejatelnost,Gruppa,NapravlenieOtPredprijatija,TipDokumenta,NomerDokumenta,SeriaDokumenta,DataVydDokumenta,KemVydDokument,TipDokSredObraz,Abiturient.Sobesedovanie,NomerSertifikata,KopijaSertifikata,Ball,Prinjat,KodSpetsialnZach,SeriaAtt,NomerAtt,Spetsialnosti.KodSpetsialnosti,ShifrPriema,ShifrLgot,AbbreviaturaFakulteta,Stob,Tel,abitemail, kodpunkta, kodformyob, kodOsnovyOb FROM Abiturient,Spetsialnosti,Fakultety,Zavedenija,Gruppy,AbitDopInf,TselevojPriem,Lgoty,Konkurs");
   else
-      query.append(",Familija,Imja,Otchestvo,NomerPlatnogoDogovora,DataRojdenija,Pol,SrokObuchenija,GodOkonchanijaSrObrazovanija,GdePoluchilSrObrazovanie,NomerShkoly,InostrannyjJazyk,NujdaetsjaVObschejitii,Grajdanstvo,PolnoeNaimenovanieZavedenija,TipOkonchennogoZavedenija,Abiturient.TrudovajaDejatelnost,Gruppa,NapravlenieOtPredprijatija,TipDokumenta,NomerDokumenta,SeriaDokumenta,DataVydDokumenta,KemVydDokument,TipDokSredObraz,Abiturient.Sobesedovanie,NomerSertifikata,KopijaSertifikata,Ball,Prinjat,KodSpetsialnZach,SeriaAtt,NomerAtt,Spetsialnosti.KodSpetsialnosti,ShifrPriema,ShifrLgot,AbbreviaturaFakulteta,Stob,Prioritet,tel,abitemail,kodpunkta,kodformyob, kodOsnovyOb FROM Abiturient,Spetsialnosti,Fakultety,Zavedenija,Gruppy,AbitDopInf,TselevojPriem,Lgoty,Konkurs");/////
+      query.append(",Familija,Imja,Otchestvo,NomerPlatnogoDogovora,DataRojdenija,Pol,SrokObuchenija,GodOkonchanijaSrObrazovanija,GdePoluchilSrObrazovanie,NomerShkoly,InostrannyjJazyk,NujdaetsjaVObschejitii,Grajdanstvo,PolnoeNaimenovanieZavedenija,TipOkonchennogoZavedenija,Abiturient.TrudovajaDejatelnost,Gruppa,NapravlenieOtPredprijatija,TipDokumenta,NomerDokumenta,SeriaDokumenta,DataVydDokumenta,KemVydDokument,TipDokSredObraz,Abiturient.Sobesedovanie,NomerSertifikata,KopijaSertifikata,Ball,Prinjat,KodSpetsialnZach,SeriaAtt,NomerAtt,Spetsialnosti.KodSpetsialnosti,ShifrPriema,ShifrLgot,AbbreviaturaFakulteta,Stob,Prioritet,Tel,abitemail,kodpunkta,kodformyob, kodOsnovyOb FROM Abiturient,Spetsialnosti,Fakultety,Zavedenija,Gruppy,AbitDopInf,TselevojPriem,Lgoty,Konkurs");/////
 
    //  if((""+session.getAttribute("UseAllSpecs")).equals("yes"))
    //      query.append(",Konkurs");
@@ -684,7 +684,7 @@ report.write("\\paperw16838\\paperh11906\\margl567\\margr567\\margt567\\margb567
   condition.append(" AND (NujdaetsjaVObschejitii LIKE "+"'"+session.getAttribute("NujdaetsjaVObschejitii")+"'"+" OR NujdaetsjaVObschejitii IS NULL)");
  if(!(""+session.getAttribute("Grajdanstvo")).equals("*"))
   condition.append(" AND (Grajdanstvo LIKE "+"'"+session.getAttribute("Grajdanstvo")+"'"+" OR Grajdanstvo IS NULL)");
- if(!(""+session.getAttribute("Nazvanie")).equals("%"))
+ /*if(!(""+session.getAttribute("Nazvanie")).equals("%"))
   condition.append(" AND (Punkty.Nazvanie LIKE "+"'"+session.getAttribute("Nazvanie")+"'"+" OR Punkty.Nazvanie IS NULL)");
  /*if(!(""+session.getAttribute("NazvanieRajona")).equals("%"))
   condition.append(" AND (Rajony.NazvanieRajona LIKE "+"'"+session.getAttribute("NazvanieRajona")+"'"+" OR NazvanieRajona IS NULL)");
@@ -993,7 +993,7 @@ System.out.println(query);
 	  MasSelector[Integer.parseInt(abit_Srch.getKemVydDokument())][1] = "\\qc";
 	  masInc++;
 	 }
-	 /*
+/*
 	 if(abit_Srch.getTel()!=null)
 	 {
 		 if (rs.getString(38) != null){
@@ -1136,10 +1136,10 @@ System.out.println(query);
 	  masInc++;
 			}
 	 }
-	 
+	 ////////////////////////////////////////////////////////////////////////////////////
 	 if(abit_Srch.getTel()!=null)
 	 {
-		 if(abit_Srch.getAttestat()!=null){
+		 if((""+session.getAttribute("UseAllSpecs")).equals("yes")){
 	  MasSelector[Integer.parseInt(abit_Srch.getTel())][0] = rs.getString(42);
 	  MasSelector[Integer.parseInt(abit_Srch.getTel())][1] = "\\qc";
 	  masInc++;

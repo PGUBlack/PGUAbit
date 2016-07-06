@@ -250,16 +250,20 @@ function help_me() {
 <td valign=center><font class="text_9">&nbsp;Аттестат:</font></td>
 <td>
      <html:select styleClass="select_f2" name="abit_A" property="vidDokSredObraz">
-            <html:option value="-">-</html:option>
+            <html:option value="-"/>
             <html:option value="Аттестат ООО">аттестат ООО</html:option>
             <html:option value="Аттестат ООО с отличием">аттестат ООО с отличием</html:option>
             <html:option value="Аттестат СОО">аттестат СОО</html:option>
             <html:option value="Аттестат СОО с отличием">аттестат СОО с отличием</html:option>
-            <html:option value="Диплом ВПО">диплом ВО/ВПО</html:option>
+            <html:option value="Диплом бакалавра">диплом бакалавра</html:option>
+            <html:option value="Диплом бакалавра с отличием">диплом бакалавра с отличием</html:option>
+            <html:option value="Диплом специалиста">диплом специалиста</html:option>
+            <html:option value="Диплом специалиста с отличием">диплом специалиста с отличием</html:option>
+            <html:option value="Диплом магистра">диплом магистра</html:option>
+            <html:option value="Диплом магистра с отличием">диплом магистра с отличием</html:option>
             <html:option value="Диплом СПО">диплом СПО</html:option>
             <html:option value="Диплом НПО">диплом НПО</html:option>
             <html:option value="Диплом НВПО">диплом НВПО</html:option>
-            <html:option value="Диплом ВО/СПО">Диплом ВО/СПО</html:option>
            </html:select>
            </td>
            </tr>
@@ -314,7 +318,7 @@ function help_me() {
 <td><html:radio name="abit_A" property="priznakSortirovki" value="PolnoeNaimenovanieZavedenija"/>
 <td valign=center><font class="text_9">&nbsp;Наименов-е оконч. завед.:</font></td>
 <td valign=center>
-    <html:select styleClass="select_f3" name="abit_A" property="polnoeNaimenovanieZavedenija" tabindex="31">
+    <html:select  style="width:180px" styleClass="select_f2" name="abit_A" property="polnoeNaimenovanieZavedenija" tabindex="31">
     <html:option value="*" />
     <html:options collection="abit_A_S8" property="polnoeNaimenovanieZavedenija" labelProperty="sokr" />
     </html:select>
@@ -424,6 +428,7 @@ function help_me() {
 <td valign=center><font class="text_9">&nbsp;Особые права:</font></td>
 <td valign=center>
       <html:select styleClass="select_f2" name="abit_A" property="kodLgot" >
+     		 <html:option value="0">*</html:option>
             <html:options collection="abit_A_S4" property="kodLgot" labelProperty="shifrLgot"/>
           </html:select>
           
@@ -574,7 +579,6 @@ function help_me() {
 <%-------------------- Строка таблицы -------------------------%>
 <tr>
 
-<td width=1%></td>
 <td><html:radio name="abit_A" property="priznakSortirovki" value="DokumentyHranjatsja"/>
 <td valign=center><font class="text_9">&nbsp;Документы хранятся:</font></td>
 <td valign=center>
@@ -602,7 +606,7 @@ function help_me() {
 <td valign=center><font class="text_9">&nbsp;Целевой прием:</font></td>
 <td valign=center>
 <html:select styleClass="select_f3" name="abit_A" property="kodTselevogoPriema" tabindex="48">
-    <html:option value="*"/>
+    <html:option value="0">*</html:option>
     <html:options collection="abit_A_S9" property="kodTselevogoPriema" labelProperty="shifrPriema"/>
 </html:select>
 </td>

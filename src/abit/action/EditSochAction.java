@@ -132,14 +132,14 @@ public class EditSochAction extends Action {
 //        if((paramValue[0]) != null && StringUtil.RecodeLetter((paramValue[0]).trim()).equals("д")) {
         if((paramValue[0]) != null && StringUtil.toDB((paramValue[0]).trim()).equals("д")) {
 
-          stmt = conn.prepareStatement("UPDATE Abiturient SET Stepen_mag='д' WHERE kodabiturienta LIKE '"+kodAb+"'");
+          stmt = conn.prepareStatement("UPDATE Abiturient SET Need_Spo='д' WHERE kodabiturienta LIKE '"+kodAb+"'");
           stmt.executeUpdate();
         }
 // Установка разблокировки на оценки
 //        if((paramValue[0]) != null && StringUtil.RecodeLetter((paramValue[0]).trim()).equals("н")) {
         if((paramValue[0]) != null && StringUtil.toDB((paramValue[0]).trim()).equals("н")) {
 
-          stmt = conn.prepareStatement("UPDATE Abiturient SET Stepen_mag=NULL WHERE kodabiturienta LIKE '"+kodAb+"'");
+          stmt = conn.prepareStatement("UPDATE Abiturient SET Need_Spo=NULL WHERE kodabiturienta LIKE '"+kodAb+"'");
           stmt.executeUpdate();
         }
       }
@@ -200,7 +200,7 @@ public class EditSochAction extends Action {
 
 // Выборка абитуриентов с оценками по специальности
 
-               query2 = "SELECT DISTINCT a.KodAbiturienta,a.Familija,a.Imja,a.Otchestvo,a.NomerLichnogoDela,a.SeriaDokumenta,a.NomerDokumenta,a.stepen_mag,adi.ballsoch FROM Abiturient a, abitdopinf adi,spetsialnosti s,fakultety f WHERE a.kodabiturienta=adi.kodabiturienta and adi.ballsoch not like '0' AND a.KodSpetsialnosti=s.KodSpetsialnosti and s.kodfakulteta like '"+abit_ENS.getKodFakulteta()+"' AND a.KodVuza LIKE "+session.getAttribute("kVuza")+" GROUP BY a.Familija,a.Imja,a.Otchestvo,a.NomerLichnogoDela,a.SeriaDokumenta,a.NomerDokumenta,a.stepen_mag,adi.ballsoch,a.kodabiturienta ORDER BY a.Familija,a.Imja,a.Otchestvo,a.NomerLichnogoDela";
+               query2 = "SELECT DISTINCT a.KodAbiturienta,a.Familija,a.Imja,a.Otchestvo,a.NomerLichnogoDela,a.SeriaDokumenta,a.NomerDokumenta,a.Need_Spo,adi.ballsoch FROM Abiturient a, abitdopinf adi,spetsialnosti s,fakultety f WHERE a.kodabiturienta=adi.kodabiturienta and adi.ballsoch not like '0' AND a.KodSpetsialnosti=s.KodSpetsialnosti and s.kodfakulteta like '"+abit_ENS.getKodFakulteta()+"' AND a.KodVuza LIKE "+session.getAttribute("kVuza")+" GROUP BY a.Familija,a.Imja,a.Otchestvo,a.NomerLichnogoDela,a.SeriaDokumenta,a.NomerDokumenta,a.Need_Spo,adi.ballsoch,a.kodabiturienta ORDER BY a.Familija,a.Imja,a.Otchestvo,a.NomerLichnogoDela";
 
 
              stmt = conn.prepareStatement(query2);
@@ -228,9 +228,9 @@ public class EditSochAction extends Action {
               
                abit.setPasport(StringUtil.ntv(rs.getString(6))+" "+StringUtil.ntv(rs.getString(7)));
                if(rs.getString(8)!=null){
-               abit.setStepen_Mag(rs.getString(8));
+               abit.setNeed_Spo(rs.getString(8));
                }else{
-            	   abit.setStepen_Mag("");
+            	   abit.setNeed_Spo("");
                }
                abit.setOlimp_1(rs.getString(9));
                abit_ENS_S1.add(abit);

@@ -95,7 +95,12 @@ String[] selectedItems = {};
  int kSpec=0;
  BigDecimal bd;
  StringBuffer data = new StringBuffer();
- 
+ StringBuffer resp = new StringBuffer();
+ String reqXML;
+ String zapros="";
+ String kodi="";
+ URL openURL = null;
+ openURL = new URL("http://10.0.3.1/wschecks.asmx");
  OutputStreamWriter      wr               = null;
  AbiturientBean abit = new AbiturientBean();
 
@@ -123,27 +128,35 @@ try {
 
 /**********************************************************************/
 /*********  Получение соединения с БД и ведение статистики  ***********/
-	  
-
-	   String reqXML;
-	   String zapros="";
-	   stmt = conn.prepareStatement("select distinct familija, imja, otchestvo, nomerdokumenta, seriadokumenta, kodabiturienta from abiturient where nomerpotoka=1 and ballege is null ");
+	/*
+	 if(form.getAction()==null){
+		 stmt = conn.prepareStatement("select batchid, status, date from batchcheck");
+		   rs = stmt.executeQuery();
+		   while (rs.next()) {
+			   abit.setFamilija(rs.getString(1));
+			   abit.setImja(rs.getString(2));
+			   abit.setOtchestvo(rs.getString(3));
+			   abits.add(abit);
+		   }
+		   
+	 
+	 }else if(form.getAction().equals("send")){
+	   */
+	   stmt = conn.prepareStatement("select distinct familija, imja, otchestvo, nomerdokumenta, seriadokumenta, kodabiturienta from abiturient where nomerpotoka=1 and viddoksredobraz like '%аттестат%'");
 	   rs = stmt.executeQuery();
 	   while (rs.next()) {
+		   kodi=kodi+rs.getString(6)+",";
 	   zapros=zapros+"<query><lastName>"+rs.getString(1)+"</lastName>"+ 
 	   "<firstName>"+rs.getString(2)+"</firstName>"+ 
 	   "<patronymicName>"+rs.getString(3)+"</patronymicName>"+ 
-	   "<passportSeria>"+rs.getString(5)+"</passportSeria>"+ 
-	   "<passportNumber>"+rs.getString(4)+"</passportNumber>"+ 
+	   "<passportSeria>"+rs.getString(4)+"</passportSeria>"+ 
+	   "<passportNumber>"+rs.getString(5)+"</passportNumber>"+ 
 	   "<certificateNumber></certificateNumber>"+ 
 	   "<typographicNumber></typographicNumber>"+ 
 	   "</query>";
-
 	   }
+	   kodi=kodi+rs.getString(6);
 	   
-	   
-	   URL openURL = null;
-	   openURL = new URL("http://10.0.3.1:8080/wschecks.asmx");
        HttpURLConnection con = (HttpURLConnection) openURL.openConnection();
        con.setRequestMethod("POST");
        con.setRequestProperty("Host", "10.0.3.1");
@@ -162,7 +175,7 @@ try {
 	            "</UserCredentials>"+ 
     		   "</soap:Header>"+ 
 	            "<soap:Body>"+
-	            "<BatchCheck xmlns=\"urn:fbs:v2\" />"+ 
+	            "<BatchCheck xmlns=\"urn:fbs:v2\">"+ 
 	            "<queryXML>"+ 
 	            "<![CDATA["+ 
 	            "<?xml version=\"1.0\" encoding=\"utf-8\"?>"+ 
@@ -174,8 +187,7 @@ try {
 	            "</soap:Body>"+
 	          "</soap:Envelope>";
 
-
-
+       
     //   DataOutputStream reqStream = new DataOutputStream(con.getOutputStream());
      OutputStream reqStream = con.getOutputStream();
        reqStream.write(reqXML.getBytes(Charset.forName("UTF-8")));
@@ -186,20 +198,100 @@ try {
        int responseCode = con.getResponseCode();
        String respMessage = con.getResponseMessage();
        System.out.println(responseCode);
-data.append(responseCode+" ");
-data.append(respMessage+" ");
+       resp.append(responseCode+" ");
+       resp.append(respMessage+" ");
        if (responseCode == 200) { // если все прошло нормально(200), получаем результат
+    	   
            InputStream in = con.getInputStream();
            InputStreamReader isr = new InputStreamReader(in, "UTF-8");               
            int c;
           while ((c = isr.read()) != -1) {  data.append((char) c);  }
-
+          int k=data.indexOf("batchId")+11;
+          int e=data.indexOf("batchId",k)-5;
+          stmt = conn.prepareStatement("INSERT INTO BatchCheck(BatchId, Status, Date) VALUES ('"+data.substring(k,e)+"','Обрабатывается','"+StringUtil.CurrDate(".")+"')");
+          stmt.executeQuery();
        }
-     
-       abit.setFamilija(data.toString());
-       abits.add(abit);
-       System.out.println(data);
        
+       /*
+       
+       stmt = conn.prepareStatement("select batchid, status, date from batchcheck");
+	   rs = stmt.executeQuery();
+	   while (rs.next()) {
+		   abit.setFamilija(rs.getString(1));
+		   abit.setImja(rs.getString(2));
+		   abit.setOtchestvo(rs.getString(3));
+		   abits.add(abit);
+	   }
+       
+       
+   //--------------------------------------------------------------------------------------------------------------//
+   //--------------------------------------------------------------------------------------------------------------//
+       
+	 }else 
+	if(form.getAction().equals("pick")){
+		  
+		 String batchId=request.getParameter("familija");
+       HttpURLConnection con1 = (HttpURLConnection) openURL.openConnection();
+       con1.setRequestMethod("POST");
+       con1.setRequestProperty("Host", "10.0.3.1");
+       con1.setRequestProperty("Content-type", "text/xml; charset=utf-8");
+       con1.setRequestProperty("Content-lenght","5000");
+       con1.setRequestProperty("SOAPAction","urn:fbs:v2/GetBatchCheckResult");
+       con1.setDoOutput(true);
+       con1.setDoInput(true);
+       reqXML="<?xml version=\"1.0\" encoding=\"utf-8\"?>"+
+	            "<soap:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">"+	
+	            "<soap:Header>"+
+	            	"<UserCredentials xmlns=\"urn:fbs:v2\">"+ 
+	            		"<Client>revalle88@gmail.com</Client>"+ 
+	            		"<Login>revalle88@gmail.com</Login>"+ 
+	            		"<Password>Dreamlord88</Password>"+ 
+	            	"</UserCredentials>"+ 
+	            "</soap:Header>"+ 
+	            "<soap:Body>"+
+	            "<GetBatchCheckResult xmlns=\"urn:fbs:v2\">"+ 
+	            "<queryXML>"+ 
+	            "<![CDATA["+ 
+	            "<?xml version=\"1.0\" encoding=\"utf-8\"?>"+ 
+	            "<items>"+ 
+	            "<batchId>"+batchId+"</batchId>"+
+	            "</items>]]>"+ 
+	            "</queryXML>"+ 
+	            "</GetBatchCheckResult>"+ 
+	            "</soap:Body>"+
+	          "</soap:Envelope>";
+       OutputStream reqStream1 = con1.getOutputStream();
+       reqStream1.write(reqXML.getBytes(Charset.forName("UTF-8")));
+       reqStream1.flush();
+       con1.connect();
+       
+       int responseCode = con1.getResponseCode();
+       String respMessage = con1.getResponseMessage();
+       
+              if (responseCode == 200) { // если все прошло нормально(200), получаем результат
+                  InputStream in = con1.getInputStream();
+                  InputStreamReader isr = new InputStreamReader(in, "UTF-8");               
+                  int c;
+                 while ((c = isr.read()) != -1 ) {  data.append((char) c);  }
+                 
+                 
+              }else{
+            	  stmt = conn.prepareStatement("update batchcheck set status='Ошибка "+responseCode+"' where batchid like "+batchId+"");
+     		   		rs = stmt.executeQuery(); 
+              }
+
+       
+       
+              stmt = conn.prepareStatement("select batchid, status, date from batchcheck");
+   		   		rs = stmt.executeQuery();
+   		   	while (rs.next()) {
+   			   abit.setFamilija(rs.getString(1));
+   			   abit.setImja(rs.getString(2));
+   			   abit.setOtchestvo(rs.getString(3));
+   			   abits.add(abit);
+   		   }
+     
+	 }*/
 }
 
 

@@ -103,12 +103,23 @@ public class MoodleExportAction extends Action {
 			             	}
 			      }*/
 	            
-	            /********************èìïîğò ãğóïï --- ÊÎÍÅÖ -----*****************/
-	            /*****************ÈÌÏÎĞÒ ÍÎÂÛÕ ÀÁÈÒÓĞÈÅÍÒÂÎ ÑÎ ÑÒÀÒÓÑÎÌ 0 ************************************/
+	          
+	          /*  stmt = conn.prepareStatement("select kodgruppy, gruppa from gruppy");
+
+				 rs = stmt.executeQuery();
+			      while(rs.next()){
+			    	  
+			    	  stmtInsertAbit = MoodleConn.prepareStatement("INSERT into `asu`.`group`(id,name) values(?,?)");
+			             stmtInsertAbit.setObject(1, rs.getInt(1),Types.INTEGER);
+			             stmtInsertAbit.setObject(2, rs.getString(2),Types.VARCHAR);
+			             stmtInsertAbit.executeUpdate();
 	            
 	            
-				 stmt = conn.prepareStatement("select a.kodabiturienta, a.nomerlichnogodela,  a.familija, a.imja, a.otchestvo, a.kodgruppy, lang=case adi.vstup WHEN 'àíãëèéñêèé' then 'en' else 'ru' end, a.InostrannyjJazyk from abiturient a, abitDopInf adi where adi.kodabiturienta = a.kodabiturienta  and a.datainput = ? and dokumentyHranjatsja = 'ä'");
-				 stmt.setObject(1,dt,Types.VARCHAR);
+			      }*/
+			    	  /********************èìïîğò ãğóïï --- ÊÎÍÅÖ -----*****************/
+			            /*****************ÈÌÏÎĞÒ ÍÎÂÛÕ ÀÁÈÒÓĞÈÅÍÒÂÎ ÑÎ ÑÒÀÒÓÑÎÌ 0 ************************************/
+				 stmt = conn.prepareStatement("select distinct a.kodabiturienta, a.nomerlichnogodela,  a.familija, a.imja, a.otchestvo, a.kodgruppy, lang=case adi.vstup WHEN 'Àíãëèéñêèé ÿçûê' then 'en' else 'ru' end, a.InostrannyjJazyk from abiturient a, abitDopInf adi, zajavlennyeshkolnyeotsenki zso where a.kodabiturienta=zso.kodabiturienta and zso.examen like '+' and adi.kodabiturienta = a.kodabiturienta and dokumentyHranjatsja = 'ä' and a.kodabiturienta>73 and a.kodgruppy in (359,364,372,376,377,384,386,389,390,392)");
+				 //stmt.setObject(1,dt,Types.VARCHAR);
 				 rs = stmt.executeQuery();
 			      while(rs.next()){
 			    	  
@@ -126,7 +137,8 @@ public class MoodleExportAction extends Action {
 			    	  if (!rs2.next()){
 				        
 			    	 // if (rs.getString(7).equals("àíãëèéñêèé")) lang = "en";
-			    	  
+			    	  System.out.println(rs.getString(1));
+			    	  System.out.println(rs.getString(2));
 			    	  stmtInsertAbit = MoodleConn.prepareStatement("INSERT abiturient(kodabiturienta, nomerlichnogodela,  familija, imja, otchestvo, status, nomerGroup, password, lang) VALUES(?,?,?,?,?,?,?,'',?)");
 			             stmtInsertAbit.setObject(1, rs.getString(1),Types.VARCHAR);
 			             stmtInsertAbit.setObject(2, rs.getString(2),Types.VARCHAR);
@@ -160,7 +172,7 @@ public class MoodleExportAction extends Action {
 			    				   
 			    		   stmtInsertOtsenki.executeUpdate();
 			    		   
-			    		   System.out.print(rs1.getString(1));
+			    		//   System.out.print(rs1.getString(1));
 			    	   }
 			    	   
 			    	   //äîáàâëÿåì íåìåöêèé
@@ -197,8 +209,9 @@ public class MoodleExportAction extends Action {
 			      
 			      /*****************ÈÌÏÎĞÒ ÍÎÂÛÕ ÀÁÈÒÓĞÈÅÍÒîÂ ÑÎ ÑÒÀÒÓÑÎÌ 0   ------ ÊÎÍÅÖ ------ ************************************/
 			      
+			
 			      /*****************ÀÏÄÅÉÒ ÎÁÍÎÂËÅÍÍÛÕ ÀÁÈÒÓĞÈÅÍÒÎÂ ÑÎ ÑÒÀÒÓÑÎÌ 3    ************************************/
-			      
+			   /*   
 			      stmt = conn.prepareStatement("select a.kodabiturienta, a.nomerlichnogodela,  a.familija, a.imja, a.otchestvo, a.kodgruppy, lang=case adi.vstup WHEN 'àíãëèéñêèé' then 'en' else 'ru' end, a.InostrannyjJazyk, a.dokumentyHranjatsja from abiturient a, abitDopInf adi where adi.kodabiturienta = a.kodabiturienta  and a.dataModify = ? and a.dataInput not like a.dataModify");
 				  stmt.setObject(1,dt,Types.VARCHAR);
 					 rs = stmt.executeQuery();
@@ -275,6 +288,7 @@ public class MoodleExportAction extends Action {
 				    
 
 				       }
+				       */
 			      /*****************ÀÏÄÅÉÒ ÎÁÍÎÂËÅÍÍÛÕ ÀÁÈÒÓĞÈÅÍÒÎÂ ÑÎ ÑÒÀÒÓÑÎÌ 3   ------ ÊÎÍÅÖ ------ ************************************/
 				      
 				      /***************** ÇÀÃĞÓÇÊÀ ÎÖÅÍÎÊ  ************************************/
@@ -299,7 +313,7 @@ public class MoodleExportAction extends Action {
 				    	}
 				    	else
 				    	{
-				    	System.out.println(kod);
+				    	//System.out.println(kod);
 				    	 stmtInsertOtsenki = conn.prepareStatement("UPDATE zajavlennyeshkolnyeotsenki SET Examen = ? WHERE kodabiturienta = ? and kodPredmeta = ? and kodPredmeta not IN ('5','14','15')");
 				    	 stmtInsertOtsenki.setObject(1, rs.getString(3),Types.INTEGER); //áàëë
 				    	 stmtInsertOtsenki.setObject(2, rs.getString(1),Types.VARCHAR); //êîäàáèòóğèåíòà

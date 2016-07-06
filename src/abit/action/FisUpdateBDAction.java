@@ -24,7 +24,7 @@ import abit.bean.AbiturientBean;
 import abit.bean.MessageBean;
 import abit.bean.UserBean;
 import abit.sql.UserConn;
-
+import java.io.*;
 public class FisUpdateBDAction extends Action{
 	
 		
@@ -70,6 +70,26 @@ public class FisUpdateBDAction extends Action{
 	  UserConn us = new UserConn(request, mapping);
 	  conn = us.getConn(user.getSid());
 stmt = conn.prepareStatement("DELETE FROM FisImport");
+/*
+FileWriter writer = new FileWriter("D:\\marks.txt", false);
+
+stmt.executeUpdate();
+stmt = conn.prepareStatement("SELECT Familija, imja, otchestvo, seriadokumenta, nomerdokumenta from abiturient where prinjat in ('ä') and nomerpotoka=1");
+rs = stmt.executeQuery();
+while (rs.next()) {
+	writer.write(rs.getString(1));
+	 writer.append('%');
+	 writer.write(rs.getString(2));
+	 writer.append('%');
+	 writer.write(rs.getString(3));
+	 writer.append('%');
+	 writer.write(rs.getString(4));
+	 writer.append('%');
+	 writer.write(rs.getString(5));
+    writer.append('\n');
+}
+writer.flush();
+*/
       
       stmt.executeUpdate();
 	  stmt = conn.prepareStatement("SELECT a.kodAbiturienta, a.NomerLichnogoDela,a.DokumentyHranjatsja, a.DataInput FROM abiturient a, konkurs k,spetsialnosti s WHERE a.kodabiturienta=k.kodabiturienta and a.kodspetsialnzach=k.kodspetsialnosti and a.kodspetsialnzach=s.kodspetsialnosti and s.tip_spec like 'ç' and a.nomerpotoka=1 and a.NomerLichnogoDela IS NOT NULL  AND NOT EXISTS (SELECT * FROM FisImport b   WHERE b.AppNumber = a.NomerLichnogoDela) and a.dokumentyhranjatsja like 'ä' and a.prinjat not like 'í' ");

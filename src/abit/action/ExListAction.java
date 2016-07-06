@@ -163,14 +163,14 @@ public class ExListAction extends Action {
       report.write("\\paperw11906\\paperh16838\\margl567\\margr567\\margt567\\margb567\\widowctrl\\ftnbj\\aenddoc\\noxlattoyen\\expshrtn\\noultrlspc\\dntblnsbdb\\nospaceforul\\formshade\\horzdoc\\dghspace180\\dgvspace180\\dghorigin1701\\dgvorigin1984\\dghshow0\\dgvshow0\\jexpand\\viewkind1\\viewscale90\\viewzk2\\pgbrdrhead\\pgbrdrfoot\\nolnhtadjtbl \\fet0\\sectd \\lndscpsxn\\psz9\\linex0\\endnhere\\sectdefaultcl\n");
 
       if(abit_O.getSpecial1().equals("-1")) {
-        stmt = conn.prepareStatement("SELECT a.KodAbiturienta,a.Familija,a.Imja,a.Otchestvo,a.NomerLichnogoDela FROM Abiturient a,Spetsialnosti s,Fakultety f,ZajavlennyeShkolnyeOtsenki zso WHERE zso.KodAbiturienta=a.KodAbiturienta AND f.KodFakulteta=s.KodFakulteta AND a.KodSpetsialnosti=s.KodSpetsialnosti AND a.DokumentyHranjatsja LIKE 'ä' AND zso.Examen IN('â') AND f.KodFakulteta LIKE ? GROUP BY a.KodAbiturienta,a.Familija,a.Imja,a.Otchestvo,a.NomerLichnogoDela ORDER BY a.Familija,a.Imja,a.Otchestvo");
+        stmt = conn.prepareStatement("SELECT a.KodAbiturienta,a.Familija,a.Imja,a.Otchestvo,a.NomerLichnogoDela FROM Abiturient a,Spetsialnosti s,Fakultety f,ZajavlennyeShkolnyeOtsenki zso WHERE zso.KodAbiturienta=a.KodAbiturienta AND f.KodFakulteta=s.KodFakulteta AND a.KodSpetsialnosti=s.KodSpetsialnosti AND a.DokumentyHranjatsja LIKE 'ä' AND zso.Examen IN('+') AND f.KodFakulteta LIKE ? GROUP BY a.KodAbiturienta,a.Familija,a.Imja,a.Otchestvo,a.NomerLichnogoDela ORDER BY a.Familija,a.Imja,a.Otchestvo");
         stmt.setObject(1,abit_O.getKodFakulteta(),Types.VARCHAR);
       }
       else {
 
         kSpec = abit_O.getSpecial1().substring(abit_O.getSpecial1().indexOf("$")+1,abit_O.getSpecial1().indexOf("%"));
 
-        stmt = conn.prepareStatement("SELECT a.KodAbiturienta,a.Familija,a.Imja,a.Otchestvo,a.NomerLichnogoDela FROM Abiturient a,Spetsialnosti s,Fakultety f,ZajavlennyeShkolnyeOtsenki zso WHERE zso.KodAbiturienta=a.KodAbiturienta AND f.KodFakulteta=s.KodFakulteta AND a.KodSpetsialnosti=s.KodSpetsialnosti AND a.DokumentyHranjatsja LIKE 'ä' AND zso.Examen IN('â') AND f.KodFakulteta LIKE ? AND s.KodSpetsialnosti LIKE ? GROUP BY a.KodAbiturienta,a.Familija,a.Imja,a.Otchestvo,a.NomerLichnogoDela ORDER BY a.Familija,a.Imja,a.Otchestvo");
+        stmt = conn.prepareStatement("SELECT a.KodAbiturienta,a.Familija,a.Imja,a.Otchestvo,a.NomerLichnogoDela FROM Abiturient a,Spetsialnosti s,Fakultety f,ZajavlennyeShkolnyeOtsenki zso WHERE zso.KodAbiturienta=a.KodAbiturienta AND f.KodFakulteta=s.KodFakulteta AND a.KodSpetsialnosti=s.KodSpetsialnosti AND a.DokumentyHranjatsja LIKE 'ä' AND zso.Examen IN('+') AND f.KodFakulteta LIKE ? AND s.KodSpetsialnosti LIKE ? GROUP BY a.KodAbiturienta,a.Familija,a.Imja,a.Otchestvo,a.NomerLichnogoDela ORDER BY a.Familija,a.Imja,a.Otchestvo");
         stmt.setObject(1,abit_O.getKodFakulteta(),Types.VARCHAR);
         stmt.setObject(2,kSpec,Types.VARCHAR);
       }
@@ -260,7 +260,7 @@ public class ExListAction extends Action {
          report.write("\\clvertalc \\clbrdrt\\brdrs\\brdrw10 \\clbrdrl\\brdrs\\brdrw10 \\clbrdrb\\brdrs\\brdrw10 \\clbrdrr\\brdrs\\brdrw10 \\cellx10400\n");
 
          int counter = 0;
-         stmt = conn.prepareStatement("SELECT np.Predmet,np.KodPredmeta, otsenkaege FROM ZajavlennyeShkolnyeOtsenki zso,NazvanijaPredmetov np WHERE zso.KodPredmeta=np.KodPredmeta AND zso.Examen IN ('â') AND zso.KodAbiturienta LIKE ? ORDER BY np.KodPredmeta");
+         stmt = conn.prepareStatement("SELECT np.Predmet,np.KodPredmeta, otsenkaege FROM ZajavlennyeShkolnyeOtsenki zso,NazvanijaPredmetov np WHERE zso.KodPredmeta=np.KodPredmeta AND zso.Examen IN ('+') AND zso.KodAbiturienta LIKE ? ORDER BY np.KodPredmeta");
          stmt.setObject(1,rs2.getString(1),Types.INTEGER);
          rs = stmt.executeQuery();
          while(rs.next()) {

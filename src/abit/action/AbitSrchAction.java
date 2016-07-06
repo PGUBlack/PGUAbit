@@ -158,6 +158,7 @@ public class AbitSrchAction extends Action {
             session.removeAttribute("OblastP");
             session.removeAttribute("KodLgot");
             session.removeAttribute("bud1");
+
             
             /*********<КЛАДР ПУШКАРЕВ*******************/ 
             
@@ -361,7 +362,11 @@ if(abit_A.getDokumentyHranjatsja()!=null && session.getAttribute("resrch")==null
 // Обработка последовательности значений запроса для шифра льгот
    session.setAttribute("ShifrLgot",StringUtil.PlaceUnaryComas("ShifrLgot",abit_A.getShifrLgot()));
    
-   session.setAttribute("KodLgot", abit_A.getKodLgot());
+  // session.setAttribute("KodLgot", abit_A.getKodLgot());
+   if((""+abit_A.getKodLgot()).equals("0"))
+	     session.setAttribute("KodLgot","%");
+	   else
+	     session.setAttribute("KodLgot",StringUtil.toMySQL((abit_A.getKodLgot()+"")));
 
 // Обработка последовательности значений запроса для признака зачисления
    session.setAttribute("Prinjat",StringUtil.PlaceUnaryComas("Prinjat",abit_A.getPrinjat()));
@@ -441,6 +446,7 @@ if(abit_A.getDokumentyHranjatsja()!=null && session.getAttribute("resrch")==null
      session.setAttribute("KodTselevogoPriema","%");
    else
      session.setAttribute("KodTselevogoPriema",StringUtil.toMySQL((abit_A.getKodTselevogoPriema()+"")));
+   
    session.setAttribute("Ball",StringUtil.toMySQL((abit_A.getSpecial7()+"")));
    session.setAttribute("NomerSertifikata",StringUtil.toMySQL((abit_A.getAttestat()+"")));
    session.setAttribute("KopijaSertifikata",StringUtil.toMySQL((abit_A.getKopijaSertifikata()+"")));
@@ -468,8 +474,8 @@ if(abit_A.getDokumentyHranjatsja()!=null && session.getAttribute("resrch")==null
 	     session.setAttribute("PunktP","%");
    if((""+abit_A.getVidDokSredObraz()).equals("-"))
 	     session.setAttribute("VidDokSredObraz","%");
-   if((""+abit_A.getKodLgot()).equals("1"))
-	     session.setAttribute("KodLgot","%");
+  //if((""+abit_A.getKodLgot()).equals("1"))
+	//     session.setAttribute("KodLgot","%");
    
    
 }
@@ -483,27 +489,40 @@ if(abit_A.getDokumentyHranjatsja()!=null && session.getAttribute("resrch")==null
                     else
                       query.append("Abiturient.NomerLichnogoDela");
 
-                    query.append(",Familija,Imja,Otchestvo,NomerPlatnogoDogovora,DataRojdenija,Pol,SrokObuchenija,GodOkonchanijaSrObrazovanija,GdePoluchilSrObrazovanie,NomerShkoly,InostrannyjJazyk,NujdaetsjaVObschejitii,Grajdanstvo,PolnoeNaimenovanieZavedenija,TipOkonchennogoZavedenija,Abiturient.TrudovajaDejatelnost,Gruppa,NapravlenieOtPredprijatija,TipDokumenta,NomerDokumenta,SeriaDokumenta,DataVydDokumenta,KemVydDokument,TipDokSredObraz,Abiturient.Sobesedovanie,NomerSertifikata,KopijaSertifikata,Ball,Prinjat,KodSpetsialnZach,SeriaAtt,NomerAtt,Spetsialnosti.KodSpetsialnosti FROM Abiturient,Spetsialnosti,Fakultety,Zavedenija,Gruppy,AbitDopInf");/////
+                    query.append(",Familija,Imja,Otchestvo,NomerPlatnogoDogovora,DataRojdenija,Pol,SrokObuchenija,GodOkonchanijaSrObrazovanija,GdePoluchilSrObrazovanie,NomerShkoly,InostrannyjJazyk,NujdaetsjaVObschejitii,Grajdanstvo,PolnoeNaimenovanieZavedenija,TipOkonchennogoZavedenija,Abiturient.TrudovajaDejatelnost,Gruppa,NapravlenieOtPredprijatija,TipDokumenta,NomerDokumenta,SeriaDokumenta,DataVydDokumenta,KemVydDokument,TipDokSredObraz,Abiturient.Sobesedovanie,NomerSertifikata,KopijaSertifikata,Ball,Prinjat,KodSpetsialnZach,SeriaAtt,NomerAtt,Spetsialnosti.KodSpetsialnosti  FROM Abiturient,Spetsialnosti,Fakultety,Zavedenija,Gruppy,AbitDopInf");/////
 
-                    if((""+session.getAttribute("UseAllSpecs")).equals("yes"))
-                      query.append(",Konkurs");
-                    if(!(""+session.getAttribute("KopijaSertifikata")).equals("%"))
-                   	  query.append(",medSpravka");
+                    if (((""+session.getAttribute("UseAllSpecs")).equals("yes")) || (!(""+session.getAttribute("KodTselevogoPriema")).equals("%")) || (!(""+session.getAttribute("KodLgot")).equals("%")))
+                      query.append(",Konkurs ");
                     
                     query.append(" WHERE ");
 
-                    if((""+session.getAttribute("UseAllSpecs")).equals("yes"))
+                    if((""+session.getAttribute("UseAllSpecs")).equals("yes")){
                       query.append("Konkurs.KodAbiturienta=Abiturient.KodAbiturienta AND Konkurs.KodSpetsialnosti=Spetsialnosti.KodSpetsialnosti");//AND PreemptiveRight.KodAbiturienta=Abiturient.KodAbiturienta AND AbitDopInf.KodAbiturienta=Abiturient.KodAbiturienta 
-                    else
+                    } else{
                       query.append("Abiturient.KodSpetsialnosti = Spetsialnosti.KodSpetsialnosti ");/////////////////////AND PreemptiveRight.KodAbiturienta=Abiturient.KodAbiturienta AND AbitDopInf.KodAbiturienta=Abiturient.KodAbiturienta 
-
-                    if(!(""+session.getAttribute("KopijaSertifikata")).equals("%"))
-                 	  query.append("medSpravka.kodAbiturienta = Abiturient.kodAbiturienta AND");
+                    }
+                    System.out.println((""+session.getAttribute("KodTselevogoPriema")));
+                    if((!(""+session.getAttribute("KodTselevogoPriema")).equals("%"))){
+                        query.append(" AND  Konkurs.KodAbiturienta=Abiturient.KodAbiturienta and konkurs.target like '"+session.getAttribute("KodTselevogoPriema")+"'");//AND PreemptiveRight.KodAbiturienta=Abiturient.KodAbiturienta AND AbitDopInf.KodAbiturienta=Abiturient.KodAbiturienta 
+                      } 
+                    System.out.println((""+session.getAttribute("KodLgot")));
+                    if((!(""+session.getAttribute("KodLgot")).equals("%"))){
+                        query.append(" AND  Konkurs.KodAbiturienta=Abiturient.KodAbiturienta and konkurs.op like '"+session.getAttribute("KodLgot")+"'");//AND PreemptiveRight.KodAbiturienta=Abiturient.KodAbiturienta AND AbitDopInf.KodAbiturienta=Abiturient.KodAbiturienta 
+                      } 
                     
+                    
+                   // if(!(""+session.getAttribute("KopijaSertifikata")).equals("%"))
+                 //	  query.append("medSpravka.kodAbiturienta = Abiturient.kodAbiturienta AND");
+                    
+                   // if(!(""+session.getAttribute("KodTselevogoPriema")).equals("%")){                    	 
+                    // query.append("AND Konkurs.Target = (""+session.getAttribute("KodTselevogoPriema")) ");
+                     
+                  //   }
+                     
                     query.append(" AND Gruppy.KodGruppy=Abiturient.KodGruppy AND  Abitdopinf.kodAbiturienta = Abiturient.kodAbiturienta AND  Spetsialnosti.KodFakulteta = Fakultety.KodFakulteta AND Abiturient.KodZavedenija = Zavedenija.KodZavedenija  AND Abiturient.KodVuza = ");//общ
                     query.append(session.getAttribute("kVuza"));
 
-//******** ЛОГИКА ПАРАМЕТРИЧЕСКОЙ ВЫБОРКИ **********
+                    //******** ЛОГИКА ПАРАМЕТРИЧЕСКОЙ ВЫБОРКИ **********
 
                     StringBuffer condition = new StringBuffer();
                    if(!(""+session.getAttribute("SeriaAtt")).equals("%"))
@@ -529,18 +548,14 @@ if(abit_A.getDokumentyHranjatsja()!=null && session.getAttribute("resrch")==null
                 	   condition.append(" AND kodOsnovyOb IN ("+session.getAttribute("KodOsnovyOb")+")");
                    }
                    
-                	   
-                   
                    if((""+session.getAttribute("bud1")).equals("on"))  
     				   condition.append(" AND AbitDopInf.Dist not in ('-')");
                    
-                   
+               /*    
                    if(!(""+session.getAttribute("KodLgot")).equals("%"))  
     				   condition.append(" AND Konkurs.OP LIKE "+"'"+session.getAttribute("KodLgot")+"'");
-                   
-                   if(!(""+session.getAttribute("KodTselevogoPriema")).equals("%"))  
-    				   condition.append(" AND Konkurs.target LIKE "+"'"+session.getAttribute("KodTselevogoPriema")+"'");
-                   
+                 */  
+                
                    
                    if(!(""+session.getAttribute("VidDokSredObraz")).equals("%"))
                 	   vidDokCondition =   " AND viddoksredobraz ='"+session.getAttribute("VidDokSredObraz")+"'";
@@ -607,6 +622,12 @@ if(abit_A.getDokumentyHranjatsja()!=null && session.getAttribute("resrch")==null
                    // condition.append(" AND (NomerShkoly LIKE "+"'"+session.getAttribute("NomerShkoly")+"'"+" OR NomerShkoly IS NULL)");
                    if(!(""+session.getAttribute("InostrannyjJazyk")).equals("%"))
                     condition.append(" AND (InostrannyjJazyk LIKE "+"'"+session.getAttribute("InostrannyjJazyk")+"'"+" OR InostrannyjJazyk IS NULL)");
+                  
+                   
+                //   if(!(""+session.getAttribute("KodTselevogoPriema")).equals("%"))
+             //          condition.append(" AND ( TselevojPriem.KodTselevogoPriema LIKE "+"'"+session.getAttribute("KodTselevogoPriema")+"'"+" OR TselevojPriem.KodTselevogoPriema IS NULL)");
+                     
+                   
                    if(!(""+session.getAttribute("NujdaetsjaVObschejitii")).equals("%"))
                     condition.append(" AND (NujdaetsjaVObschejitii LIKE "+"'"+session.getAttribute("NujdaetsjaVObschejitii")+"'"+" OR NujdaetsjaVObschejitii IS NULL)");
                    if(!(""+session.getAttribute("Grajdanstvo")).equals("%"))
@@ -736,7 +757,7 @@ System.out.println(count_ab);
      }
        stmnt = conn.createStatement();
 
-       stmnt.executeUpdate("DECLARE sel_cursor CURSOR GLOBAL SCROLL READ_ONLY FOR "+query.toString()+";");
+       stmnt.executeUpdate("DECLARE sel_cursor CURSOR GLOBAL SCROLL STATIC  READ_ONLY FOR "+query.toString()+";");
 
        stmnt.executeUpdate("OPEN sel_cursor;");
        stmnt = conn.createStatement();
@@ -757,7 +778,7 @@ System.out.println(">>SRCH_10");
              stmnt.executeUpdate("DEALLOCATE sel_cursor;");
            }
            stmnt = conn.createStatement();
-           stmnt.executeUpdate("DECLARE sel_cursor CURSOR GLOBAL SCROLL READ_ONLY FOR "+query.toString()+"; OPEN sel_cursor;");
+           stmnt.executeUpdate("DECLARE sel_cursor CURSOR GLOBAL SCROLL STATIC READ_ONLY FOR "+query.toString()+"; OPEN sel_cursor;");
          }
          else {
 
@@ -812,6 +833,7 @@ System.out.println(">>SRCH_10");
    stmnt = conn.createStatement();
    rs = stmnt.executeQuery("FETCH NEXT FROM sel_cursor");
    if(rs.next()) {
+	 
      AbiturientBean abit_TMP = new AbiturientBean();
      abit_TMP.setKodAbiturienta(new Integer(rs.getInt(1)));
      abit_TMP.setNumber(""+(StringUtil.toInt(""+session.getAttribute("position"),0)+row));
@@ -917,18 +939,18 @@ System.out.println(">>SRCH_10");
    else               abit_TMP.setSpecial8("");
 
                       abits_A.add(abit_TMP);
- } else {
+ }// else {
 
 // Прекращаем цикл выборки, если данных больше нет
 
-          break;
-   }
+      //    break;
+ //  }
 
  }
-/* 
+ 
 // Увеличиваем позицию на значение скроллинга = totalRows
-    session.setAttribute("position",""+(StringUtil.toInt(""+session.getAttribute("position"),0)+totalRows));
-*/
+    session.setAttribute("position",""+(StringUtil.toInt(""+session.getAttribute("position"),0)));
+
     stmt = conn.prepareStatement("SELECT COUNT(KodAbiturienta) FROM Abiturient WHERE Abiturient.KodVuza LIKE ?");
     stmt.setObject(1,session.getAttribute("kVuza"));
     rs = stmt.executeQuery();

@@ -325,9 +325,9 @@ public class WaveFirstAction extends Action {
 							// ОЛИМПИЙЦЫ (без вступительных испытаний)
 							stmt9 = conn.createStatement();
 							header = false;
-							query1 = new StringBuffer("select distinct kon.NomerLichnogoDela,a.Familija,a.Imja,a.Otchestvo,a.TipDokSredObraz,(zso1.otsenkaege+ zso2.otsenkaege+zso3.otsenkaege) as summ ,zso1.otsenkaege , zso2.otsenkaege, zso3.otsenkaege,kon.prof, kon.op,kon.PR,((cast(adi.BallAtt as int)) +(cast (adi.BallSGTO as int))+(cast (adi.BALLZGTO as int))+(cast (adi.BallPOI as int))+(cast (adi.TrudovajaDejatelnost as int))+(cast (adi.BallSoch as int))+(cast (kon.olimp as int))),adi.BallAtt,((cast(adi.BallSGTO as int))+(cast (adi.BALLZGTO as int))+(cast (adi.BallPOI as int ))),adi.TrudovajaDejatelnost,kon.olimp,adi.BallSoch ");
+							query1 = new StringBuffer("select distinct kon.NomerLichnogoDela,a.Familija,a.Imja,a.Otchestvo,a.TipDokSredObraz,(zso1.otsenkaege+ zso2.otsenkaege+zso3.otsenkaege) as summ ,zso1.otsenkaege , zso2.otsenkaege, zso3.otsenkaege,kon.prof, kon.op,kon.PR,((cast(adi.BallAtt as int)) +(cast (adi.BallSGTO as int))+(cast (adi.BALLZGTO as int))+(cast (adi.BallPOI as int))+(cast (adi.TrudovajaDejatelnost as int))+(cast (adi.BallSoch as int))+(cast (kon.olimp as int))),adi.BallAtt,((cast(adi.BallSGTO as int))+(cast (adi.BALLZGTO as int))+(cast (adi.BallPOI as int ))),adi.TrudovajaDejatelnost,kon.olimp,adi.BallSoch,a.kodabiturienta ");
 							if (!(abit_SD.getSpecial7().equals("2"))) {
-							query1.append(" ,kon.sogl ");
+								query1.append(" , case when kon.sogl is null then 'н' else kon.sogl end ");
 							}
 							 query1.append(" from abiturient a, konkurs kon, ekzamenynaspetsialnosti ens, zajavlennyeshkolnyeotsenki zso1, zajavlennyeshkolnyeotsenki zso2, zajavlennyeshkolnyeotsenki zso3,  Lgoty l, abitdopinf adi where a.kodabiturienta =kon.kodabiturienta  and kon.kodspetsialnosti LIKE "
 												    + rs2.getString(5)
@@ -554,8 +554,10 @@ public class WaveFirstAction extends Action {
 										+ "\\cell\n"); //
 								report.write("\\intbl\\qc " + rs9.getString(17)
 										+ "\\cell\n"); //
+								report.write("\\intbl\\qc " + rs9.getString(18)
+										+ "\\cell\n"); //
 								if (!(abit_SD.getSpecial7().equals("2"))) {
-									report.write("\\intbl\\qc " + rs9.getString(18)
+									report.write("\\intbl\\qc " + rs9.getString(20)
 											+ "\\cell\n"); //
 									}
 								// report.write("\\intbl\\qc "+rs9.getString(18)+"\\cell\n");
@@ -566,7 +568,7 @@ public class WaveFirstAction extends Action {
 								// для того, чтобы он появлялся в отчете только
 								// один раз
 
-								excludeList.append("," + rs9.getString(13));
+								excludeList.append("," + rs9.getString(19));
 							}
 							if (header)
 								report.write("\\pard\\par\n");
@@ -585,9 +587,9 @@ public class WaveFirstAction extends Action {
 
 								stmt9 = conn.createStatement();
 								query1 = new StringBuffer(
-										"select distinct kon.NomerLichnogoDela,a.Familija,a.Imja,a.Otchestvo,a.TipDokSredObraz,(zso1.otsenkaege+ zso2.otsenkaege+zso3.otsenkaege) as summ ,zso1.otsenkaege , zso2.otsenkaege, zso3.otsenkaege,kon.prof, kon.op,kon.PR,((cast(adi.BallAtt as int)) +(cast (adi.BallSGTO as int))+(cast (adi.BALLZGTO as int))+(cast (adi.BallPOI as int))+(cast (adi.TrudovajaDejatelnost as int))+(cast (adi.BallSoch as int))+(cast (kon.olimp as int))),adi.BallAtt,((cast(adi.BallSGTO as int))+(cast (adi.BALLZGTO as int))+(cast (adi.BallPOI as int ))),adi.TrudovajaDejatelnost,kon.olimp,adi.BallSoch ");
+										"select distinct kon.NomerLichnogoDela,a.Familija,a.Imja,a.Otchestvo,a.TipDokSredObraz,(zso1.otsenkaege+ zso2.otsenkaege+zso3.otsenkaege) as summ ,zso1.otsenkaege , zso2.otsenkaege, zso3.otsenkaege,kon.prof, kon.op,kon.PR,((cast(adi.BallAtt as int)) +(cast (adi.BallSGTO as int))+(cast (adi.BALLZGTO as int))+(cast (adi.BallPOI as int))+(cast (adi.TrudovajaDejatelnost as int))+(cast (adi.BallSoch as int))+(cast (kon.olimp as int))),adi.BallAtt,((cast(adi.BallSGTO as int))+(cast (adi.BALLZGTO as int))+(cast (adi.BallPOI as int ))),adi.TrudovajaDejatelnost,kon.olimp,adi.BallSoch, a.kodabiturienta ");
 								if (!(abit_SD.getSpecial7().equals("2"))) {
-									query1.append(" ,kon.sogl ");
+									query1.append(" , case when kon.sogl is null then 'н' else kon.sogl end ");
 									}								
 								query1.append(" from abiturient a, konkurs kon, ekzamenynaspetsialnosti ens, zajavlennyeshkolnyeotsenki zso1, zajavlennyeshkolnyeotsenki zso2, zajavlennyeshkolnyeotsenki zso3,  Lgoty l, abitdopinf adi where a.kodabiturienta =kon.kodabiturienta and a.kodspetsialnosti= kon.kodspetsialnosti and kon.kodspetsialnosti LIKE "
 												+ rs2.getString(5)
@@ -816,8 +818,10 @@ public class WaveFirstAction extends Action {
 											+ rs9.getString(16) + "\\cell\n"); //
 									report.write("\\intbl\\qc "
 											+ rs9.getString(17) + "\\cell\n"); //
+									report.write("\\intbl\\qc " + rs9.getString(18)
+											+ "\\cell\n"); //
 									if (!(abit_SD.getSpecial7().equals("2"))) {
-										report.write("\\intbl\\qc " + rs9.getString(18)
+										report.write("\\intbl\\qc " + rs9.getString(20)
 												+ "\\cell\n"); //
 										}
 									// report.write("\\intbl\\qc "+rs9.getString(18)+"\\cell\n");
@@ -827,17 +831,16 @@ public class WaveFirstAction extends Action {
 									// Добавляем код абитуриента в список
 									// исключения для того, чтобы он появлялся в
 									// отчете только один раз
-									rs3 = stmt3
-											.executeQuery("select a.kodabiturienta from abiturient a, konkurs k where k.target NOT LIKE '1' AND a.kodabiturienta=k.kodabiturienta AND k.kodspetsialnosti LIKE '"
-													+ rs2.getString(5)
-													+ "' AND a.kodabiturienta LIKE '"
-													+ rs9.getString(13) + "'");
-									if (!rs3.next()) {
-										excludeList.append(","
-												+ rs9.getString(13));
-									}
+									
+									rs3 = stmt3.executeQuery("select a.kodabiturienta from abiturient a, konkurs k where k.target NOT LIKE '1' AND a.kodabiturienta=k.kodabiturienta AND k.kodspetsialnosti LIKE '"+rs2.getString(5)+"' AND a.kodabiturienta LIKE '"+rs9.getString(19)+"'");
+						            if(!rs3.next()){
+						            excludeList.append(","+rs9.getString(19));
+						            }
 								}
 							}
+
+							if (header)
+								report.write("\\pard\\par\n");
 
 							if (header)
 								report.write("\\pard\\par\n");
@@ -860,9 +863,9 @@ public class WaveFirstAction extends Action {
 
 								stmt9 = conn.createStatement();
 								query1 = new StringBuffer(
-										"select distinct kon.NomerLichnogoDela,a.Familija,a.Imja,a.Otchestvo,a.TipDokSredObraz,(zso1.otsenkaege+ zso2.otsenkaege+zso3.otsenkaege) as summ ,zso1.otsenkaege , zso2.otsenkaege, zso3.otsenkaege,kon.prof, kon.op,kon.PR ,((cast(adi.BallAtt as int)) +(cast (adi.BallSGTO as int))+(cast (adi.BALLZGTO as int))+(cast (adi.BallPOI as int))+(cast (adi.TrudovajaDejatelnost as int))+(cast (adi.BallSoch as int))+(cast (kon.olimp as int))),adi.BallAtt,((cast(adi.BallSGTO as int))+(cast (adi.BALLZGTO as int))+(cast (adi.BallPOI as int ))),adi.TrudovajaDejatelnost,kon.olimp,adi.BallSoch ");
+										"select distinct kon.NomerLichnogoDela,a.Familija,a.Imja,a.Otchestvo,a.TipDokSredObraz,(zso1.otsenkaege+ zso2.otsenkaege+zso3.otsenkaege) as summ ,zso1.otsenkaege , zso2.otsenkaege, zso3.otsenkaege,kon.prof, kon.op,kon.PR ,((cast(adi.BallAtt as int)) +(cast (adi.BallSGTO as int))+(cast (adi.BALLZGTO as int))+(cast (adi.BallPOI as int))+(cast (adi.TrudovajaDejatelnost as int))+(cast (adi.BallSoch as int))+(cast (kon.olimp as int))),adi.BallAtt,((cast(adi.BallSGTO as int))+(cast (adi.BALLZGTO as int))+(cast (adi.BallPOI as int ))),adi.TrudovajaDejatelnost,kon.olimp,adi.BallSoch, a.kodabiturienta ");
 								if (!(abit_SD.getSpecial7().equals("2"))) {
-									query1.append(" ,kon.sogl ");
+									query1.append(" , case when kon.sogl is null then 'н' else kon.sogl end  ");
 									}			
 								query1.append("from abiturient a, konkurs kon, ekzamenynaspetsialnosti ens, zajavlennyeshkolnyeotsenki zso1, zajavlennyeshkolnyeotsenki zso2, zajavlennyeshkolnyeotsenki zso3,  abitdopinf adi,TselevojPriem tp where tp.KodTselevogoPriema=kon.target and a.kodabiturienta =kon.kodabiturienta and a.kodspetsialnosti= kon.kodspetsialnosti and kon.kodspetsialnosti LIKE "
 												+ rs2.getString(5)
@@ -1089,19 +1092,21 @@ public class WaveFirstAction extends Action {
 											+ rs9.getString(16) + "\\cell\n"); //
 									report.write("\\intbl\\qc "
 											+ rs9.getString(17) + "\\cell\n"); //
+									report.write("\\intbl\\qc " + rs9.getString(18)
+											+ "\\cell\n"); //
 									if (!(abit_SD.getSpecial7().equals("2"))) {
-										report.write("\\intbl\\qc " + rs9.getString(18)
+										report.write("\\intbl\\qc " + rs9.getString(20)
 												+ "\\cell\n"); //
 										}
-									// report.write("\\intbl\\qc "+rs9.getString(18)+"\\cell\n");
-									// //
 									report.write("\\intbl\\row\n");
+									// report.write("\\intbl\\qc "+rs9.getString(18)+"\\cell\n");
+															
 
 									// Добавляем код абитуриента в список
 									// исключения для того, чтобы он появлялся в
 									// отчете только один раз
 
-									excludeList.append("," + rs9.getString(13));
+									excludeList.append("," + rs9.getString(19));
 									if ((++tselev_nomer) <= total_amount)
 										++N;
 								}
@@ -1110,7 +1115,6 @@ public class WaveFirstAction extends Action {
 									report.write("\\pard\\par\n");
 
 							}
-
 							// ЦЕЛЕВОЙ ПРИЕМ ( РосАтом )
 
 							header = false;
@@ -1131,11 +1135,11 @@ public class WaveFirstAction extends Action {
 
 								stmt9 = conn.createStatement();
 								query1 = new StringBuffer(
-										" select distinct kon.NomerLichnogoDela,a.Familija,a.Imja,a.Otchestvo,a.TipDokSredObraz,(zso1.otsenkaege+ zso2.otsenkaege+zso3.otsenkaege) as summ,zso1.otsenkaege , zso2.otsenkaege, zso3.otsenkaege,kon.prof, kon.op,kon.PR,((cast(adi.BallAtt as int)) +(cast (adi.BallSGTO as int))+(cast (adi.BALLZGTO as int))+(cast (adi.BallPOI as int))+(cast (adi.TrudovajaDejatelnost as int))+(cast (adi.BallSoch as int))+(cast (kon.olimp as int))),adi.BallAtt,((cast(adi.BallSGTO as int))+(cast (adi.BALLZGTO as int))+(cast (adi.BallPOI as int ))),adi.TrudovajaDejatelnost,kon.olimp,adi.BallSoch ");
+										" select distinct kon.NomerLichnogoDela,a.Familija,a.Imja,a.Otchestvo,a.TipDokSredObraz,(zso1.otsenkaege+ zso2.otsenkaege+zso3.otsenkaege) as summ,zso1.otsenkaege , zso2.otsenkaege, zso3.otsenkaege,kon.prof, kon.op,kon.PR,((cast(adi.BallAtt as int)) +(cast (adi.BallSGTO as int))+(cast (adi.BALLZGTO as int))+(cast (adi.BallPOI as int))+(cast (adi.TrudovajaDejatelnost as int))+(cast (adi.BallSoch as int))+(cast (kon.olimp as int))),adi.BallAtt,((cast(adi.BallSGTO as int))+(cast (adi.BALLZGTO as int))+(cast (adi.BallPOI as int ))),adi.TrudovajaDejatelnost,kon.olimp,adi.BallSoch, a.kodabiturienta  ");
 								if (!(abit_SD.getSpecial7().equals("2"))) {
-									query1.append(" ,kon.sogl ");
+									query1.append(" , case when kon.sogl is null then 'н' else kon.sogl end ");
 									}			
-								query1.append("from abiturient a, konkurs kon, ekzamenynaspetsialnosti ens, zajavlennyeshkolnyeotsenki zso1, zajavlennyeshkolnyeotsenki zso2, zajavlennyeshkolnyeotsenki zso3,  abitdopinf adi,TselevojPriem tp where tp.KodTselevogoPriema=kon.target and a.kodabiturienta =kon.kodabiturienta and a.kodspetsialnosti= kon.kodspetsialnosti and kon.kodspetsialnosti LIKE "
+								query1.append(" from abiturient a, konkurs kon, ekzamenynaspetsialnosti ens, zajavlennyeshkolnyeotsenki zso1, zajavlennyeshkolnyeotsenki zso2, zajavlennyeshkolnyeotsenki zso3,  abitdopinf adi,TselevojPriem tp where tp.KodTselevogoPriema=kon.target and a.kodabiturienta =kon.kodabiturienta and a.kodspetsialnosti= kon.kodspetsialnosti and kon.kodspetsialnosti LIKE "
 												+ rs2.getString(5)
 												+ " and kon.kodspetsialnosti =ens.kodspetsialnosti and zso1.kodabiturienta=a.kodabiturienta and zso2.kodabiturienta=a.kodabiturienta and zso3.kodabiturienta=a.kodabiturienta and zso1.kodpredmeta like (select kodpredmeta from ekzamenynaspetsialnosti where prioritet =1 and kodspetsialnosti LIKE "
 												+ rs2.getString(5)
@@ -1360,8 +1364,10 @@ public class WaveFirstAction extends Action {
 											+ rs9.getString(16) + "\\cell\n"); //
 									report.write("\\intbl\\qc "
 											+ rs9.getString(17) + "\\cell\n"); //
+									report.write("\\intbl\\qc " + rs9.getString(18)
+											+ "\\cell\n"); //
 									if (!(abit_SD.getSpecial7().equals("2"))) {
-										report.write("\\intbl\\qc " + rs9.getString(18)
+										report.write("\\intbl\\qc " + rs9.getString(20)
 												+ "\\cell\n"); //
 										}
 									// report.write("\\intbl\\qc "+rs9.getString(18)+"\\cell\n");
@@ -1372,7 +1378,7 @@ public class WaveFirstAction extends Action {
 									// исключения для того, чтобы он появлялся в
 									// отчете только один раз
 
-									excludeList.append("," + rs9.getString(13));
+									excludeList.append("," + rs9.getString(19));
 									if ((++tselev_nomer) <= total_amount)
 										++N;
 								}
@@ -1398,9 +1404,9 @@ public class WaveFirstAction extends Action {
 								// Абитуриенты-целевики
 								stmt9 = conn.createStatement();
 								query1 = new StringBuffer(
-										" select distinct kon.NomerLichnogoDela,a.Familija,a.Imja,a.Otchestvo,a.TipDokSredObraz,(zso1.otsenkaege+ zso2.otsenkaege+zso3.otsenkaege) as summ,zso1.otsenkaege , zso2.otsenkaege, zso3.otsenkaege,kon.prof, kon.op,kon.PR,((cast(adi.BallAtt as int)) +(cast (adi.BallSGTO as int))+(cast (adi.BALLZGTO as int))+(cast (adi.BallPOI as int))+(cast (adi.TrudovajaDejatelnost as int))+(cast (adi.BallSoch as int))+(cast (kon.olimp as int))),adi.BallAtt,((cast(adi.BallSGTO as int))+(cast (adi.BALLZGTO as int))+(cast (adi.BallPOI as int ))),adi.TrudovajaDejatelnost,kon.olimp,adi.BallSoch ");
+										" select distinct kon.NomerLichnogoDela,a.Familija,a.Imja,a.Otchestvo,a.TipDokSredObraz,(zso1.otsenkaege+ zso2.otsenkaege+zso3.otsenkaege) as summ,zso1.otsenkaege , zso2.otsenkaege, zso3.otsenkaege,kon.prof, kon.op,kon.PR,((cast(adi.BallAtt as int)) +(cast (adi.BallSGTO as int))+(cast (adi.BALLZGTO as int))+(cast (adi.BallPOI as int))+(cast (adi.TrudovajaDejatelnost as int))+(cast (adi.BallSoch as int))+(cast (kon.olimp as int))),adi.BallAtt,((cast(adi.BallSGTO as int))+(cast (adi.BALLZGTO as int))+(cast (adi.BallPOI as int ))),adi.TrudovajaDejatelnost,kon.olimp,adi.BallSoch, a.kodabiturienta ");
 								if (!(abit_SD.getSpecial7().equals("2"))) {
-									query1.append(" ,kon.sogl ");
+									query1.append(" , case when kon.sogl is null then 'н' else kon.sogl end ");
 									}			
 								query1.append("from abiturient a, konkurs kon, ekzamenynaspetsialnosti ens, zajavlennyeshkolnyeotsenki zso1, zajavlennyeshkolnyeotsenki zso2, zajavlennyeshkolnyeotsenki zso3,  abitdopinf adi,TselevojPriem tp where tp.KodTselevogoPriema=kon.target and a.kodabiturienta =kon.kodabiturienta and a.kodspetsialnosti= kon.kodspetsialnosti and kon.kodspetsialnosti LIKE "
 												+ rs2.getString(5)
@@ -1627,8 +1633,10 @@ public class WaveFirstAction extends Action {
 									report.write("\\intbl\\qc "
 											+ rs9.getString(17) + "\\cell\n"); //
 									// report.write("\\intbl\\qc "+rs9.getString(18)+"\\cell\n");
+									report.write("\\intbl\\qc " + rs9.getString(18)
+											+ "\\cell\n"); //
 									if (!(abit_SD.getSpecial7().equals("2"))) {
-										report.write("\\intbl\\qc " + rs9.getString(18)
+										report.write("\\intbl\\qc " + rs9.getString(20)
 												+ "\\cell\n"); //
 										}
 									// //
@@ -1638,7 +1646,7 @@ public class WaveFirstAction extends Action {
 									// исключения для того, чтобы он появлялся в
 									// отчете только один раз
 
-									excludeList.append("," + rs9.getString(13));
+									excludeList.append("," + rs9.getString(19));
 									if ((++tselev_nomer) <= total_amount)
 										++N;
 								}
@@ -1664,9 +1672,9 @@ public class WaveFirstAction extends Action {
 								// Абитуриенты-целевики
 								stmt9 = conn.createStatement();
 								query1 = new StringBuffer(
-										"select distinct kon.NomerLichnogoDela,a.Familija,a.Imja,a.Otchestvo,a.TipDokSredObraz,(zso1.otsenkaege+ zso2.otsenkaege+zso3.otsenkaege) as summ,zso1.otsenkaege , zso2.otsenkaege, zso3.otsenkaege,kon.prof, kon.op,kon.PR,((cast(adi.BallAtt as int)) +(cast (adi.BallSGTO as int))+(cast (adi.BALLZGTO as int))+(cast (adi.BallPOI as int))+(cast (adi.TrudovajaDejatelnost as int))+(cast (adi.BallSoch as int))+(cast (kon.olimp as int))),adi.BallAtt,((cast(adi.BallSGTO as int))+(cast (adi.BALLZGTO as int))+(cast (adi.BallPOI as int ))),adi.TrudovajaDejatelnost,kon.olimp,adi.BallSoch ");
+										"select distinct kon.NomerLichnogoDela,a.Familija,a.Imja,a.Otchestvo,a.TipDokSredObraz,(zso1.otsenkaege+ zso2.otsenkaege+zso3.otsenkaege) as summ,zso1.otsenkaege , zso2.otsenkaege, zso3.otsenkaege,kon.prof, kon.op,kon.PR,((cast(adi.BallAtt as int)) +(cast (adi.BallSGTO as int))+(cast (adi.BALLZGTO as int))+(cast (adi.BallPOI as int))+(cast (adi.TrudovajaDejatelnost as int))+(cast (adi.BallSoch as int))+(cast (kon.olimp as int))),adi.BallAtt,((cast(adi.BallSGTO as int))+(cast (adi.BALLZGTO as int))+(cast (adi.BallPOI as int ))),adi.TrudovajaDejatelnost,kon.olimp,adi.BallSoch, a.kodabiturienta ");
 								if (!(abit_SD.getSpecial7().equals("2"))) {
-									query1.append(" ,kon.sogl ");
+									query1.append(" , case when kon.sogl is null then 'н' else kon.sogl end  ");
 									}			
 								query1.append("from abiturient a, konkurs kon, ekzamenynaspetsialnosti ens, zajavlennyeshkolnyeotsenki zso1, zajavlennyeshkolnyeotsenki zso2, zajavlennyeshkolnyeotsenki zso3, abitdopinf adi,TselevojPriem tp where tp.KodTselevogoPriema=kon.target and a.kodabiturienta =kon.kodabiturienta and kon.kodspetsialnosti LIKE "
 												+ rs2.getString(5)
@@ -1888,10 +1896,10 @@ public class WaveFirstAction extends Action {
 											+ rs9.getString(16) + "\\cell\n"); //
 									report.write("\\intbl\\qc "
 											+ rs9.getString(17) + "\\cell\n"); //
-								  // report.write("\\intbl\\qc "+rs9.getString(18)+"\\cell\n");
-									// //
+								  	report.write("\\intbl\\qc " + rs9.getString(18)
+											+ "\\cell\n"); //
 									if (!(abit_SD.getSpecial7().equals("2"))) {
-										report.write("\\intbl\\qc " + rs9.getString(18)
+										report.write("\\intbl\\qc " + rs9.getString(20)
 												+ "\\cell\n"); //
 										}
 									report.write("\\intbl\\row\n");
@@ -1900,7 +1908,7 @@ public class WaveFirstAction extends Action {
 									// исключения для того, чтобы он появлялся в
 									// отчете только один раз
 
-									excludeList.append("," + rs9.getString(13));
+									excludeList.append("," + rs9.getString(19));
 									if ((++tselev_nomer) <= total_amount)
 										++N;
 								}
@@ -1922,9 +1930,9 @@ public class WaveFirstAction extends Action {
 							    	
 							    	// Абитуриенты-целевики
 							             stmt9 = conn.createStatement();
-							    	     query1 = new StringBuffer("select distinct kon.NomerLichnogoDela,a.Familija,a.Imja,a.Otchestvo,a.TipDokSredObraz,(zso1.otsenkaege+ zso2.otsenkaege+zso3.otsenkaege) as summ,zso1.otsenkaege , zso2.otsenkaege, zso3.otsenkaege,kon.prof, kon.op,kon.PR,((cast(adi.BallAtt as int)) +(cast (adi.BallSGTO as int))+(cast (adi.BALLZGTO as int))+(cast (adi.BallPOI as int))+(cast (adi.TrudovajaDejatelnost as int))+(cast (adi.BallSoch as int))+(cast (kon.olimp as int))),adi.BallAtt,((cast(adi.BallSGTO as int))+(cast (adi.BALLZGTO as int))+(cast (adi.BallPOI as int ))),adi.TrudovajaDejatelnost,kon.olimp,adi.BallSoch ");
+							    	     query1 = new StringBuffer("select distinct kon.NomerLichnogoDela,a.Familija,a.Imja,a.Otchestvo,a.TipDokSredObraz,(zso1.otsenkaege+ zso2.otsenkaege+zso3.otsenkaege) as summ,zso1.otsenkaege , zso2.otsenkaege, zso3.otsenkaege,kon.prof, kon.op,kon.PR,((cast(adi.BallAtt as int)) +(cast (adi.BallSGTO as int))+(cast (adi.BALLZGTO as int))+(cast (adi.BallPOI as int))+(cast (adi.TrudovajaDejatelnost as int))+(cast (adi.BallSoch as int))+(cast (kon.olimp as int))),adi.BallAtt,((cast(adi.BallSGTO as int))+(cast (adi.BALLZGTO as int))+(cast (adi.BallPOI as int ))),adi.TrudovajaDejatelnost,kon.olimp,adi.BallSoch, a.kodabiturienta ");
 							    	     if (!(abit_SD.getSpecial7().equals("2"))) {
-												query1.append(" ,kon.sogl ");
+							    	    		query1.append(" , case when kon.sogl is null then 'н' else kon.sogl end  ");
 												}			
 											query1.append("from abiturient a, konkurs kon, ekzamenynaspetsialnosti ens, zajavlennyeshkolnyeotsenki zso1, zajavlennyeshkolnyeotsenki zso2, zajavlennyeshkolnyeotsenki zso3, abitdopinf adi,TselevojPriem tp where tp.KodTselevogoPriema=kon.target and a.kodabiturienta =kon.kodabiturienta and kon.kodspetsialnosti LIKE "+rs2.getString(5)+" and kon.kodspetsialnosti =ens.kodspetsialnosti and zso1.kodabiturienta=a.kodabiturienta and zso2.kodabiturienta=a.kodabiturienta and zso3.kodabiturienta=a.kodabiturienta and zso1.kodpredmeta like (select kodpredmeta from ekzamenynaspetsialnosti where prioritet =1 and kodspetsialnosti LIKE "+rs2.getString(5)+" ) and zso2.kodpredmeta like (select kodpredmeta from ekzamenynaspetsialnosti where prioritet =2 and kodspetsialnosti LIKE "+rs2.getString(5)+" ) and zso3.kodpredmeta like  (select kodpredmeta from ekzamenynaspetsialnosti where prioritet =3 and kodspetsialnosti LIKE "+rs2.getString(5)+" ) and adi.kodabiturienta=kon.kodabiturienta and adi.BallAtt not like 'да' and adi.BallAtt not like 'нет'  AND adi.ballsgto not like 'да' and adi.Ballsgto not like 'нет'  AND adi.ballzgto not like 'да' and adi.Ballzgto not like 'нет'   AND adi.ballsoch not like 'да' AND adi.ballsoch not like 'нет' AND adi.ballpoi not like 'да' AND adi.ballpoi not like 'нет'and adi.trudovajadejatelnost not like 'да'and adi.trudovajadejatelnost not like 'нет' AND tp.ShifrPriema IN ('увц') AND a.DokumentyHranjatsja LIKE 'д' AND a.KodAbiturienta NOT IN ("+excludeList.toString()+")  ");
 							    	      query1.append("AND kon.NomerLichnogoDela LIKE '%-1' ");
@@ -2121,7 +2129,7 @@ public class WaveFirstAction extends Action {
 							    	        report.write("\\intbl\\qc "+rs9.getString(17)+"\\cell\n"); // 
 							    	        report.write("\\intbl\\qc "+rs9.getString(18)+"\\cell\n"); // 
 							    	        if (!(abit_SD.getSpecial7().equals("2"))) {
-												report.write("\\intbl\\qc " + rs9.getString(19)
+												report.write("\\intbl\\qc " + rs9.getString(20)
 														+ "\\cell\n"); //
 												}
 							    	          report.write("\\intbl\\row\n");
@@ -2129,7 +2137,7 @@ public class WaveFirstAction extends Action {
 							    	           
 							    	//Добавляем код абитуриента в список исключения для того, чтобы он появлялся в отчете только один раз
 							    	 
-							    	        excludeList.append(","+rs9.getString(13));
+							    	        excludeList.append(","+rs9.getString(19));
 							    	        if((++tselev_nomer) <= total_amount) ++N;
 							    	      }
 
@@ -2152,9 +2160,9 @@ public class WaveFirstAction extends Action {
 							    	
 							    	// Абитуриенты-целевики
 							             stmt9 = conn.createStatement();
-							    	     query1 = new StringBuffer("select distinct kon.NomerLichnogoDela,a.Familija,a.Imja,a.Otchestvo,a.TipDokSredObraz,(zso1.otsenkaege+ zso2.otsenkaege+zso3.otsenkaege) as summ,zso1.otsenkaege , zso2.otsenkaege, zso3.otsenkaege,kon.prof, kon.op,kon.PR,((cast(adi.BallAtt as int)) +(cast (adi.BallSGTO as int))+(cast (adi.BALLZGTO as int))+(cast (adi.BallPOI as int))+(cast (adi.TrudovajaDejatelnost as int))+(cast (adi.BallSoch as int))+(cast (kon.olimp as int))),adi.BallAtt,((cast(adi.BallSGTO as int))+(cast (adi.BALLZGTO as int))+(cast (adi.BallPOI as int ))),adi.TrudovajaDejatelnost,kon.olimp,adi.BallSoch ");
+							    	     query1 = new StringBuffer("select distinct kon.NomerLichnogoDela,a.Familija,a.Imja,a.Otchestvo,a.TipDokSredObraz,(zso1.otsenkaege+ zso2.otsenkaege+zso3.otsenkaege) as summ,zso1.otsenkaege , zso2.otsenkaege, zso3.otsenkaege,kon.prof, kon.op,kon.PR,((cast(adi.BallAtt as int)) +(cast (adi.BallSGTO as int))+(cast (adi.BALLZGTO as int))+(cast (adi.BallPOI as int))+(cast (adi.TrudovajaDejatelnost as int))+(cast (adi.BallSoch as int))+(cast (kon.olimp as int))),adi.BallAtt,((cast(adi.BallSGTO as int))+(cast (adi.BALLZGTO as int))+(cast (adi.BallPOI as int ))),adi.TrudovajaDejatelnost,kon.olimp,adi.BallSoch, a.kodabiturienta ");
 							    	     if (!(abit_SD.getSpecial7().equals("2"))) {
-												query1.append(" ,kon.sogl ");
+							    	    		query1.append(" , case when kon.sogl is null then 'н' else kon.sogl end ");
 												}			
 											query1.append("from abiturient a, konkurs kon, ekzamenynaspetsialnosti ens, zajavlennyeshkolnyeotsenki zso1, zajavlennyeshkolnyeotsenki zso2, zajavlennyeshkolnyeotsenki zso3, abitdopinf adi,TselevojPriem tp where tp.KodTselevogoPriema=kon.target and a.kodabiturienta =kon.kodabiturienta and kon.kodspetsialnosti LIKE "+rs2.getString(5)+" and kon.kodspetsialnosti =ens.kodspetsialnosti and zso1.kodabiturienta=a.kodabiturienta and zso2.kodabiturienta=a.kodabiturienta and zso3.kodabiturienta=a.kodabiturienta and zso1.kodpredmeta like (select kodpredmeta from ekzamenynaspetsialnosti where prioritet =1 and kodspetsialnosti LIKE "+rs2.getString(5)+" ) and zso2.kodpredmeta like (select kodpredmeta from ekzamenynaspetsialnosti where prioritet =2 and kodspetsialnosti LIKE "+rs2.getString(5)+" ) and zso3.kodpredmeta like  (select kodpredmeta from ekzamenynaspetsialnosti where prioritet =3 and kodspetsialnosti LIKE "+rs2.getString(5)+" ) and adi.kodabiturienta=kon.kodabiturienta and adi.BallAtt not like 'да' and adi.BallAtt not like 'нет'  AND adi.ballsgto not like 'да' and adi.Ballsgto not like 'нет'  AND adi.ballzgto not like 'да' and adi.Ballzgto not like 'нет'   AND adi.ballsoch not like 'да' AND adi.ballsoch not like 'нет' AND adi.ballpoi not like 'да' AND adi.ballpoi not like 'нет'and adi.trudovajadejatelnost not like 'да'and adi.trudovajadejatelnost not like 'нет' AND tp.ShifrPriema IN ('мон') AND a.DokumentyHranjatsja LIKE 'д' AND a.KodAbiturienta NOT IN ("+excludeList.toString()+")  ");
 							    	      query1.append("AND kon.NomerLichnogoDela LIKE '%-1' ");
@@ -2353,7 +2361,7 @@ public class WaveFirstAction extends Action {
 							    	        report.write("\\intbl\\qc "+rs9.getString(17)+"\\cell\n"); // 
 							    	        report.write("\\intbl\\qc "+rs9.getString(18)+"\\cell\n"); // 
 							    	        if (!(abit_SD.getSpecial7().equals("2"))) {
-												report.write("\\intbl\\qc " + rs9.getString(19)
+												report.write("\\intbl\\qc " + rs9.getString(20)
 														+ "\\cell\n"); //
 												}
 							    	          report.write("\\intbl\\row\n");
@@ -2361,7 +2369,7 @@ public class WaveFirstAction extends Action {
 							    	           
 							    	//Добавляем код абитуриента в список исключения для того, чтобы он появлялся в отчете только один раз
 							    	 
-							    	        excludeList.append(","+rs9.getString(13));
+							    	        excludeList.append(","+rs9.getString(19));
 							    	        if((++tselev_nomer) <= total_amount) ++N;
 							    	      }
 
@@ -2388,7 +2396,7 @@ public class WaveFirstAction extends Action {
 						query1 = new StringBuffer(
 								"  select distinct kon.NomerLichnogoDela,a.Familija,a.Imja,a.Otchestvo,a.TipDokSredObraz,(zso1.otsenkaege+ zso2.otsenkaege+zso3.otsenkaege) as summ ,zso1.otsenkaege , zso2.otsenkaege, zso3.otsenkaege,kon.prof, kon.op,kon.PR ,((cast(adi.BallAtt as int)) +(cast (adi.BallSGTO as int))+(cast (adi.BALLZGTO as int))+(cast (adi.BallPOI as int))+(cast (adi.TrudovajaDejatelnost as int))+(cast (adi.BallSoch as int))+(cast (kon.olimp as int))),adi.BallAtt,((cast(adi.BallSGTO as int))+(cast (adi.BALLZGTO as int))+(cast (adi.BallPOI as int ))),adi.TrudovajaDejatelnost,kon.olimp,adi.BallSoch ");
 						if (!(abit_SD.getSpecial7().equals("2"))) {
-							query1.append(" ,kon.sogl ");
+							query1.append(" , case when kon.sogl is null then 'н' else kon.sogl end  ");
 							}
 						query1.append (" from abiturient a, konkurs kon, ekzamenynaspetsialnosti ens, zajavlennyeshkolnyeotsenki zso1, zajavlennyeshkolnyeotsenki zso2, zajavlennyeshkolnyeotsenki zso3, abitdopinf adi where  a.kodabiturienta =kon.kodabiturienta and kon.kodspetsialnosti LIKE "
 										+ rs2.getString(5)
@@ -2622,9 +2630,7 @@ public class WaveFirstAction extends Action {
 								}
 							report.write("\\intbl\\row\n");
 
-							// Добавляем код абитуриента в список исключения для
-							// того, чтобы он появлялся в отчете только один раз
-
+							
 							N++;
 						}
 
@@ -2643,7 +2649,7 @@ public class WaveFirstAction extends Action {
 						query1 = new StringBuffer(
 								"  select distinct kon.NomerLichnogoDela,a.Familija,a.Imja,a.Otchestvo,a.TipDokSredObraz,(zso1.otsenkaege+ zso2.otsenkaege+zso3.otsenkaege) as summ ,zso1.otsenkaege , zso2.otsenkaege, zso3.otsenkaege,kon.prof, kon.op,kon.PR ,((cast(adi.BallAtt as int)) +(cast (adi.BallSGTO as int))+(cast (adi.BALLZGTO as int))+(cast (adi.BallPOI as int))+(cast (adi.TrudovajaDejatelnost as int))+(cast (adi.BallSoch as int))+(cast (kon.olimp as int))),adi.BallAtt,((cast(adi.BallSGTO as int))+(cast (adi.BALLZGTO as int))+(cast (adi.BallPOI as int ))),adi.TrudovajaDejatelnost,kon.olimp,adi.BallSoch ");
 						if (!(abit_SD.getSpecial7().equals("2"))) {
-							query1.append(" ,kon.sogl ");
+							query1.append(" , case when kon.sogl is null then 'н' else kon.sogl end  ");
 							}			
 						query1.append("from abiturient a, konkurs kon, ekzamenynaspetsialnosti ens, zajavlennyeshkolnyeotsenki zso1, zajavlennyeshkolnyeotsenki zso2, zajavlennyeshkolnyeotsenki zso3, abitdopinf adi where  a.kodabiturienta =kon.kodabiturienta and kon.kodspetsialnosti LIKE "
 										+ rs2.getString(5)

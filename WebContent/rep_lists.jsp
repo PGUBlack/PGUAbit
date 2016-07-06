@@ -47,7 +47,13 @@
       <TD align=left><A href="rep_lists_edone.jsp"><img border=0 src="layouts/<bean:write name="user" property="idTema"/>/img/b_end.gif" height=28 width=35></A></TD>
   </TR>
   <TR><TD height=5></TD></TR>
-
+<%---- Кнопка -----%>
+  <TR><TD align=left><A href="lists_info.do"><img border=0 src="layouts/<bean:write name="user" property="idTema"/>/img/b_beg.gif" height=28 width=35></A></TD>
+      <A href="lists_info.do"><TD class="button" align="center" valign="middle" height="28">
+        <A class=menu href="lists_info.do">&nbsp;Списки&nbsp;ЕГЭ&nbsp;</A></TD></A>
+      <TD align=left><A href="lists_info.do"><img border=0 src="layouts/<bean:write name="user" property="idTema"/>/img/b_end.gif" height=28 width=35></A></TD>
+  </TR>
+  <TR><TD height=5></TD></TR>
   <%---- Кнопка -----%>
   <TR><TD align=left><A href="reports.jsp"><img border=0 src="layouts/<bean:write name="user" property="idTema"/>/img/b_beg.gif" height=28 width=35></A></TD>
       <A href="reports.jsp"><TD class="button" align="center" valign="middle" height="28">

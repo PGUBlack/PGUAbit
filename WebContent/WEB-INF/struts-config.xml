@@ -11,7 +11,7 @@
    <form-bean name="FillCGsForm" type="abit.ajax.FillCGsForm"/>
    
    <form-bean name="KladrForm" type="abit.ajax.KladrForm"/>
- 
+ <form-bean name="StreetForm" type="abit.ajax.StreetForm"/>
     <form-bean      name="abiturientForm"
                     type="abit.action.AbiturientForm"/>
 
@@ -111,6 +111,9 @@
 
     <form-bean      name="listsSpecForm"
                     type="abit.action.ListsSpecForm"/>
+
+    <form-bean      name="listsInfoForm"
+                    type="abit.action.ListsInfoForm"/>                    
 
     <form-bean      name="listsDoneForm"
                     type="abit.action.ListsDoneForm"/>
@@ -235,8 +238,12 @@
  	 	<forward name='umu_excel_f3'          path='/umu_excel_f3.do'      redirect='false'/>
  	 	<forward name='umu_excel_f2'          path='/umu_excel_f2.do'      redirect='false'/>
  	 	<forward name='umu_excel_f4'          path='/umu_excel_f4.do'      redirect='false'/>
+ 	 	<forward name='umu_excel_monitor241'  path='/umu_excel_monitor241.do' redirect='false'/>
+<forward name='umu_kolvo_zajav'          path='/umu_kolvo_zajav.do'      redirect='false'/>
  	 	
  	<forward name='ajaxKladr'          path='/ajaxKladr.do'      redirect='false'/>
+ 	
+ 	<forward name='ajaxStreet'          path='/ajaxStreet.do'      redirect='false'/>
  	<forward name='ajaxFillCGs'          path='/ajaxFillCGs.do'      redirect='false'/>
     <forward name='abiturient'              path='/abiturient.do'              redirect='false'/>
     <forward name='abit_doc'                path='/abit_doc.do'                redirect='false'/>
@@ -264,8 +271,15 @@
     <forward name='fis_connect'             path='/fis_connect.do'             redirect='false'/>
      <forward name='fis_bd_update'             path='/fis_bd_update.do'             redirect='false'/>
      <forward name='fis_marks'             path='/fis_marks.do'             redirect='false'/>
+     <forward name='fis_check_marks'      path='/fis_check_marks.do'             redirect='false'/>
      <forward name='fis_adm'             path='/fis_adm.do'             redirect='false'/>
+     <forward name='fis_adm_spo2016'             path='/fis_adm_spo2016.do'             redirect='false'/>
+     <forward name='fis_adm_mag2016'             path='/fis_adm_mag2016.do'             redirect='false'/>
+     <forward name='fis_adm_asp2016'             path='/fis_adm_asp2016.do'             redirect='false'/>
+     <forward name='fis_adm_del'             path='/fis_adm_del.do'             redirect='false'/>
+     <forward name='fis_adm2016'             path='/fis_adm2016.do'             redirect='false'/>
      <forward name='fis_interface'             path='/fis_interface.do'             redirect='false'/>
+     <forward name='fis_marks_import'             path='/fis_marks_import.do'             redirect='false'/>
     <forward name='fgruppy'                 path='/fgruppy.do'                 redirect='false'/>
     <forward name='gener_ege'               path='/gener_ege.do'               redirect='false'/>
     <forward name='prioritet'               path='/prioritet.do'               redirect='false'/>
@@ -285,6 +299,7 @@
     <forward name='lists_attrs'             path='/lists_attrs.do'             redirect='false'/>
     <forward name='lists_dec_ege'           path='/lists_dec_ege.do'           redirect='false'/>
     <forward name='lists_spec'              path='/lists_spec.do'              redirect='false'/>
+    <forward name='lists_info'              path='/lists_info.do'              redirect='false'/>
     <forward name='lists_groups'            path='/lists_groups.do'            redirect='false'/>
     <forward name='login'                   path='/login.do'                   redirect='false'/>
     <forward name='logoff'                  path='/logoff.do'                  redirect='false'/>
@@ -373,7 +388,7 @@
     
           <forward name='moodle_export'           path='/moodle_export.do'           redirect='false'/>
     <forward name='moodle_import'           path='/moodle_import.do'           redirect='false'/>  
-    
+    <forward name='parus_export'           path='/parus_export.do'           redirect='false'/>
  </global-forwards>
 
 
@@ -413,6 +428,29 @@
   
     <action    path = "/umu_excel_f2"
       	       type = "abit.umu.UmuExcelF2Action" >
+     <forward name = "success"  path = "/reports.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
+    
+  </action>
+  
+      <action    path = "/umu_excel_monitor241"
+      	       type = "abit.umu.UmuExcelMonitor241Action" >
+       <forward name = "success"  path = "/forms_doc.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
+    
+  </action>
+   <action    path = "/umu_kolvo_zajav"
+      	       type = "abit.umu.UmuKolvoZajavAction" >
+     <forward name = "success"  path = "/reports.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
+    
+  </action>
+  
+        <action    path = "/umu_kolvo_zajav2"
+      	       type = "abit.umu.UmuKolvoZajavAction2" >
      <forward name = "success"  path = "/reports.jsp"/>
       <forward name = "error"    path = "/error.jsp"/>
       <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
@@ -548,7 +586,7 @@
   </action>
   
   <action name="KladrForm" path="/ajaxKladr" input="/abiturient.jsp"   type="abit.ajax.KladrAction"/>
-   
+   <action name="StreetForm" path="/ajaxStreet" input="/abiturient.jsp"   type="abit.ajax.StreetAction"/>
   <action name="FillCGsForm" path="/ajaxFillCGs" input="/spetsialnosti.jsp"   type="abit.ajax.FillCGsAction"/>
    
   <action    path = "/dateValidation"
@@ -791,6 +829,16 @@
       <forward name = "error"          path = "/error.jsp"  />
       <forward name = "back"           path = "/adjustment.jsp"  />
       </action>
+      
+      <action    path = "/fis_marks_import"
+               type = "abit.action.FisMarksImportAction"
+               name = "fisConnectForm"
+              scope = "request"
+           validate = "true">
+      <forward name = "success"        path = "/fis_marks_import.jsp"/>
+      <forward name = "error"          path = "/error.jsp"  />
+      <forward name = "back"           path = "/adjustment.jsp"  />
+      </action>
          
          
            <action    path = "/fis_bd_update"
@@ -814,9 +862,66 @@
       <forward name = "back"           path = "/adjustment.jsp"  />
          </action>
          
+         <action    path = "/fis_check_marks"
+               type = "abit.action.FisCheckMarksAction"
+               name = "fisConnectForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"        path = "/fis_check_marks.jsp"/>
+      <forward name = "error"          path = "/error.jsp"  />
+      <forward name = "back"           path = "/adjustment.jsp"  />
+         </action>
+         
          
          <action    path = "/fis_adm"
                type = "abit.action.FisAdmAction"
+              
+              scope = "request"
+           validate = "true">
+      <forward name = "success"        path = "/fis_connect.jsp"/>
+      <forward name = "error"          path = "/error.jsp"  />
+      <forward name = "back"           path = "/adjustment.jsp"  />
+         </action>
+         <action    path = "/fis_adm_spo2016"
+               type = "abit.action.FisAdmSpoAction2016"
+              
+              scope = "request"
+           validate = "true">
+      <forward name = "success"        path = "/fis_connect.jsp"/>
+      <forward name = "error"          path = "/error.jsp"  />
+      <forward name = "back"           path = "/adjustment.jsp"  />
+         </action>
+         
+         <action    path = "/fis_adm_del"
+               type = "abit.action.FisAdmDeleteAction"
+              
+              scope = "request"
+           validate = "true">
+      <forward name = "success"        path = "/fis_connect.jsp"/>
+      <forward name = "error"          path = "/error.jsp"  />
+      <forward name = "back"           path = "/adjustment.jsp"  />
+         </action>
+         
+         <action    path = "/fis_adm2016"
+               type = "abit.action.FisAdmAction2016"
+              
+              scope = "request"
+           validate = "true">
+      <forward name = "success"        path = "/fis_connect.jsp"/>
+      <forward name = "error"          path = "/error.jsp"  />
+      <forward name = "back"           path = "/adjustment.jsp"  />
+         </action>
+         <action    path = "/fis_adm_mag2016"
+               type = "abit.action.FisAdmMagAction2016"
+              
+              scope = "request"
+           validate = "true">
+      <forward name = "success"        path = "/fis_connect.jsp"/>
+      <forward name = "error"          path = "/error.jsp"  />
+      <forward name = "back"           path = "/adjustment.jsp"  />
+         </action>
+         <action    path = "/fis_adm_asp2016"
+               type = "abit.action.FisAdmAspAction2016"
               
               scope = "request"
            validate = "true">
@@ -1032,6 +1137,17 @@
               scope = "request"
            validate = "false">
       <forward name = "success"  path = "/rep_lists_spec.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
+      <forward name = "back"     path = "/rep_reports.jsp"/>
+    </action>
+
+        <action    path = "/lists_info"
+               type = "abit.action.ListsInfoAction"
+               name = "listsInfoForm"
+              scope = "request"
+           validate = "false">
+      <forward name = "success"  path = "/rep_lists_info.jsp"/>
       <forward name = "error"    path = "/error.jsp"/>
       <forward name = "rep_brw"  path = "/rep_browser.do?action=new"/>
       <forward name = "back"     path = "/rep_reports.jsp"/>
@@ -1937,6 +2053,15 @@
     
     <action    path = "/moodle_export"
       	       type = "abit.action.MoodleExportAction" 
+      	       scope = "request"
+       	       validate = "true">     	       
+      <forward name = "success"  path = "/tempblank.jsp"/>
+      <forward name = "error"    path = "/error.jsp"/>
+      <forward name = "back"  path = "/moodle.jsp"/>
+    
+  </action>
+  <action    path = "/parus_export"
+      	       type = "abit.action.ParusExportAction" 
       	       scope = "request"
        	       validate = "true">     	       
       <forward name = "success"  path = "/tempblank.jsp"/>

@@ -26,8 +26,23 @@
  
 
   </TR>
+  
+  <%---- Кнопка -----%>
+  <TR><TD align=left><A href="umu_kolvo_zajav.do"><img border=0 src="layouts/<bean:write name="user" property="idTema"/>/img/b_beg.gif" height=28 width=35></A></TD>
+      <A href="umu_kolvo_zajav.do"><TD class="button" align="center" valign="middle" height="28">
+        <A class=menu href="umu_kolvo_zajav.do">&nbsp;Поданные&nbsp;заявления&nbsp;(бакалавриат/специалитет)&nbsp;</A></TD></A>
+      <TD align=left><A href="umu_kolvo_zajav.do"><img border=0 src="layouts/<bean:write name="user" property="idTema"/>/img/b_end.gif" height=28 width=35></A></TD>
+  </TR>
+  <TR><TD height=5></TD></TR>
 
-
+  
+  <%---- Кнопка -----%>
+  <TR><TD align=left><A href="umu_kolvo_zajav2.do"><img border=0 src="layouts/<bean:write name="user" property="idTema"/>/img/b_beg.gif" height=28 width=35></A></TD>
+      <A href="umu_kolvo_zajav2.do"><TD class="button" align="center" valign="middle" height="28">
+        <A class=menu href="umu_kolvo_zajav2.do">&nbsp;Поданные&nbsp;заявления&nbsp;(магистратура)&nbsp;</A></TD></A>
+      <TD align=left><A href="umu_kolvo_zajav2.do"><img border=0 src="layouts/<bean:write name="user" property="idTema"/>/img/b_end.gif" height=28 width=35></A></TD>
+  </TR>
+  <TR><TD height=5></TD></TR>
 
     <%---- Кнопка -----%>
   <TR><TD align=left><A href="umu_excel_f1.do"><img border=0 src="layouts/<bean:write name="user" property="idTema"/>/img/b_beg.gif" height=28 width=35></A></TD>
@@ -54,6 +69,7 @@
   </TR>
   <TR><TD height=5></TD></TR>
   <%---- Кнопка -----%>
+  
     <%---- Кнопка -----%>
   <TR><TD align=left><A href="umu_excel_2016_2_4_1_.do"><img border=0 src="layouts/<bean:write name="user" property="idTema"/>/img/b_beg.gif" height=28 width=35></A></TD>
       <A href="umu_excel_2016_2_4_1_.do"><TD class="button" align="center" valign="middle" height="28">

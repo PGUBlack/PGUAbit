@@ -11,6 +11,9 @@
  <logic:redirect forward='login'/>
 </logic:notPresent>
 
+
+
+
 <bean:define id="tema" name="user" property="idTema"/>
 
 <template:insert template="<%="layouts/"+tema+"/lay/layout_menu.jsp"%>">
@@ -80,12 +83,63 @@
     
     
     <TR><TD height=5></TD></TR>
+     <%---- Кнопка --%>
+  <TR><TD align=left><A href="fis_marks_import.do"><img border=0 src="layouts/<bean:write name="user" property="idTema"/>/img/b_beg.gif" height=28 width=35></A></TD>
+      <A href="fis_marks_import.do"><TD class="button" align="center" valign="middle" height="28">
+        <A class=menu href="fis_marks_import.do">&nbsp;Импорт&nbsp;оценок&nbsp;&nbsp;</A></TD></A>
+      <TD align=left><A href="fis_marks_import.do"><img border=0 src="layouts/<bean:write name="user" property="idTema"/>/img/b_end.gif" height=28 width=35></A></TD>
+  </TR>
+    
+    
+    <TR><TD height=5></TD></TR>
   
-    <%---- Пушкарев Кнопка 2--%>
+    <%---- Max Кнопка 2--%>
   <TR><TD align=left><A href="fis_adm.do"><img border=0 src="layouts/<bean:write name="user" property="idTema"/>/img/b_beg.gif" height=28 width=35></A></TD>
       <A href="fis_adm.do"><TD class="button" align="center" valign="middle" height="28">
         <A class=menu href="fis_adm.do">&nbsp;Импорт&nbsp;структуры&nbsp;приема&nbsp;</A></TD></A>
       <TD align=left><A href="fis_adm.do"><img border=0 src="layouts/<bean:write name="user" property="idTema"/>/img/b_end.gif" height=28 width=35></A></TD>
+  </TR>
+  
+  <TR><TD height=5></TD></TR>
+  
+    <%---- Max Кнопка 2--%>
+  <TR><TD align=left><A href="fis_adm2016.do"><img border=0 src="layouts/<bean:write name="user" property="idTema"/>/img/b_beg.gif" height=28 width=35></A></TD>
+      <A href="fis_adm2016.do"><TD class="button" align="center" valign="middle" height="28">
+        <A class=menu href="fis_adm2016.do">&nbsp;Импорт&nbsp;структуры&nbsp;приема&nbsp;2016</A></TD></A>
+      <TD align=left><A href="fis_adm2016.do"><img border=0 src="layouts/<bean:write name="user" property="idTema"/>/img/b_end.gif" height=28 width=35></A></TD>
+  </TR>
+  
+  <TR><TD height=5></TD></TR>
+   <%---- Max Кнопка 2--%>
+  <TR><TD align=left><A href="fis_adm_mag2016.do"><img border=0 src="layouts/<bean:write name="user" property="idTema"/>/img/b_beg.gif" height=28 width=35></A></TD>
+      <A href="fis_adm_mag2016.do"><TD class="button" align="center" valign="middle" height="28">
+        <A class=menu href="fis_adm_mag2016.do">&nbsp;Импорт&nbsp;структуры&nbsp;приема&nbsp;магистратуры</A></TD></A>
+      <TD align=left><A href="fis_adm_mag2016.do"><img border=0 src="layouts/<bean:write name="user" property="idTema"/>/img/b_end.gif" height=28 width=35></A></TD>
+  </TR>
+  
+  <TR><TD height=5></TD></TR>
+  <%---- Max Кнопка 2--%>
+  <TR><TD align=left><A href="fis_adm_spo2016.do"><img border=0 src="layouts/<bean:write name="user" property="idTema"/>/img/b_beg.gif" height=28 width=35></A></TD>
+      <A href="fis_adm_spo2016.do"><TD class="button" align="center" valign="middle" height="28">
+        <A class=menu href="fis_adm_spo2016.do">&nbsp;Импорт&nbsp;структуры&nbsp;приема&nbsp;СПО</A></TD></A>
+      <TD align=left><A href="fis_adm_spo2016.do"><img border=0 src="layouts/<bean:write name="user" property="idTema"/>/img/b_end.gif" height=28 width=35></A></TD>
+  </TR>
+  
+  <TR><TD height=5></TD></TR>
+   <%---- Max Кнопка 2--%>
+  <TR><TD align=left><A href="fis_adm_asp2016.do"><img border=0 src="layouts/<bean:write name="user" property="idTema"/>/img/b_beg.gif" height=28 width=35></A></TD>
+      <A href="fis_adm_asp2016.do"><TD class="button" align="center" valign="middle" height="28">
+        <A class=menu href="fis_adm_asp2016.do">&nbsp;Импорт&nbsp;структуры&nbsp;приема&nbsp;аспирантуры</A></TD></A>
+      <TD align=left><A href="fis_adm_asp2016.do"><img border=0 src="layouts/<bean:write name="user" property="idTema"/>/img/b_end.gif" height=28 width=35></A></TD>
+  </TR>
+  
+  <TR><TD height=5></TD></TR>
+  
+    <%---- Max Кнопка 2--%>
+  <TR><TD align=left><A href="fis_adm_del.do"><img border=0 src="layouts/<bean:write name="user" property="idTema"/>/img/b_beg.gif" height=28 width=35></A></TD>
+      <A href="fis_adm_del.do"><TD class="button" align="center" valign="middle" height="28">
+        <A class=menu href="fis_adm_del.do">&nbsp;Удаление&nbsp;структуры&nbsp;приема&nbsp;</A></TD></A>
+      <TD align=left><A href="fis_adm_del.do"><img border=0 src="layouts/<bean:write name="user" property="idTema"/>/img/b_end.gif" height=28 width=35></A></TD>
   </TR>
   
   <TR><TD height=5></TD></TR>
@@ -97,6 +151,14 @@
       <TD align=left><A href="fis_pr.do"><img border=0 src="layouts/<bean:write name="user" property="idTema"/>/img/b_end.gif" height=28 width=35></A></TD>
   </TR>
   
+  <TR><TD height=5></TD></TR>
+  
+  <%---- Кнопка --%>
+  <TR><TD align=left><A href="fis_check_marks.do"><img border=0 src="layouts/<bean:write name="user" property="idTema"/>/img/b_beg.gif" height=28 width=35></A></TD>
+      <A href="fis_check_marks.do"><TD class="button" align="center" valign="middle" height="28">
+        <A class=menu href="fis_check_marks.do">&nbsp;Импорт&nbsp;оценок&nbsp;ЕГЭ&nbsp;(CSV)</A></TD></A>
+      <TD align=left><A href="fis_check_marks.do"><img border=0 src="layouts/<bean:write name="user" property="idTema"/>/img/b_end.gif" height=28 width=35></A></TD>
+  </TR>
   <TR><TD height=5></TD></TR>
   
   <%---- Кнопка -----%>

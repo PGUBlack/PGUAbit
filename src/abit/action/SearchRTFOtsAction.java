@@ -710,7 +710,7 @@ report.write("\\clvmgf");
   else
     query.append("Abiturient.NomerLichnogoDela");
 
-  query.append(",Familija,Imja,Otchestvo,NomerPlatnogoDogovora,Pol,GodOkonchanijaSrObrazovanija,GdePoluchilSrObrazovanie,NomerShkoly,PolnoeNaimenovanieZavedenija,TipOkonchennogoZavedenija,Gruppa,TipDokumenta,NomerDokumenta,SeriaDokumenta,DataVydDokumenta,KemVydDokument,TipDokSredObraz,NomerSertifikata,KopijaSertifikata,Ball,Prinjat,KodSpetsialnZach,SeriaAtt,NomerAtt,Spetsialnosti.KodSpetsialnosti,Fakultety.ShifrFakulteta FROM Abiturient,Spetsialnosti,Fakultety,Zavedenija,Gruppy,AbitDopInf");
+  query.append(",Familija,Imja,Otchestvo,NomerPlatnogoDogovora,Pol,GodOkonchanijaSrObrazovanija,GdePoluchilSrObrazovanie,NomerShkoly,PolnoeNaimenovanieZavedenija,TipOkonchennogoZavedenija,Gruppa,TipDokumenta,NomerDokumenta,SeriaDokumenta,DataVydDokumenta,KemVydDokument,TipDokSredObraz,Ball,Prinjat,KodSpetsialnZach,NomerAtt,Spetsialnosti.KodSpetsialnosti,Fakultety.ShifrFakulteta, Abiturient.Datarojdenija, Abiturient.KodLgot, Abiturient.KodFormyOb, Abiturient.KodOsnovyOb FROM Abiturient,Spetsialnosti,Fakultety,Zavedenija,Gruppy,AbitDopInf");
 
   if((""+session.getAttribute("UseAllSpecs")).equals("yes"))
     query.append(",Konkurs");
@@ -965,66 +965,67 @@ report.write("\\clvmgf");
 	  MasSelector[Integer.parseInt(abit_Srch.getFio())][1] = "\\ql";
 	  masInc++;
 	 }
-
+/*
 	 if(abit_Srch.getShifrKursov()!=null)
 	 {
 	  MasSelector[Integer.parseInt(abit_Srch.getShifrKursov())][0] = rs.getString(8);
 	  MasSelector[Integer.parseInt(abit_Srch.getShifrKursov())][1] = "\\qc";
 	  masInc++;
 	 }
-
+*/
+	 /*
 	 if(abit_Srch.getMedal()!=null)
 	 {
 	  MasSelector[Integer.parseInt(abit_Srch.getMedal())][0] = rs.getString(9);
 	  MasSelector[Integer.parseInt(abit_Srch.getMedal())][1] = "\\qc";
 	  masInc++;
 	 }
-
+*/
 	 if(abit_Srch.getLgoty()!=null)
 	 {
-	  MasSelector[Integer.parseInt(abit_Srch.getLgoty())][0] = rs.getString(10);
+	  MasSelector[Integer.parseInt(abit_Srch.getLgoty())][0] = rs.getString(29);
 	  MasSelector[Integer.parseInt(abit_Srch.getLgoty())][1] = "\\qc";
 	  masInc++;
 	 }
 
 	 if(abit_Srch.getNomerPlatnogoDogovora()!=null)
 	 {
-	  MasSelector[Integer.parseInt(abit_Srch.getNomerPlatnogoDogovora())][0] = rs.getString(11);
+	  MasSelector[Integer.parseInt(abit_Srch.getNomerPlatnogoDogovora())][0] = rs.getString(31);
 	  MasSelector[Integer.parseInt(abit_Srch.getNomerPlatnogoDogovora())][1] = "\\qc";
 	  masInc++;
 	 }
 
 	 if(abit_Srch.getPol()!=null)
 	 {
-	  MasSelector[Integer.parseInt(abit_Srch.getPol())][0] = rs.getString(12);
+	  MasSelector[Integer.parseInt(abit_Srch.getPol())][0] = rs.getString(9);
 	  MasSelector[Integer.parseInt(abit_Srch.getPol())][1] = "\\qc";
 	  masInc++;
 	 }
 
 	 if(abit_Srch.getSpecial5()!=null)
 	 {
-	  MasSelector[Integer.parseInt(abit_Srch.getSpecial5())][0] = Integer.toString(rs.getInt(13));
+	  MasSelector[Integer.parseInt(abit_Srch.getSpecial5())][0] = Integer.toString(rs.getInt(10));
 	  MasSelector[Integer.parseInt(abit_Srch.getSpecial5())][1] = "\\qc";
 	  masInc++;
 	 }
 
 	 if(abit_Srch.getGdePoluchilSrObrazovanie()!=null)
 	 {
-	  MasSelector[Integer.parseInt(abit_Srch.getGdePoluchilSrObrazovanie())][0] = rs.getString(14);
+	  MasSelector[Integer.parseInt(abit_Srch.getGdePoluchilSrObrazovanie())][0] = rs.getString(11);
 	  MasSelector[Integer.parseInt(abit_Srch.getGdePoluchilSrObrazovanie())][1] = "\\qc";
 	  masInc++;
 	 }
 
 	 if(abit_Srch.getNomerShkoly()!=null)
 	 {
-	  MasSelector[Integer.parseInt(abit_Srch.getNomerShkoly())][0] = rs.getString(15);
+	  MasSelector[Integer.parseInt(abit_Srch.getNomerShkoly())][0] = rs.getString(12);
 	  MasSelector[Integer.parseInt(abit_Srch.getNomerShkoly())][1] = "\\qc";
 	  masInc++;
 	 }
-
+/*
 	 if(abit_Srch.getNazvanie()!=null)
 	 {
-	  MasSelector[Integer.parseInt(abit_Srch.getNazvanie())][0] = rs.getString(16);
+	  MasSelector[Integer.parseInt(abit_Srch.getNazvanie())][0] = rs.getString(13);
 	  MasSelector[Integer.parseInt(abit_Srch.getNazvanie())][1] = "\\ql";
 	  masInc++;
 	 }
@@ -1042,17 +1043,17 @@ report.write("\\clvmgf");
 	  MasSelector[Integer.parseInt(abit_Srch.getNazvanieOblasti())][1] = "\\ql";
 	  masInc++;
 	 }
-
+*/
 	 if(abit_Srch.getPolnoeNaimenovanieZavedenija()!=null)
 	 {
-	  MasSelector[Integer.parseInt(abit_Srch.getPolnoeNaimenovanieZavedenija())][0] = rs.getString(19);
+	  MasSelector[Integer.parseInt(abit_Srch.getPolnoeNaimenovanieZavedenija())][0] = rs.getString(13);
 	  MasSelector[Integer.parseInt(abit_Srch.getPolnoeNaimenovanieZavedenija())][1] = "\\ql";
 	  masInc++;
 	 }
 
 	 if(abit_Srch.getTipOkonchennogoZavedenija()!=null)
 	 {
-	  MasSelector[Integer.parseInt(abit_Srch.getTipOkonchennogoZavedenija())][0] = rs.getString(20);
+	  MasSelector[Integer.parseInt(abit_Srch.getTipOkonchennogoZavedenija())][0] = rs.getString(14);
 	  MasSelector[Integer.parseInt(abit_Srch.getTipOkonchennogoZavedenija())][1] = "\\qc";
 	  masInc++;
 	 }
@@ -1066,46 +1067,46 @@ report.write("\\clvmgf");
 
 	 if(abit_Srch.getTipDokumenta()!=null)
 	 {
-	  MasSelector[Integer.parseInt(abit_Srch.getTipDokumenta())][0] = rs.getString(22);
+	  MasSelector[Integer.parseInt(abit_Srch.getTipDokumenta())][0] = rs.getString(16);
 	  MasSelector[Integer.parseInt(abit_Srch.getTipDokumenta())][1] = "\\qc";
 	  masInc++;
 	 }
 
 	 if(abit_Srch.getNomerDokumenta()!=null)
 	 {
-	  MasSelector[Integer.parseInt(abit_Srch.getNomerDokumenta())][0] = rs.getString(23);
+	  MasSelector[Integer.parseInt(abit_Srch.getNomerDokumenta())][0] = rs.getString(17);
 	  MasSelector[Integer.parseInt(abit_Srch.getNomerDokumenta())][1] = "\\qc";
 	  masInc++;
 	 }
 
 	 if(abit_Srch.getSeriaDokumenta()!=null)
 	 {
-	  MasSelector[Integer.parseInt(abit_Srch.getSeriaDokumenta())][0] = rs.getString(24);
+	  MasSelector[Integer.parseInt(abit_Srch.getSeriaDokumenta())][0] = rs.getString(18);
 	  MasSelector[Integer.parseInt(abit_Srch.getSeriaDokumenta())][1] = "\\qc";
 	  masInc++;
 	 }
 
 	 if(abit_Srch.getDataVydDokumenta()!=null)
 	 {
-	  MasSelector[Integer.parseInt(abit_Srch.getDataVydDokumenta())][0] = rs.getString(25);
+	  MasSelector[Integer.parseInt(abit_Srch.getDataVydDokumenta())][0] = rs.getString(19);
 	  MasSelector[Integer.parseInt(abit_Srch.getDataVydDokumenta())][1] = "\\qc";
 	  masInc++;
 	 }
 
 	 if(abit_Srch.getKemVydDokument()!=null)
 	 {
-	  MasSelector[Integer.parseInt(abit_Srch.getKemVydDokument())][0] = rs.getString(26);
+	  MasSelector[Integer.parseInt(abit_Srch.getKemVydDokument())][0] = rs.getString(20);
 	  MasSelector[Integer.parseInt(abit_Srch.getKemVydDokument())][1] = "\\qc";
 	  masInc++;
 	 }
 
 	 if(abit_Srch.getTipDokSredObraz()!=null)
 	 {
-	  MasSelector[Integer.parseInt(abit_Srch.getTipDokSredObraz())][0] = rs.getString(27);
+	  MasSelector[Integer.parseInt(abit_Srch.getTipDokSredObraz())][0] = rs.getString(21);
 	  MasSelector[Integer.parseInt(abit_Srch.getTipDokSredObraz())][1] = "\\qc";
 	  masInc++;
 	 }
-
+/*
 	 if(abit_Srch.getNomerSertifikata()!=null)
 	 {
 	  MasSelector[Integer.parseInt(abit_Srch.getNomerSertifikata())][0] = rs.getString(28);
@@ -1119,66 +1120,66 @@ report.write("\\clvmgf");
 	  MasSelector[Integer.parseInt(abit_Srch.getKopijaSertifikata())][1] = "\\qc";
 	  masInc++;
 	 }
-
+*/
 	 if(abit_Srch.getSpecial7()!=null)
 	 {
-	  MasSelector[Integer.parseInt(abit_Srch.getSpecial7())][0] = rs.getString(30);
+	  MasSelector[Integer.parseInt(abit_Srch.getSpecial7())][0] = rs.getString(22);
 	  MasSelector[Integer.parseInt(abit_Srch.getSpecial7())][1] = "\\qc";
 	  masInc++;
 	 }
 
 	 if(abit_Srch.getPrinjat()!=null)
 	 {
-	  MasSelector[Integer.parseInt(abit_Srch.getPrinjat())][0] = rs.getString(31);
+	  MasSelector[Integer.parseInt(abit_Srch.getPrinjat())][0] = rs.getString(23);
 	  MasSelector[Integer.parseInt(abit_Srch.getPrinjat())][1] = "\\qc";
 	  masInc++;
 	 }
 
 	 if(abit_Srch.getFormaOb()!=null)
 	 {
-	  MasSelector[Integer.parseInt(abit_Srch.getFormaOb())][0] = rs.getString(33);
+	  MasSelector[Integer.parseInt(abit_Srch.getFormaOb())][0] = rs.getString(30);
 	  MasSelector[Integer.parseInt(abit_Srch.getFormaOb())][1] = "\\qc";
 	  masInc++;
 	 }
 
 	 if(abit_Srch.getOsnovaOb()!=null)
 	 {
-	  MasSelector[Integer.parseInt(abit_Srch.getOsnovaOb())][0] = rs.getString(34);
+	  MasSelector[Integer.parseInt(abit_Srch.getOsnovaOb())][0] = rs.getString(31);
 	  MasSelector[Integer.parseInt(abit_Srch.getOsnovaOb())][1] = "\\qc";
 	  masInc++;
 	 }
-
+/*
 	 if(abit_Srch.getSeriaAtt()!=null)
 	 {
-	  MasSelector[Integer.parseInt(abit_Srch.getSeriaAtt())][0] = rs.getString(35);
+	  MasSelector[Integer.parseInt(abit_Srch.getSeriaAtt())][0] = rs.getString(34);
 	  MasSelector[Integer.parseInt(abit_Srch.getSeriaAtt())][1] = "\\qc";
 	  masInc++;
 	 }
-
+*/
 	 if(abit_Srch.getNomerAtt()!=null)
 	 {
-	  MasSelector[Integer.parseInt(abit_Srch.getNomerAtt())][0] = rs.getString(36);
+	  MasSelector[Integer.parseInt(abit_Srch.getNomerAtt())][0] = rs.getString(25);
 	  MasSelector[Integer.parseInt(abit_Srch.getNomerAtt())][1] = "\\qc";
 	  masInc++;
 	 }
 
 	 if(abit_Srch.getShifrFakulteta()!=null)
 	 {
-	  MasSelector[Integer.parseInt(abit_Srch.getShifrFakulteta())][0] = rs.getString(38);
+	  MasSelector[Integer.parseInt(abit_Srch.getShifrFakulteta())][0] = rs.getString(26);
 	  MasSelector[Integer.parseInt(abit_Srch.getShifrFakulteta())][1] = "\\qc";
 	  masInc++;
 	 }
-
+/*
          if(abit_Srch.getAttestat()!=null)
 	 {
 	  MasSelector[Integer.parseInt(abit_Srch.getAttestat())][0] = rs.getString(39);
 	  MasSelector[Integer.parseInt(abit_Srch.getAttestat())][1] = "\\qc";
 	  masInc++;
 	 }
-
+*/
 	 if(abit_Srch.getDataRojdenija()!=null)
 	 {
-	  MasSelector[Integer.parseInt(abit_Srch.getDataRojdenija())][0] = rs.getString(40);
+	  MasSelector[Integer.parseInt(abit_Srch.getDataRojdenija())][0] = rs.getString(28);
 	  MasSelector[Integer.parseInt(abit_Srch.getDataRojdenija())][1] = "\\qc";
 	  masInc++;
 	 }

@@ -23,7 +23,8 @@
 </logic:notPresent>
 
 <bean:define id="tema" name="user" property="idTema"/>
-
+<bean:define id="userGroup" name = "user" property = "group"/>
+<bean:define id ="userGroupName" name = "userGroup" property = "groupName"/>
 <SCRIPT LANGUAGE="JavaScript">
 
 function exec() {
@@ -86,14 +87,20 @@ function exec() {
    <td height="22" align="left" valign="middle"><font class="text_10">&nbsp;<html:link href="<%="http://"+request.getServerName()+":"+request.getServerPort()+request.getContextPath()+"/packets/"+f_name3%>" target="wndReportNew" styleClass="link_hov_blue">
                        &nbsp;Согласие&nbsp;о&nbsp;зачислении&nbsp;на&nbsp;обучение&nbsp;</html:link>&nbsp;</font></td>
  </tr>
- 
+  <logic:notEqual name="userGroupName" value="Операторы ввода">
    <tr>
    <td height="22" align="center" valign="middle"><font class="text_10">&nbsp;4.&nbsp;</font</td>
    <bean:define id="f_name4" name="abit_A" property="fileName4"/>
    <td height="22" align="left" valign="middle"><font class="text_10">&nbsp;<html:link href="<%="http://"+request.getServerName()+":"+request.getServerPort()+request.getContextPath()+"/packets/"+f_name4%>" target="wndReportNew" styleClass="link_hov_blue">
                        &nbsp;Справка&nbsp;о&nbsp;результатах&nbsp;единого&nbsp;государственного&nbsp;экзамена&nbsp;</html:link>&nbsp;</font></td>
  </tr>
- 
+ <tr>
+   <td height="22" align="center" valign="middle"><font class="text_10">&nbsp;5.&nbsp;</font</td>
+   <bean:define id="f_name5" name="abit_A" property="fileName5"/>
+   <td height="22" align="left" valign="middle"><font class="text_10">&nbsp;<html:link href="<%="http://"+request.getServerName()+":"+request.getServerPort()+request.getContextPath()+"/packets/"+f_name5%>" target="wndReportNew" styleClass="link_hov_blue">
+                       &nbsp;Учёт&nbsp;индивидуальных&nbsp;достижений&nbsp;</html:link>&nbsp;</font></td>
+ </tr>
+ </logic:notEqual>
 </tbody>
 </table>
 <BR>

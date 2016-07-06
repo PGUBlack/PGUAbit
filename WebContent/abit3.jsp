@@ -39,7 +39,7 @@
          </td>
      </tr>
      <tr>
-         <td vAlign="middle" height="18">&nbsp;&nbsp;Волонтерская&nbsp;деятельность:&nbsp;&nbsp;</td>
+         <td vAlign="middle" height="18">&nbsp;&nbsp;Участие&nbsp;в&nbsp;мероприятиях:&nbsp;&nbsp;</td>
          <td vAlign="middle" height="18">
          <html:select styleClass="select_f1" name="abit_A" property="trudovajaDejatelnost" >
          <html:option value="0">нет</html:option>
@@ -49,7 +49,7 @@
          </td>
      </tr>
      <tr>
-         <td vAlign="middle" height="18">&nbsp;&nbsp;Баллы&nbsp;за&nbsp;наличие&nbsp;серебряного&nbsp;значка&nbsp;ГТО:&nbsp;&nbsp;</td>
+         <td vAlign="middle" height="18">&nbsp;&nbsp;Баллы&nbsp;за&nbsp;наличие&nbsp;диплома&nbsp;СПО&nbsp;с&nbsp;отличием:&nbsp;&nbsp;</td>
          <td vAlign="middle" height="18">
           <html:select styleClass="select_f1" name="abit_A" property="special9">
           <html:option value="0">нет</html:option>

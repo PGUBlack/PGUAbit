@@ -170,7 +170,7 @@ function exec2() {
 <%--                  value="<%=""+abit.getNomerSertifikata()%>" --%>
 <%--                      maxlength='30' size='16' />&nbsp;</td> --%>
      <td align=center><html:text styleClass="text_f9_short" property="<%=\"soc\"+abit.getKodAbiturienta()%>"
-                 value="<%=""+abit.getStepen_Mag()%>"
+                 value="<%=""+abit.getNeed_Spo()%>"
                      maxlength='1' size='1' /></td>
                      <td align=center><html:text styleClass="text_f9_short" property="<%=\"ots\"+abit.getKodAbiturienta()%>"
                  value="<%=""+abit.getOlimp_1()%>"

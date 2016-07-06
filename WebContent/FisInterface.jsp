@@ -80,11 +80,11 @@ function checkFields(){
 
   <tr><td><font class="text_10">Логин:</font></td>
       <td><html:text styleClass="text_f10" property="login" 
-                     maxlength="35" size="25" tabindex="6" value="polex@pnzgu.ru"/></td></tr>
+                     maxlength="35" size="25" tabindex="6" value="revalle88@gmail.com"/></td></tr>
 
   <tr><td><font class="text_10">Пароль:</font></td>
       <td><html:password  styleClass="text_f10" property="password" 
-                     maxlength="35" size="25" tabindex="7" value="polex@pnzgu.ru"/></td></tr>
+                     maxlength="35" size="25" tabindex="7" value="Dreamlord88"/></td></tr>
 
   <tr><td><font class="text_10">Файл запроса (XML):</font></td>
       <td><html:file  styleClass="select_f2" size='60' property="sourceFile" tabindex="8"/></td></tr>

@@ -18,6 +18,7 @@
      </tr>
     </thead>
     <tbody class="dark">   
+    <%-- 
      <tr>
          <td vAlign="middle" height="18">&nbsp;&nbsp;Баллы&nbsp;за&nbsp;аттестат:&nbsp;&nbsp;</td>
          <td vAlign="middle" height="18">
@@ -37,7 +38,7 @@
          </td>
      </tr>
      <tr>
-         <td vAlign="middle" height="18">&nbsp;&nbsp;Волонтерская&nbsp;деятельность:&nbsp;&nbsp;</td>
+         <td vAlign="middle" height="18">&nbsp;&nbsp;Участие&nbsp;в&nbsp;мероприятиях:&nbsp;&nbsp;</td>
          <td vAlign="middle" height="18">
          <html:select styleClass="select_f1" name="abit_A" property="trudovajaDejatelnost" tabindex="35">
           <html:option value="0">нет</html:option>
@@ -46,7 +47,7 @@
          </td>
      </tr>
      <tr>
-         <td vAlign="middle" height="18">&nbsp;&nbsp;Баллы&nbsp;за&nbsp;наличие&nbsp;серебряного&nbsp;значка&nbsp;ГТО:&nbsp;&nbsp;</td>
+         <td vAlign="middle" height="18">&nbsp;&nbsp;Баллы&nbsp;за&nbsp;наличие&nbsp;диплом&nbsp;СПО&nbsp;с&nbsp;отличием:&nbsp;&nbsp;</td>
          <td vAlign="middle" height="18">
          <html:select styleClass="select_f1" name="abit_A" property="special9" tabindex="36">
          <html:option value="0">нет</html:option>
@@ -72,6 +73,19 @@
            </html:select>
          </td>
      </tr>
+    --%>
+    
+    <tr>
+         <td vAlign="middle" height="18">&nbsp;&nbsp;Наличие&nbsp;индивидуальных&nbsp;достижений:&nbsp;&nbsp;</td>
+         <td vAlign="middle" height="18">
+         <html:select styleClass="select_f1" name="abit_A" property="stepen_Mag" tabindex="34">
+ <html:option value="0">нет</html:option>
+           <html:option value="да">да</html:option>
+           </html:select>
+         </td>
+     </tr>
+    
+    
     
     </tbody>
    </table>

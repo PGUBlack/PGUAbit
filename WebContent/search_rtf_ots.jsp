@@ -202,14 +202,12 @@ for(var i=0;i<fields.length;i++)
     <td align=left vAlign=middle><html:text  styleClass="text_f9_short" name="abit_Srch" property="gruppa" size='2' maxlength='2'/></td>
 </tr>
 <tr>
-    <td align=left vAlign=center><font class="text_9">Курсы:</font></td>
-    <td align=left vAlign=middle><html:text  styleClass="text_f9_short" name="abit_Srch" property="shifrKursov" size='2' maxlength='2'/></td>
-    <td width=13></td>
-    <td align=left vAlign=center><font class="text_9">Отличия:</font></td>
-    <td align=left vAlign=middle><html:text  styleClass="text_f9_short" name="abit_Srch" property="medal" size='2' maxlength='2'/></td>
-    <td width=13></td>
     <td align=left vAlign=center><font class="text_9">Льготы:</font></td>
     <td align=left vAlign=middle><html:text  styleClass="text_f9_short" name="abit_Srch" property="lgoty" size='2' maxlength='2'/></td>
+    <td width=13></td>
+    <td align=left vAlign=center><font class="text_9">Копия аттестата:</font></td>
+    <td align=left vAlign=middle><html:text  styleClass="text_f9_short" name="abit_Srch" property="tipDokSredObraz" size='2' maxlength='2'/></td>
+   
 </tr>
 <tr>
     <td align=left vAlign=center><font class="text_9">Номер платного договора:&nbsp;</font></td>
@@ -222,24 +220,14 @@ for(var i=0;i<fields.length;i++)
     <td align=left vAlign=middle><html:text  styleClass="text_f9_short" name="abit_Srch" property="polnoeNaimenovanieZavedenija" size='2' maxlength='2'/></td>
 </tr>
 <tr>
-    <td align=left vAlign=center><font class="text_9">Где получил средн. обр.:</font></td>
-    <td align=left vAlign=middle><html:text  styleClass="text_f9_short" name="abit_Srch" property="gdePoluchilSrObrazovanie" size='2' maxlength='2'/></td>
-    <td width=13></td>
     <td align=left vAlign=center><font class="text_9">Тип оконч. заведения:</font></td>
     <td align=left vAlign=middle><html:text  styleClass="text_f9_short" name="abit_Srch" property="tipOkonchennogoZavedenija" size='2' maxlength='2'/></td>
     <td width=13></td>
     <td align=left vAlign=center><font class="text_9">Номер школы:</font></td>
     <td align=left vAlign=middle><html:text  styleClass="text_f9_short" name="abit_Srch" property="nomerShkoly" size='2' maxlength='2'/></td>
-</tr>
-<tr>
-    <td align=left vAlign=center><font class="text_9">Населённый пункт:</font></td>
-    <td align=left vAlign=middle><html:text  styleClass="text_f9_short" name="abit_Srch" property="nazvanie" size='2' maxlength='2'/></td>
-    <td width=13></td>
-    <td align=left vAlign=center><font class="text_9">Район:</font></td>
-    <td align=left vAlign=middle><html:text  styleClass="text_f9_short" name="abit_Srch" property="nazvanieRajona" size='2' maxlength='2'/></td>
-    <td width=13></td>
-    <td align=left vAlign=center><font class="text_9">Область:</font></td>
-    <td align=left vAlign=middle><html:text  styleClass="text_f9_short" name="abit_Srch" property="nazvanieOblasti" size='2' maxlength='2'/></td>
+     <td width=13></td>
+    <td align=left vAlign=center><font class="text_9">Дата рождения:</font></td>
+    <td align=left vAlign=middle><html:text  styleClass="text_f9_short" name="abit_Srch" property="dataRojdenija" size='2' maxlength='2'/></td>
 </tr>
 <tr>
     <td align=left vAlign=center><font class="text_9">Тип документа:</font></td>
@@ -273,32 +261,16 @@ for(var i=0;i<fields.length;i++)
 
 </tr>
 <tr>
-    <td align=left vAlign=center><font class="text_9">Номер сертификата:</font></td>
-    <td align=left vAlign=middle><html:text  styleClass="text_f9_short" name="abit_Srch" property="nomerSertifikata" size='2' maxlength='2'/></td>
-    <td width=13></td>
-    <td align=left vAlign=center><font class="text_9">Копия сертификата:</font></td>
-    <td align=left vAlign=middle><html:text  styleClass="text_f9_short" name="abit_Srch" property="kopijaSertifikata" size='2' maxlength='2'/></td>
-    <td width=13></td>
     <td align=left vAlign=center><font class="text_9">Форма обучения:</font></td>
     <td align=left vAlign=middle><html:text  styleClass="text_f9_short" name="abit_Srch" property="formaOb" size='2' maxlength='2'/></td>
-</tr>
-<tr>
-    <td align=left vAlign=center><font class="text_9">Серия аттестата:</font></td>
-    <td align=left vAlign=middle><html:text  styleClass="text_f9_short" name="abit_Srch" property="seriaAtt" size='2' maxlength='2'/></td>
-    <td width=13></td>
+        <td width=13></td>
     <td align=left vAlign=center><font class="text_9">Номер аттестата:</font></td>
     <td align=left vAlign=middle><html:text  styleClass="text_f9_short" name="abit_Srch" property="nomerAtt" size='2' maxlength='2'/></td>
     <td width=13></td>
     <td align=left vAlign=center><font class="text_9">Основа обучения:</font></td>
     <td align=left vAlign=middle><html:text  styleClass="text_f9_short" name="abit_Srch" property="osnovaOb" size='2' maxlength='2'/></td>
 </tr>
-<tr>
-    <td align=left vAlign=center><font class="text_9">Копия аттестата:</font></td>
-    <td align=left vAlign=middle><html:text  styleClass="text_f9_short" name="abit_Srch" property="tipDokSredObraz" size='2' maxlength='2'/></td>
-    <td width=13></td>
-    <td align=left vAlign=center><font class="text_9">Дата рождения:</font></td>
-    <td align=left vAlign=middle><html:text  styleClass="text_f9_short" name="abit_Srch" property="dataRojdenija" size='2' maxlength='2'/></td>
-</tr>
+
 </table>
 <tr>
   <td height="35" align="center" colspan="8"><font class="text_10_mark">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- - - - - - - - - - - - - - -&nbsp; П Р Е Д М Е Т Ы&nbsp;&nbsp;И&nbsp;&nbsp;О Ц Е Н К И &nbsp;- - - - - - - - - - - - - - - - - -</font></td>

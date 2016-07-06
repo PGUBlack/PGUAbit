@@ -192,14 +192,9 @@ public class KladrAction extends Action{
 		    	        	selectHTML = selectHTML + "</option>";
 		    	        //	v++;
 		    	        //	out.println("<select name='fisId' tabindex='2' onchange='fillEduLevel();' class='select_f1'>");
-		    	         // out.println("<option value='-'></option>");
-		    	            
-		    	        	
+		    	         // out.println("<option value='-'></option>");	    	        	
 		    	        }
-		    	        
-		    	
-		    	
-		    	        
+	    	        
 		    	      // selectHTML = selectHTML + "</select>";
 		    	       
 		    	  }else if(action.equals("3")) {
@@ -449,7 +444,7 @@ public class KladrAction extends Action{
 			    	    
 		    	        selectHTML = selectHTML + "</option>";
 		    		  
-		    	  }
+		    	  } 
 	    		  
 	    	    
 	    	        out.println(selectHTML);

@@ -151,6 +151,7 @@ public class IDBean {
     protected String  fileName2                        = null;
     protected String  fileName3                        = null;  
     protected String  fileName4                        = null;    
+    protected String  fileName5                        = null;   
     protected String  forma_Ob1                        = null;
     protected String  forma_Ob2                        = null;
     protected String  forma_Ob3                        = null;

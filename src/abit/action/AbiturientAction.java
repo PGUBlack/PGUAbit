@@ -6,17 +6,27 @@ import java.util.ArrayList;
 import java.util.Locale;
 import java.sql.*;
 import java.lang.*;
+
 import javax.servlet.*;
 import javax.servlet.http.*;
+
 import org.apache.struts.action.*;
+
 import javax.naming.*;
 import javax.sql.*;
+
 import abit.bean.*;
 import abit.Constants;
 import abit.util.*;
 import abit.sql.*; 
 
 public class AbiturientAction extends Action {
+	
+	
+	static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";  
+	static final String DB_URL = "jdbc:mysql://172.16.254.20:3306/asu?characterEncoding=UTF-8";
+    static final String USER = "asu1";
+    static final String PASS = "asuUI";
 
     public ActionForward perform ( ActionMapping        mapping,
                                    ActionForm           actionForm,
@@ -29,9 +39,11 @@ public class AbiturientAction extends Action {
         HttpSession       session       = request.getSession();
         Connection        conn          = null;
         PreparedStatement stmt          = null;
+        PreparedStatement stmt2          = null;
         PreparedStatement    pstmt              = null;
         PreparedStatement    pstmt1              = null;
         ResultSet         rs            = null;
+        ResultSet         rs2        = null;
         ActionErrors      errors        = new ActionErrors();
         ActionError       msg           = null;
         AbiturientForm    form          = (AbiturientForm) actionForm;
@@ -80,6 +92,10 @@ int pp=0;
         int Spec4=0;
         int Spec5=0;
         int Spec6=0;
+        
+        Connection        MoodleConn          = null;
+        PreparedStatement stmtInsertAbit         = null;
+        PreparedStatement stmtInsertOtsenki         = null;
 
         int countt=0;
         int chet=1;
@@ -750,6 +766,7 @@ if(abit_A.getTarget_6() != null) tar=Integer.parseInt(abit_A.getTarget_6());
        stmt.setObject(6,abit_A.getInternship(),Types.VARCHAR);
        stmt.setObject(7,abit_A.getSpecial13(),Types.VARCHAR);
        stmt.setObject(8,abit_A.getSpecial10(),Types.VARCHAR);
+       /*
        if(abit_A.getSpecial8() != null){
        stmt.setObject(9,abit_A.getSpecial8(),Types.VARCHAR);
        }else{
@@ -780,6 +797,34 @@ if(abit_A.getTarget_6() != null) tar=Integer.parseInt(abit_A.getTarget_6());
        }else{
     	   stmt.setObject(14,0,Types.VARCHAR);
        }
+       */
+       if(abit_A.getStepen_Mag()!=null && abit_A.getStepen_Mag().equals("да")){
+    	   stmt.setObject(9,"да",Types.VARCHAR);
+    	   stmt.setObject(10,"да",Types.VARCHAR);
+    	   stmt.setObject(11,"да",Types.VARCHAR);
+    	   stmt.setObject(12,"да",Types.VARCHAR);
+    	   stmt.setObject(13,"да",Types.VARCHAR);
+    	   stmt.setObject(14,"да",Types.VARCHAR);
+    	   
+       }else{
+    	   stmt.setObject(9,0,Types.VARCHAR);
+    	   stmt.setObject(10,0,Types.VARCHAR);
+    	   stmt.setObject(11,0,Types.VARCHAR);
+    	   stmt.setObject(12,0,Types.VARCHAR);
+    	   stmt.setObject(13,0,Types.VARCHAR);
+    	   stmt.setObject(14,0,Types.VARCHAR);
+       }
+ 
+       if(abit_A.getVidDokSredObraz().equals("Аттестат СОО с отличием")){
+    	   stmt.setObject(9, 10,Types.VARCHAR);
+       }
+       if(abit_A.getVidDokSredObraz().equals("Диплом СПО с отличием")){
+    	   stmt.setObject(11, 10,Types.VARCHAR);
+       }
+       if(abit_A.getVidDokSredObraz().equals("Диплом бакалавра с отличием") || abit_A.getVidDokSredObraz().equals("Диплом специалиста с отличием")){
+    	   stmt.setObject(9, 4,Types.VARCHAR);
+       }
+       
        stmt.executeUpdate();
        
 /* Добавление заявленных оценок, оценок ЕГЭ и оценок аттестата*/
@@ -1801,6 +1846,50 @@ System.out.println("SOKSO2>"+s_okso_2+"<");
          stmt.setObject(3, new Integer(""+kAbiturienta), Types.INTEGER);
          stmt.executeUpdate();
 
+         Class.forName("com.mysql.jdbc.Driver").newInstance();
+         MoodleConn = DriverManager.getConnection(DB_URL,USER,PASS);
+         stmt = conn.prepareStatement("select distinct a.kodabiturienta, a.nomerlichnogodela, a.familija, a.imja, a.otchestvo, a.seriadokumenta, a.nomerdokumenta from konkurs k, abiturient a where a.kodabiturienta=k.kodabiturienta and k.dog like 'д' and a.kodabiturienta like '"+abit_A.getKodAbiturienta()+"'");
+			// stmt.setObject(1,dt,Types.VARCHAR);
+			 rs = stmt.executeQuery();
+		      while(rs.next()){
+		    	  
+		    	  stmt2 = MoodleConn.prepareStatement("select kodabiturienta from parus where kodabiturienta = ?");
+		    	  stmt2.setObject(1, rs.getString(1),Types.VARCHAR);
+		    	  rs2 = stmt2.executeQuery();
+		    	  if (!rs2.next()){
+		    	  
+		    	  stmtInsertAbit = MoodleConn.prepareStatement("INSERT parus(kodabiturienta, NLD,  F, I, O, Seria, Nomer, Flag) VALUES(?,?,?,?,?,?,?,?)");
+		             stmtInsertAbit.setObject(1, rs.getInt(1),Types.INTEGER);
+		             stmtInsertAbit.setObject(2, rs.getString(2),Types.VARCHAR);
+		             stmtInsertAbit.setObject(3, rs.getString(3),Types.VARCHAR);
+		             stmtInsertAbit.setObject(4, rs.getString(4),Types.VARCHAR);
+		             stmtInsertAbit.setObject(5, rs.getString(5),Types.VARCHAR);
+		             stmtInsertAbit.setObject(6, rs.getString(6),Types.VARCHAR);
+		             stmtInsertAbit.setObject(7, rs.getString(7),Types.VARCHAR);
+		             stmtInsertAbit.setObject(8, "0",Types.INTEGER);
+		             stmtInsertAbit.executeUpdate();
+		             //end of insert
+
+		    	  }
+		      
+		      }
+         
+         
+		      stmt = conn.prepareStatement("INSERT INTO DrWatson(UserName,UserId,UserType,UserIP,AcTime,UAction) VALUES(?,?,?,?,?,?)");
+		      stmt.setObject(1,user.getName(),Types.VARCHAR);
+		      stmt.setObject(2,user.getUid(),Types.VARCHAR);
+		      stmt.setObject(3,user.getGroup().getTypeId(),Types.VARCHAR);
+		      stmt.setObject(4,user.getUip(),Types.VARCHAR);
+		      stmt.setObject(5,StringUtil.CurrTime(":"),Types.VARCHAR);
+		      stmt.setObject(6,"Create Abit Kod="+new Integer(""+kAbiturienta),Types.VARCHAR);
+		      stmt.executeUpdate();
+		      
+		      
+		      
+		      
+         
+         
+         
          form.setAction(us.getClientIntName("add_success","act-added"));
 
        }

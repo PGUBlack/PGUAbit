@@ -20,6 +20,11 @@ import abit.util.*;
 import abit.sql.*;
 
 public class AbitModDelAction extends Action {
+	
+	static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";  
+	static final String DB_URL = "jdbc:mysql://172.16.254.20:3306/asu?characterEncoding=UTF-8";
+    static final String USER = "asu1";
+    static final String PASS = "asuUI";
 
     public ActionForward perform ( ActionMapping        mapping,
                                    ActionForm           actionForm,
@@ -32,10 +37,12 @@ public class AbitModDelAction extends Action {
         Connection        conn          = null;
         PreparedStatement stmt          = null;
         PreparedStatement stmt1          = null;
+        PreparedStatement stmt2          = null;
         PreparedStatement    pstmt              = null;
         PreparedStatement    pstmt1              = null;
         ResultSet         rs            = null;
         ResultSet         rs1            = null;
+        ResultSet         rs2        = null;
         ActionErrors      errors        = new ActionErrors();
         ActionError       msg           = null;
         AbiturientForm    form          = (AbiturientForm) actionForm;
@@ -97,9 +104,14 @@ public class AbitModDelAction extends Action {
         ArrayList         abit_A_Kladr     = new ArrayList();
         ArrayList         abit_A_Rajon     = new ArrayList();
         ArrayList         abit_A_Punkt     = new ArrayList();
+        ArrayList         abit_A_Ulica     = new ArrayList();
         ArrayList         obr_A_Rajon     = new ArrayList();
         ArrayList         obr_A_Punkt     = new ArrayList();
         
+        
+        Connection        MoodleConn          = null;
+        PreparedStatement stmtInsertAbit         = null;
+        PreparedStatement stmtInsertOtsenki         = null;
         int countt=0;
         int tar=1;
         int chet=1;
@@ -508,6 +520,7 @@ public class AbitModDelAction extends Action {
                 	pr7=Integer.parseInt(rs1.getString(8));
                 	}
                 	sumd=pr1+pr2+pr3+pr4+pr5+pr6+pr7;
+                	if(sumd>10)sumd=10;
                 }
                 abit_TMPx.setSpecial24(sumd);
                 abit_TMPx.setSpecial25(sumd+sum);
@@ -532,7 +545,7 @@ public class AbitModDelAction extends Action {
 
                 String kladrOblast = "";
                 String kladrRajon = "";
-                
+                String ulica="";
                 String ObrOblast = "";
                 
                 String ObrRajon = "";
@@ -578,6 +591,7 @@ public class AbitModDelAction extends Action {
                   ordr_ab=rs.getInt(28);
                   abit_A.setGorod_Prop(rs.getString(29));
                   abit_A.setUlica_Prop(rs.getString(30));
+                  ulica=rs.getString(30);
                   abit_A.setDom_Prop(rs.getString(31));
                   abit_A.setKvart_Prop(rs.getString(32));
                   abit_A.setTel(rs.getString(33));
@@ -675,6 +689,24 @@ public class AbitModDelAction extends Action {
 		    	        	
 		    	        }
 		    	        
+		    	        stmt = conn.prepareStatement("SELECT code, socr, name FROM STREET WHERE CODE Like ? order by name");
+		    	        codeA=code1+"%";
+		    	        stmt.setObject(1,codeA,Types.VARCHAR);
+		    	        rs = stmt.executeQuery();
+		    	        while (rs.next()) {
+		    	        	
+		    	        	 AbiturientBean abit_TMP = new AbiturientBean();
+		    	              abit_TMP.setUlica_Prop(rs.getString(2)+" "+rs.getString(3));
+		    	              abit_A_Ulica.add(abit_TMP);
+		    	        	
+		    	        }
+		    	        AbiturientBean ulica_bean= new AbiturientBean();
+		    	        ulica_bean.setUlica_Prop("Другая");
+		    	        abit_A_Ulica.add(ulica_bean);
+            	}else{
+            		AbiturientBean ulica_bean= new AbiturientBean();
+            		ulica_bean.setUlica_Prop(ulica);
+            		abit_A_Ulica.add(ulica_bean);
             	}
             	
             	if (!ObrOblast.equals("-")){
@@ -2883,6 +2915,55 @@ if(!abit_A.getSpecial7().equals(spc7) && need_modify) {
          
          
          
+         Class.forName("com.mysql.jdbc.Driver").newInstance();
+         MoodleConn = DriverManager.getConnection(DB_URL,USER,PASS);
+         stmt = conn.prepareStatement("select distinct a.kodabiturienta, a.nomerlichnogodela, a.familija, a.imja, a.otchestvo, a.seriadokumenta, a.nomerdokumenta from konkurs k, abiturient a where a.kodabiturienta=k.kodabiturienta and k.dog like 'д' and a.kodabiturienta like '"+abit_A.getKodAbiturienta()+"'");
+			// stmt.setObject(1,dt,Types.VARCHAR);
+			 rs = stmt.executeQuery();
+		      while(rs.next()){
+		    	  
+		    	  stmt2 = MoodleConn.prepareStatement("select kodabiturienta from parus where kodabiturienta = ?");
+		    	  stmt2.setObject(1, rs.getString(1),Types.VARCHAR);
+		    	  rs2 = stmt2.executeQuery();
+		    	  if (!rs2.next()){
+		    	  
+		    	  stmtInsertAbit = MoodleConn.prepareStatement("INSERT parus(kodabiturienta, NLD,  F, I, O, Seria, Nomer, Flag) VALUES(?,?,?,?,?,?,?,?)");
+		             stmtInsertAbit.setObject(1, rs.getInt(1),Types.INTEGER);
+		             stmtInsertAbit.setObject(2, rs.getString(2),Types.VARCHAR);
+		             stmtInsertAbit.setObject(3, rs.getString(3),Types.VARCHAR);
+		             stmtInsertAbit.setObject(4, rs.getString(4),Types.VARCHAR);
+		             stmtInsertAbit.setObject(5, rs.getString(5),Types.VARCHAR);
+		             stmtInsertAbit.setObject(6, rs.getString(6),Types.VARCHAR);
+		             stmtInsertAbit.setObject(7, rs.getString(7),Types.VARCHAR);
+		             stmtInsertAbit.setObject(8, "0",Types.INTEGER);
+		             stmtInsertAbit.executeUpdate();
+		             //end of insert
+
+		    	  }
+		      
+		      }
+         
+         
+         
+         
+         
+		      stmt = conn.prepareStatement("INSERT INTO DrWatson(UserName,UserId,UserType,UserIP,AcTime,UAction) VALUES(?,?,?,?,?,?)");
+		      stmt.setObject(1,user.getName(),Types.VARCHAR);
+		      stmt.setObject(2,user.getUid(),Types.VARCHAR);
+		      stmt.setObject(3,user.getGroup().getTypeId(),Types.VARCHAR);
+		      stmt.setObject(4,user.getUip(),Types.VARCHAR);
+		      stmt.setObject(5,StringUtil.CurrTime(":"),Types.VARCHAR);
+		      stmt.setObject(6,"Modify Abit Kod="+abit_A.getKodAbiturienta(),Types.VARCHAR);
+		      stmt.executeUpdate();
+         
+         
+         
+         
+         
+         
+         
+         
+         
 
          form.setAction(us.getClientIntName("mod_success","act-mod-ok"));
 
@@ -3541,6 +3622,7 @@ if(!abit_A.getSpecial7().equals(spc7) && need_modify) {
         request.setAttribute("abit_A_S8", abit_A_S8);
         request.setAttribute("abit_A_S9", abit_A_S9);
         request.setAttribute("abit_A_S10", abit_A_S10);
+        request.setAttribute("abit_A_Ulica", abit_A_Ulica);
         request.setAttribute("att", att);
         request.setAttribute("ba", ba);
         request.setAttribute("mess", mess);

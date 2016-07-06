@@ -7,6 +7,7 @@
 <%@ taglib uri = "/WEB-INF/struts-logic.tld"    prefix = "logic"    %>
 <%@ taglib uri = "/WEB-INF/struts-template.tld" prefix = "template" %>
 
+
 <%--------------------------------%>
 <%--------------------------------%>
    <table width="100%" border="1" cellSpacing="0" cellPadding="0" frame="BOX" class="text">
@@ -124,7 +125,7 @@
      <tr>
          <td vAlign="middle" height="18" width="163">&nbsp;&nbsp;Область:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
          <td vAlign="middle" height="18">
-          <html:select onchange="regionChange();" name="abit_A" styleClass="select_f1"  property="nazv_DipSpec" tabindex="14">
+          <html:select onchange="regionChange();" name="abit_A" styleClass="select_f1" style="width:550px"  property="nazv_DipSpec" tabindex="14">
            <html:option value="-"/>
            <html:options collection="abit_A_Kladr" property="special27" labelProperty="special28"/>
           </html:select>
@@ -135,7 +136,7 @@
      <tr>
          <td vAlign="middle" height="18" width="163">&nbsp;&nbsp;Район:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
          <td vAlign="middle" height="18">
-          <html:select onchange='rajonChange();' name="abit_A" styleClass="select_f1" property="need_Spo" tabindex="15">
+          <html:select onchange='rajonChange();' name="abit_A" styleClass="select_f1" style="width:550px" property="need_Spo" tabindex="15">
            <html:option value="-"/>
          
           </html:select>
@@ -148,16 +149,19 @@
          <td vAlign="middle" height="18" width="163">&nbsp;&nbsp;Насел.&nbsp;пункт:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
          <td vAlign="middle" height="18">
          
-          <html:select name="abit_A" styleClass="select_f1" property="gorod_Prop" tabindex="16">
+          <html:select onchange="gorodChange();"  name="abit_A" styleClass="select_f1" styleId="gorod_Prop_id1" property="gorod_Prop" style="width:550px" tabindex="16">
            <html:option value="-"/>
            </html:select>
           <html:text name="abit_A" styleClass="text_f9_short" property="gorod_Prop" size="30" maxlength="30" styleId = "foreignPunkt" value="" tabindex="17" />
          </td>
      </tr>
      <tr>
-         <td vAlign="middle" height="18">&nbsp;&nbsp;Улица&nbsp;/&nbsp;пров.:&nbsp;&nbsp;</td>
+         <td vAlign="middle" height="18" width="163">&nbsp;&nbsp;Улица&nbsp;/&nbsp;просп.:&nbsp;&nbsp;</td>
          <td vAlign="middle" height="18">
-           <html:text name="abit_A" styleClass="text_f9" property="ulica_Prop" size="46" maxlength="60" value="" tabindex="18"/>
+           <html:select name="abit_A" property="ulica_Prop" style="width:550px" tabindex="16">
+           <html:option value="-"/>
+           </html:select>
+          <html:text name="abit_A" styleClass="text_f9_short" property="ulica_Prop" size="30" maxlength="30" styleId = "foreignUlica" value="" tabindex="17" />
          </td>
      </tr>
      <tr>
@@ -203,7 +207,7 @@
         <tr>
          <td vAlign="middle" height="18" width="163">&nbsp;&nbsp;Область:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
          <td vAlign="middle" height="18">
-          <html:select onchange="regionEduChange();" name="abit_A" styleClass="select_f1"  property="nazvanieOblasti" tabindex="23">
+          <html:select onchange="regionEduChange();" name="abit_A" style="width:550px" styleClass="select_f1"  property="nazvanieOblasti" tabindex="23">
            <html:option value="-"/>
            <html:options collection="abit_A_Kladr" property="special27" labelProperty="special28"/>
           </html:select>
@@ -214,7 +218,7 @@
      <tr>
          <td vAlign="middle" height="18" width="163">&nbsp;&nbsp;Район:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
          <td vAlign="middle" height="18">
-          <html:select onchange='rajonEduChange();' name="abit_A" styleClass="select_f1" property="nazvanieRajona" tabindex="24">
+          <html:select onchange='rajonEduChange();' name="abit_A" style="width:550px" styleClass="select_f1" property="nazvanieRajona" tabindex="24">
            <html:option value="-"/>
            </html:select>
                 
@@ -224,7 +228,7 @@
          <td vAlign="middle" height="18" width="163">&nbsp;&nbsp;Насел.&nbsp;пункт:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
          <td vAlign="middle" height="18">
          
-          <html:select name="abit_A" styleClass="select_f1" property="nazvanie" tabindex="25">
+          <html:select name="abit_A" styleClass="select_f1" style="width:550px" property="nazvanie" tabindex="25">
            <html:option value="-"/>
            <html:text name="abit_A" styleClass="text_f9_short" property="nazvanie" size="30" maxlength="30" styleId = "foreignObrPunkt" value="" tabindex="26" />
        
@@ -262,9 +266,9 @@
          <td vAlign="middle" height="18">
            <html:select styleClass="select_f2" name="abit_A" property="vidDokSredObraz" tabindex="30">
             <html:option value="-"/>
-            <html:option value="Аттестат ООО">аттестат ООО</html:option>
+            <html:option value="Аттестат ООО">аттестат ООО(9кл.)</html:option>
             <html:option value="Аттестат ООО с отличием">аттестат ООО с отличием</html:option>
-            <html:option value="Аттестат СОО">аттестат СОО</html:option>
+            <html:option value="Аттестат СОО">аттестат СОО(11кл.)</html:option>
             <html:option value="Аттестат СОО с отличием">аттестат СОО с отличием</html:option>
             <html:option value="Диплом бакалавра">диплом бакалавра</html:option>
             <html:option value="Диплом бакалавра с отличием">диплом бакалавра с отличием</html:option>
@@ -273,6 +277,7 @@
             <html:option value="Диплом магистра">диплом магистра</html:option>
             <html:option value="Диплом магистра с отличием">диплом магистра с отличием</html:option>
             <html:option value="Диплом СПО">диплом СПО</html:option>
+            <html:option value="Диплом СПО с отличием">диплом СПО с отличием</html:option>
             <html:option value="Диплом НПО">диплом НПО</html:option>
             <html:option value="Диплом НВПО">диплом НВПО</html:option>
            </html:select>

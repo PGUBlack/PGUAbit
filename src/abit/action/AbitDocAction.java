@@ -74,6 +74,7 @@ public class AbitDocAction extends Action {
     abit_A.setFileName2("-");
     abit_A.setFileName3("-");   
     abit_A.setFileName4("-");    
+    abit_A.setFileName5("-");    
 
 // Получение из БД дополнительных сведений по коду абитуриента
 
@@ -2370,7 +2371,7 @@ report.write("\\ql\\fs24\\b\\i\\tab{по заочной форме обучения}\\i0\\b0\n");
          
          report.write("\\par\\par\\par\n");
        
-         report.write("\\par\\par\\ql\\fs22\\tab{Ознакомлен(а) с информацией об ответсвенности за достоверность сведений, указываемых в заявлении о }\n");
+         report.write("\\par\\par\\ql\\fs22\\tab{Ознакомлен(а) с информацией об ответственности за достоверность сведений, указываемых в заявлении о }\n");
          report.write("\\par\\par\\ql\\fs22\\tab{приеме, и за подлинность документов, подаваемых для поступления                }\\i{_________________}\\i0\n");
          report.write("\\par\\qc\\fs16\\tab\\tab\\tab\\tab\\tab\\tab\\tab\\tab\\tab\\tab{(подпись поступающего)}\n");
          report.write("\\par\\par\\par\n");
@@ -2496,7 +2497,7 @@ report.write("\\ql\\fs24\\b\\i\\tab{по заочной форме обучения}\\i0\\b0\n");
 		             
 	           }
 	           else
-	           report.write("{проживающий(щая) по адресу: }\\i{"+rs.getString(6)+", ул."+rs.getString(7)+", д."+rs.getString(8)+", кв."+rs.getString(9)+"}.\\i0\n");
+	           report.write("{проживающий(щая) по адресу: }\\i{"+rs.getString(6)+", "+rs.getString(7)+", д."+rs.getString(8)+", кв."+rs.getString(9)+"}.\\i0\n");
 	           report.write("\\fs6\\par\\par\\fs22");
 	           if(rs.getString(10) != null && rs.getString(10).equals("п"))
 	             tip_Dok = "Паспорт (серия-№)";
@@ -2913,14 +2914,18 @@ report.write("\\ql\\fs24\\b\\i\\tab{по заочной форме обучения}\\i0\\b0\n");
 	         //report.write("\\par\\par\\ql\\fs24\\tab\\b{Прошу:}\\b0\\fs6\\par\n");
 	         //report.write("\\par\\ql\\fs22\\tab{  "+(counter++)+".в соответствии с разделом 8 правил приема ПГУ допустить к сдаче экзаменов, проводимых университетом самостоятельно по предметам:}\n");      
 
-	         stmt = conn.prepareStatement("SELECT DISTINCT np.Predmet,zso.KodPredmeta FROM ZajavlennyeShkolnyeOtsenki zso,NazvanijaPredmetov np WHERE zso.KodPredmeta=np.KodPredmeta AND zso.KodAbiturienta LIKE ? AND (zso.Examen IN('е') or zso.Examen IN('в')) AND OtsenkaEge LIKE '0' ORDER BY zso.KodPredmeta ASC");
+	        // stmt = conn.prepareStatement("SELECT DISTINCT np.Predmet,zso.KodPredmeta FROM ZajavlennyeShkolnyeOtsenki zso,NazvanijaPredmetov np WHERE zso.KodPredmeta=np.KodPredmeta AND zso.KodAbiturienta LIKE ? AND (zso.Examen IN('е') or zso.Examen IN('в')) AND OtsenkaEge LIKE '0' ORDER BY zso.KodPredmeta ASC");
+	         stmt = conn.prepareStatement("SELECT DISTINCT np.Predmet,zso.KodPredmeta FROM ZajavlennyeShkolnyeOtsenki zso,NazvanijaPredmetov np WHERE zso.KodPredmeta=np.KodPredmeta AND zso.KodAbiturienta LIKE ? AND zso.Examen IN('+') AND OtsenkaEge LIKE '0' ORDER BY zso.KodPredmeta ASC");
+		       
 	         stmt.setObject(1,abit_A.getKodAbiturienta(),Types.INTEGER);
 	         rs = stmt.executeQuery();
 	         if(rs.next()) {
 
 	           report.write("\\par\\ql\\fs22\\tab{•	в соответствии с разделом 8 правил приема ПГУ допустить к сдаче экзаменов, проводимых университетом самостоятельно по предметам:}\n");      
 
-	           stmt = conn.prepareStatement("SELECT DISTINCT np.Predmet,zso.KodPredmeta FROM ZajavlennyeShkolnyeOtsenki zso,NazvanijaPredmetov np WHERE zso.KodPredmeta=np.KodPredmeta AND zso.KodAbiturienta LIKE ? AND (zso.Examen IN('е') or zso.Examen IN('в')) AND OtsenkaEge LIKE '0' ORDER BY zso.KodPredmeta ASC");
+	        //   stmt = conn.prepareStatement("SELECT DISTINCT np.Predmet,zso.KodPredmeta FROM ZajavlennyeShkolnyeOtsenki zso,NazvanijaPredmetov np WHERE zso.KodPredmeta=np.KodPredmeta AND zso.KodAbiturienta LIKE ? AND (zso.Examen IN('е') or zso.Examen IN('в')) AND OtsenkaEge LIKE '0' ORDER BY zso.KodPredmeta ASC");
+	           stmt = conn.prepareStatement("SELECT DISTINCT np.Predmet,zso.KodPredmeta FROM ZajavlennyeShkolnyeOtsenki zso,NazvanijaPredmetov np WHERE zso.KodPredmeta=np.KodPredmeta AND zso.KodAbiturienta LIKE ? AND zso.Examen IN('+') AND OtsenkaEge LIKE '0' ORDER BY zso.KodPredmeta ASC");
+		          
 	           stmt.setObject(1,abit_A.getKodAbiturienta(),Types.INTEGER);
 	           rs = stmt.executeQuery();
 	           while(rs.next()) {
@@ -4265,7 +4270,7 @@ if(rs.getString(4).equals("д")){
         report.write("\\fs6\\par\\par\\fs22");
         report.write("{гражданин(ка): }\\i{"+rs.getString(4)+"}\\i0,  дата рождения: \\i{"+rs.getString(5)+"г.}\\i0,\n");//\\i0{, место рождения: }\\i{"+rs.getString(16)+"}
         report.write("\\fs6\\par\\par\\fs22");
-        report.write("{проживающий(щая) по адресу: }\\i{"+rs.getString(6)+", ул."+rs.getString(7)+", д."+rs.getString(8)+", кв."+rs.getString(9)+"}.\\i0\n");
+        report.write("{проживающий(щая) по адресу: }\\i{"+rs.getString(6)+", "+rs.getString(7)+", д."+rs.getString(8)+", кв."+rs.getString(9)+"}.\\i0\n");
         report.write("\\fs6\\par\\par\\fs22");
         if(rs.getString(10) != null && rs.getString(10).equals("п"))
           tip_Dok = "паспорт";
@@ -4488,7 +4493,7 @@ if(rs.getString(4).equals("д")){
 
       String tip_Ok_Zav = new String();
    //   stmt = conn.prepareStatement("SELECT a.GodOkonchanijaSrObrazovanija,a.TipOkonchennogoZavedenija,p.Nazvanie,a.VidDokSredObraz,a.SeriaAtt,a.NomerAtt,a.NomerSertifikata FROM Abiturient a, Punkty p WHERE a.KodPunkta=p.KodPunkta AND a.KodAbiturienta LIKE ?");
-      stmt = conn.prepareStatement(" SELECT a.GodOkonchanijaSrObrazovanija,a.TipOkonchennogoZavedenija, k.name, a.VidDokSredObraz,a.SeriaAtt,a.NomerAtt,a.NomerSertifikata,z.PolnoeNaimenovanieZavedenija FROM Zavedenija z, Abiturient a, KLADR k where a.kodzavedenija=z.kodzavedenija and k.code = a.gorod_Prop AND a.KodAbiturienta LIKE  ?");
+      stmt = conn.prepareStatement(" SELECT a.GodOkonchanijaSrObrazovanija,a.TipOkonchennogoZavedenija, k.name, a.VidDokSredObraz,a.SeriaAtt,a.NomerAtt,a.NomerSertifikata,z.PolnoeNaimenovanieZavedenija FROM Zavedenija z, Abiturient a, KLADR k where a.kodzavedenija=z.kodzavedenija and k.code = a.kodPunkta AND a.KodAbiturienta LIKE  ?");
       
 
       stmt.setObject(1,abit_A.getKodAbiturienta(),Types.INTEGER);
@@ -5288,66 +5293,210 @@ if(rs.getString(4).equals("д")){
        rs = stmt.executeQuery();
        if(rs.next()) {
 
-       report.write("\\par\\qc\\fs22\\tab\\tab\\tab{  абитуриента }\\i{"+rs.getString(1)+" "+rs.getString(2)+" "+rs.getString(3)+"}\\i0,\n");
+       report.write("\\par\\qc\\fs22\\tab{  абитуриента }\\ul{"+rs.getString(1)+" "+rs.getString(2)+" "+rs.getString(3)+"}\\ul0,\n");
        }
     // ДОБАВЛЕНО 29 ФЕВРАЛЯ - 2 МАРТА 2016 Г.
        report.write("\\par\\qc\\fs22\\tab\\tab\\tab\\tab\\tab{подавшего заявление на участие в конкурсе на обучение}\n");  
        
-       report.write("\\par\\qc\\fs22\\tab{         по образовательной программе  }\n");
+       report.write("\\par\\qc\\fs22{по образовательной программе}\n");  
        report.write("\\par\\par\n");
        
 
-       // ДОБАВЛЕНО 29 ФЕВРАЛЯ - 2 МАРТА 2016 Г.
-       stmt = conn.prepareStatement("SELECT s.ShifrSpetsialnosti, s.NazvanieSpetsialnosti, e.name, ko.Forma_ob from konkurs ko, spetsialnosti s, edulevel e where ko.kodabiturienta like ? and ko.kodspetsialnosti=s.kodspetsialnosti and e.socr = s.edulevel");
+       // ДОБАВЛЕНО 29 ФЕВРАЛЯ - 2 МАРТА 2016 Г. + 24 ИЮНЯ 2016 Г.     
+       stmt = conn.prepareStatement("SELECT s.ShifrSpetsialnosti, s.NazvanieSpetsialnosti, e.name, ko.Forma_ob, CASE forma_ob WHEN 'о' THEN 'очная' WHEN 'з' THEN 'заочная' WHEN 'в' THEN 'очно-заочная' ELSE 'нет' END forma_ob from konkurs ko, spetsialnosti s, edulevel e where ko.kodabiturienta like ? and ko.kodspetsialnosti=s.kodspetsialnosti and e.socr = s.edulevel and ko.sogl like 'д' ");
        
        stmt.setObject(1,abit_A.getKodAbiturienta(),Types.INTEGER);
        rs = stmt.executeQuery();
        if(rs.next()) {
 
-         report.write("\\tab\\tab\\tab\\tab\\tab\\fs22\\ql{ }\\i{"+rs.getString(1)+", "+rs.getString(2)+", "+rs.getString(3)+", "+rs.getString(4)+"}\\i0\n");
-         report.write("\\qc\\fs6\\par\\par\\fs22");
+         report.write("\\tab\\tab\\tab\\tab\\tab\\fs22\\ql{ }\\ul{"+rs.getString(1)+", "+rs.getString(2)+", "+rs.getString(3)+", "+rs.getString(5)+"}\\ul0\n");
+         report.write("\\par\\tab\\tab\\qc\\fs16\\b{(код, НП, форма обучения)}\\b0\n");
+  //       report.write("\\qc\\fs6\\par\\par\\fs22");
        }
-    // ДОБАВЛЕНО 29 ФЕВРАЛЯ - 2 МАРТА 2016 Г.
+    // ДОБАВЛЕНО 29 ФЕВРАЛЯ - 2 МАРТА 2016 Г. + 24 ИЮНЯ 2016 Г.     
        stmt = conn.prepareStatement("select nomerlichnogodela from abiturient where kodabiturienta like ?");
        
        stmt.setObject(1,abit_A.getKodAbiturienta(),Types.INTEGER);
        rs = stmt.executeQuery();
        if(rs.next()) {
-
-         report.write("\\tab\\fs22\\ql{Личное дело № }\\i{"+rs.getString(1)+"}\\i0\n");
-         report.write("\\qc\\fs6\\par\\par\\fs22");
+           report.write("\\par\\ql\\fs22\\tab\\tab\\tab\\tab\\tab{   Личное дело № }\\ul{"+rs.getString(1)+"}\\ul0\n");  
          report.write("\\par\\par\n");
          report.write("\\par\\par\n");
          
        }
-    // ДОБАВЛЕНО 29 ФЕВРАЛЯ - 2 МАРТА 2016 Г.           
-       report.write("\\qc\\fs28\\b{ЗАЯВЛЕНИЕ}\\b0\n");
+    // ДОБАВЛЕНО 29 ФЕВРАЛЯ - 2 МАРТА 2016 Г. + 24 ИЮНЯ 2016 Г.         
+       report.write("\\par\\qc\\fs22\\tab{Заявление}\n");  
+       
+       report.write("\\par\\qc\\fs22\\tab{о согласии на зачисление}\n");     
        report.write("\\par\\par\n");
-       report.write("\\par\\par\\ql\\fs22\\tab{Прошу учесть моё согласие о зачислении на обучение по программе}\n");
+       report.write("\\par\\par\\ql\\fs22\\tab{Прошу учесть моё согласие на зачисление на направление подготовки (специальность)}\n");
+
+       // ДОБАВЛЕНО 29 ФЕВРАЛЯ - 2 МАРТА 2016 Г. + 24 ИЮНЯ 2016 Г.   //  
+       stmt = conn.prepareStatement("SELECT s.ShifrSpetsialnosti, s.NazvanieSpetsialnosti, e.name, ko.Forma_ob, CASE forma_ob WHEN 'о' THEN 'очная' WHEN 'з' THEN 'заочная' WHEN 'в' THEN 'очно-заочная' ELSE 'нет' END forma_ob from konkurs ko, spetsialnosti s, edulevel e where ko.kodabiturienta like ? and ko.kodspetsialnosti=s.kodspetsialnosti and e.socr = s.edulevel and ko.sogl like 'д' ");
+       
+       stmt.setObject(1,abit_A.getKodAbiturienta(),Types.INTEGER);
+       rs = stmt.executeQuery();
+       if(rs.next()) {
+
+         report.write("\\tab\\tab\\tab\\fs22\\ql{ }\\ul{"+rs.getString(1)+", "+rs.getString(2)+", "+rs.getString(3)+", "+rs.getString(5)+"}\\ul0\n");
+         report.write("\\par\\tab\\qc\\fs16\\b{(код, НП, форма обучения)}\\b0\n");
+       }
+       
+   //    report.write("\\qc\\fs16\\b{(код, НП, форма обучения)}\\b0\n");
        report.write("\\par\\par\\ql\\fs22\\tab\\i{___________________________________________________________________________________________}\\i0\n");
-       report.write("\\qc\\fs16\\b{(код, НП, форма обучения)}\\b0\n");
        report.write("\\par\\par\\ql\\fs22\\tab\\i{___________________________________________________________________________________________}\\i0\n");
        report.write("\\par\\par\\ql\\fs22\\tab\\i{___________________________________________________________________________________________}\\i0\n");
-       report.write("\\par\\par\\ql\\fs22\\tab\\i{___________________________________________________________________________________________}\\i0\n");
+      
+       report.write("\\par\\ql\\fs22\\tab{При приёме на обучение на места в рамках контрольных цифр:}\n");
+       report.write("\\par\\ql\\fs22\\tab\\tab{__  без вступительных испытаний;}\n");
+       report.write("\\par\\ql\\fs22\\tab\\tab{__  по особой квоте;}\n");
+       report.write("\\par\\ql\\fs22\\tab\\tab{__  по целевой квоте;}\n");
+       report.write("\\par\\ql\\fs22\\tab\\tab{__  по общему конкурсу на 1-м этапе;}\n");
+       report.write("\\par\\ql\\fs22\\tab\\tab{__  по общему конкурсу на 2-м этапе.}\n");
        
        report.write("\\par\\par\\ql\\fs22\\tab{При приёме на обучение на места по договорам с оплатой стоимости обучения:}\n");
-       report.write("\\par\\par\\ql\\fs22\\tab\\tab{- по общему конкурсу.}\n");
+       report.write("\\par\\ql\\fs22\\tab\\tab{__  по общему конкурсу.}\n");
       
        report.write("\\par\\par\\ql\\fs22\\tab{К данному заявлению прилагаю}\n");
-       report.write("\\par\\par\\ql\\fs22\\tab\\i{___________________________________________________________________________________________}\\i0\n");
-       report.write("\\qc\\fs16\\b{(название документа об образовании, серия, рег. №)}\\b0\n");
-       report.write("\\par\\par\\ql\\fs22\\tab\\i{___________________________________________________________________________________________}\\i0\n");
-       report.write("\\par\\par\\ql\\fs22\\tab{выдан______________________________________________________________________________________}\\i0\n");
-       report.write("\\qc\\fs16\\b{(название образовательной организации, выдавшей документ, дата выдачи:)}\\b0\n");	
-       report.write("\\par\\par\\ql\\fs22\\tab\\i{___________________________________________________________________________________________}\\i0\n");
-       report.write("\\qc\\fs16\\b{(оригинал, копия, заверенная нотариально / приёмной комиссией (ненужное вычеркнуть))}\\b0\n");
-       report.write("\\par\\par\\ql\\fs22\\tab\\i{___________________________________________________________________________________________}\\i0\n");
-    
+       
+    // ДОБАВЛЕНО 29 ФЕВРАЛЯ - 2 МАРТА 2016 Г. + 24 ИЮНЯ 2016 Г.     
+       stmt = conn.prepareStatement("SELECT a.VidDokSredObraz, a.NomerAtt from abiturient a where a.kodabiturienta like ?");
+       
+       stmt.setObject(1,abit_A.getKodAbiturienta(),Types.INTEGER);
+       rs = stmt.executeQuery();
+       if(rs.next()) {
+
+         report.write("\\fs22\\ql{ }\\ul{"+rs.getString(1)+", "+rs.getString(2)+"}\\ul0\n");
+         report.write("\\par\\tab\\qc\\fs16\\b{(название документа об образовании, серия, рег. №)}\\b0\n");
+       }
+       
+       report.write("\\par\\par\\ql\\fs22\\tab{выдан}\\n");
+       
+       // ДОБАВЛЕНО 29 ФЕВРАЛЯ - 2 МАРТА 2016 Г. + 24 ИЮНЯ 2016 Г.     
+       stmt = conn.prepareStatement("SELECT z.PolnoeNaimenovanieZavedenija, a.GodOkonchanijaSrObrazovanija from abiturient a, zavedenija z where a.kodabiturienta like ? and a.KodZavedenija = z.KodZavedenija");
+       
+stmt.setObject(1,abit_A.getKodAbiturienta(),Types.INTEGER);
+       rs = stmt.executeQuery();
+       if(rs.next()) {
+
+         report.write("\\fs22\\ql{ }\\ul{"+rs.getString(1)+", "+rs.getString(2)+"}\\ul0\n");
+         report.write("\\par\\tab\\qc\\fs16\\b{(название образовательной организации, выдавшей документ, дата выдачи:)}\\b0\n");
+       }
+      
+       report.write("\\par\\par\n");
+       
+       // ДОБАВЛЕНО 29 ФЕВРАЛЯ - 2 МАРТА 2016 Г. + 24 ИЮНЯ 2016 Г.     
+       stmt = conn.prepareStatement("SELECT a.TipDokSredObraz, CASE TipDokSredObraz WHEN 'о' THEN 'оригинал' WHEN 'к' THEN 'копия' ELSE 'нет' END TipDokSredObraz from abiturient a, zavedenija z where a.kodabiturienta like ?");
+       
+       stmt.setObject(1,abit_A.getKodAbiturienta(),Types.INTEGER);
+       rs = stmt.executeQuery();
+       if(rs.next()) {
+
+         report.write("\\tab\\fs22\\ql\\ul{"+rs.getString(2)+"}\\ul0\n");
+         report.write("\\par\\tab\\qc\\fs16\\b{(оригинал, копия, заверенная нотариально / приёмной комиссией (ненужное вычеркнуть)}\\b0\n");
+       }
+       
+   
        report.write("\\par\\par\n");
        report.write("\\par\\par\n");
        report.write("\\par\\par\n");
-       report.write("\\par\\par\\ql\\fs22\\tab{(Ф.И.О.)                                                                                                             }\\i{(подпись)}\\i0\n");
-       report.write("\\par\\par\\ql\\fs22\\tab{''___''________________ 2016 г.}\n");
+       report.write("\\par\\par\\ql\\fs22\\tab\\b{(Ф.И.О.)                                                                                                             }{(подпись)}\\b0\n");
+       report.write("\\par\\par\\ql\\fs22\\tab\\b{''___''________________ 2016 г.}\\b0\n");
+       
+       report.write("}"); 
+       report.close();
+       
+
+       
+       file_con = new String("achievements"+abit_A.getKodAbiturienta()+".rtf");
+       
+       file_name = (request.getRealPath(request.getContextPath())).substring(0,request.getRealPath(request.getContextPath()).lastIndexOf('\\'))+Constants.RELATIVE_PATH_ABT+"\\"+file_con;
+
+       abit_A.setFileName5(file_con);
+
+       report = new BufferedWriter(new FileWriter(file_name)); 
+
+ /************************************************/
+
+       report.write("{\\rtf1\\ansi{\\colortbl;\\red0\\green0\\blue0;\\red0\\green0\\blue255;\\red0\\green255\\blue255;\\red0\\green255\\blue0;\\red255\\green0\\blue255;\\red255\\green0\\blue0;\\red255\\green255\\blue0;\\red255\\green255\\blue255;\\red0\\green0\\blue128;\\red0\\green128\\blue128;\\red0\\green128\\blue0;\\red128\\green0\\blue128;\\red128\\green0\\blue0;\\red128\\green128\\blue0;\\red128\\green128\\blue128;\\red192\\green192\\blue192;\\ctextone\\ctint255\\cshade255\\red0\\green0\\blue0;}\n");
+       report.write("\\paperw11906\\paperh16838\\margl567\\margr567\\margt567\\margb567\\widowctrl\\ftnbj\\aenddoc\\noxlattoyen\\expshrtn\\noultrlspc\\dntblnsbdb\\nospaceforul\\formshade\\dghspace100\\dgvspace180\\dghorigin1701\\dgvorigin1984\\dghshow0\\dgvshow0\\jexpand\\viewkind1\\viewscale90\\viewzk2\\pgbrdrhead\\pgbrdrfoot\\nolnhtadjtbl\n");
+
+       stmt = conn.prepareStatement("select a.familija, a.imja, a.otchestvo, a.nomerlichnogodela, adi.ballpoi, adi.ballzgto, ballatt, adi.ballsgto, sum(cast(k.olimp as int)), adi.trudovajadejatelnost, adi.ballsoch, (cast(adi.ballatt as int) + (cast(adi.ballsgto as int)+adi.ballzgto+adi.ballpoi) + cast (adi.trudovajadejatelnost as int) + sum(cast(k.olimp as int)) + cast(adi.ballsoch as int)) from abiturient a, abitdopinf adi, konkurs k where a.kodabiturienta like ? and a.kodabiturienta=adi.kodabiturienta and a.kodabiturienta=k.kodabiturienta and adi.BallAtt not like 'да' and adi.BallAtt not like 'нет'  AND adi.ballsgto not like 'да' AND adi.ballsgto not like 'нет' AND adi.ballzgto not like 'да' AND adi.ballzgto not like 'нет'  AND adi.ballsoch not like 'да' AND adi.ballsoch not like 'нет' AND adi.ballpoi not like 'да' AND adi.ballpoi not like 'нет' and adi.trudovajadejatelnost not like 'да' and adi.trudovajadejatelnost not like 'нет' group by a.familija, a.imja, a.otchestvo, a.nomerlichnogodela, adi.ballpoi, adi.ballzgto, ballatt, adi.ballsgto, adi.trudovajadejatelnost, adi.ballsoch");
+       
+       stmt.setObject(1,abit_A.getKodAbiturienta(),Types.INTEGER);
+       rs = stmt.executeQuery();
+       if(rs.next()){ 
+       report.write("\\par\\qc\\fs22\\tab{ПРОТОКОЛ №___ от \"___\" ______20__г.}\\b0\n");        
+       report.write("\\par\\qc\\fs20\\tab{заседания специальной подкомиссии по учету индивидуальных достижений}\\b0\\n\\par\\n");
+       report.write("\\par\\par\\ql\\fs22\\tab\\b{Поступающий	"+rs.getString(1)+" "+rs.getString(2)+" "+rs.getString(3)+"}\\b0\\n");
+       report.write("\\par\\par\\ql\\fs22\\tab{Номер личного дела	"+rs.getString(4)+"}\n");
+       report.write("\\par\\par\\ql\\fs22\\tab\\tab\\b{Присутствовали:    }\\b0{Соловьёв В.А}\n");
+       report.write("\\par\\par\\ql\\fs22\\tab\\tab\\tab\\tab{         Камардин И.Н.}\n");
+       report.write("\\par\\par\\ql\\fs22\\tab\\tab\\tab\\tab{         Еремина М.И.}\n");
+       report.write("\\par\\par\\ql\\fs22\\tab\\tab{ Решили: начислить баллы за следующие индивидуальные достижения:}\n");
+if(abit_A.getNomerPotoka()==1){
+		
+       if(rs.getString(5)!=null && rs.getInt(5)>0){
+       report.write("\\par\\par\\ql\\fs22\\tab\\tab{- Наличие статуса чемпиона и призера Олимпийских игр, Паралимпийских игр и Сурдлимпийских игр, чемпиона мира, чемпиона Евровы, лица, занявшего первое место на первенстве мира, первенстве Европы по видам спорта, включенным в программы Олимпийских игр, Паралимпийских игр и Сурдлимпийских игр - "+rs.getString(5)+" баллов.}\n");
+       }
+       if(rs.getString(6)!=null && rs.getInt(6)>0){
+       report.write("\\par\\par\\ql\\fs22\\tab\\tab{- Наличие золотого знака отличия Всероссийского физкультурно-спортивного комплекса \"Готов к труду и обороне\" (ГТО) и удостоверения к нему установленного образца - при поступлении на обучение по специальностям и направлениям подготовки, не относящимся к специальностям и направлениям подготовки в области физической культуры и спорта - "+rs.getString(6)+" баллов.}\n");
+       }
+       if(rs.getString(7)!=null && rs.getInt(7)>0){
+       report.write("\\par\\par\\ql\\fs22\\tab\\tab{- Наличие аттестата о среднем общем образовании с отличием или аттестата о среднем (полном) общем образовании, содержащего сведения о награждении золотой или серебряной медалью - "+rs.getString(7)+" баллов}\n");
+       }
+       if(rs.getString(8)!=null && rs.getInt(8)>0){
+       report.write("\\par\\par\\ql\\fs22\\tab\\tab{- Наличие диплома о среднем профессиональном образовании с отличием - "+rs.getString(8)+" баллов}\n");
+       }
+       if(rs.getString(9)!=null && rs.getInt(9)>0){
+       report.write("\\par\\par\\ql\\fs22\\tab\\tab{- Статус победителя или призёра олимпиад (не используемых для получения особых прав и преимуществ), а также лауреата или победителя интеллектуальных и творческих конкурсов, спортивных мероприятий международного, всероссийского и регионального уровней, проводимых университетом или иными организациями, доля Российской Федерации в уставном капитале которых превышает 50%, органами власти и муниципального управления, а так же при поддержке таких организаций и органов, если с даты приобретения указанного статуса до завершения приёма документов и вступительных испытаний прошло не более 2-х лет - "+rs.getString(9)+" баллов.}\n");
+       }
+       if(rs.getString(10)!=null && rs.getInt(10)>0){
+       report.write("\\par\\par\\ql\\fs22\\tab\\tab{- Участие поступающих в мероприятиях, указанных в предыдущем пункте - "+rs.getString(10)+" баллов.}\n");
+       }
+       if(rs.getString(11)!=null && rs.getInt(11)>0){
+       report.write("\\par\\par\\ql\\fs22\\tab\\tab{- Итоговое сочинение - "+rs.getString(11)+" баллов.}\n");
+       }
+}else if(abit_A.getNomerPotoka()==2){
+	report.write("\\par\\par\\ql\\fs22\\tab\\tab{ Наличие диплома с отличием: "+rs.getString(7)+" балла(ов).}\n");
+	report.write("\\par\\par\\ql\\fs22\\tab\\tab{ Наличие сертификата Федерального Интернет-экзамена для выпускников бакалавриата (ФИЭБ):________балла(ов).}\n");
+	String sum="____";
+	if(rs.getInt(9)!=0){
+		sum=rs.getString(9);
+	}
+    report.write("\\par\\par\\ql\\fs22\\tab\\tab{ Научная активность - до 10 баллов (в случае, если сумма баллов по представленным индивидуальным достижениям за научную активность превышает 10 баллов, то выставляется наивысший балл - 10 баллов): "+sum+" балла(баллов)}\n");
+    report.write("\\par\\par\\ql\\fs22\\tab\\tab{ опубликованные научные статьи в журналах, входящих в международные базы цитирования Web of Science и Scopus:________балла(ов);}\n");
+    report.write("\\par\\par\\ql\\fs22\\tab\\tab{ опубликованные статьи в ведущих рецензируемых журналах из перечня ВАК, в журналах, включенных в Российский индекс научного цитирования (РИНЦ):________балла(ов);}\n");
+    report.write("\\par\\par\\ql\\fs22\\tab\\tab{ наличие документа, удостоверяющего исключительное право на результат интеллектуальной деятельности (авторские свидетельства на изобретения, патенты):________балла(ов);}\n");
+    report.write("\\par\\par\\ql\\fs22\\tab\\tab{ наличие наград (медали, дипломы, грамоты, премии), полученных на всероссийских и региональных конкурсах на лучшую научно-исследовательскую работу, участие в выполнении госбюджетных и хоздоговорных научно-исследовательских работ, проводимых в университете:________балла(ов);}\n");
+    report.write("\\par\\par\\ql\\fs22\\tab\\tab{ опубликованные тезисы докладов и сообщений в сборниках материалов конференций различных уровней:________балла(ов).}");
+    report.write("\\par\\par\\ql\\fs22\\tab\\tab{ наличие у поступающих результатов всероссийского этапа Всероссийских студенческих олимпиад (ВСО):________балла(ов);}");
+    report.write("\\par\\par\\ql\\fs22\\tab\\tab{ победитель или призер всероссийского этапа ВСО в соответствие с направлением подготовки аспирантуры:________балла(ов);}");
+    report.write("\\par\\par\\ql\\fs22\\tab\\tab{ победитель или призер всероссийского этапа ВСО не в соответствии с направлением подготовки магистратуры:________балла(ов).}");
+		
+}
+       
+       if(rs.getInt(12)>10){
+       report.write("\\par\\par\\ql\\fs22\\tab\\tab{- Итоговая оценка (в баллах) и заключение комиссии - 10}");
+       }else{
+    	   report.write("\\par\\par\\ql\\fs22\\tab\\tab{- Итоговая оценка (в баллах) и заключение комиссии - "+rs.getString(12)+"}");
+       }
+       report.write("\\par\\par\\ql\\fs22\\tab\\tab{___________________________________________________________________________________________}\n");
+       report.write("\\par\\par\\ql\\fs22\\tab\\tab\\tab\\tab{         _______________/Соловьёв В.А./}\n");
+       report.write("\\par\\par\\ql\\fs22\\tab\\tab\\tab\\tab{         _______________/Камардин И.Н./}\n");
+       report.write("\\par\\par\\ql\\fs22\\tab\\tab\\tab\\tab{         _______________/Еремина М.И./}\n");
+       
+       }
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
        
        report.write("}"); 
        

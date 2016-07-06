@@ -249,7 +249,7 @@ if(abit_SD.getKodFakulteta()!=0){
     
     oldBallAbt = -1;
 
-       query1 = new StringBuffer("SELECT DISTINCT a.KodAbiturienta,kon.nomerlichnogodela,a.Familija,a.Imja,a.Otchestvo,a.seriadokumenta,a.nomerdokumenta,adi.ballsoch FROM Abiturient a, Spetsialnosti s, Konkurs kon,abitdopinf adi WHERE kon.KodAbiturienta=a.KodAbiturienta AND kon.KodSpetsialnosti=s.KodSpetsialnosti AND kon.KodSpetsialnosti LIKE '"+rs2.getString(5)+"' AND a.Prinjat not in ('1','2','3','4','5','7','д') AND a.KodAbiturienta NOT IN ("+excludeList.toString()+") AND a.kodabiturienta=adi.kodabiturienta and adi.ballsoch like 'да' and kon.prioritet=1 and a.stepen_mag is null ");
+       query1 = new StringBuffer("SELECT DISTINCT a.KodAbiturienta,kon.nomerlichnogodela,a.Familija,a.Imja,a.Otchestvo,a.seriadokumenta,a.nomerdokumenta,adi.ballsoch FROM Abiturient a, Spetsialnosti s, Konkurs kon,abitdopinf adi WHERE kon.KodAbiturienta=a.KodAbiturienta AND kon.KodSpetsialnosti=s.KodSpetsialnosti AND kon.KodSpetsialnosti LIKE '"+rs2.getString(5)+"' AND a.Prinjat not in ('1','2','3','4','5','7','д') AND a.KodAbiturienta NOT IN ("+excludeList.toString()+") AND a.kodabiturienta=adi.kodabiturienta and adi.ballsoch like 'да' and kon.prioritet=1 and a.Need_Spo is null ");
 
   
 query1.append(" GROUP BY a.KodAbiturienta,kon.nomerlichnogodela,a.Familija,a.Imja,a.Otchestvo,a.seriadokumenta,a.nomerdokumenta,adi.ballsoch ORDER BY a.Familija,a.Imja,a.Otchestvo,a.KodAbiturienta");

@@ -46,6 +46,7 @@ import abit.bean.UserBean;
 import abit.sql.UserConn;
 import abit.util.StringUtil;
 import abit.paket.PackageData;
+import abit.paket.PackageData.Applications.Application.IndividualAchievements;
 import abit.paket.Root;
 import abit.paket.TBasicDiplomaDocument;
 import abit.paket.TEntranceTestSubject;
@@ -54,6 +55,7 @@ import abit.paket.THighEduDiplomaDocument;
 import abit.paket.TIncomplHighEduDiplomaDocument;
 import abit.paket.TMiddleEduDiplomaDocument;
 import abit.paket.TSchoolCertificateDocument;
+import abit.paket.TSchoolCertificateBasicDocument;
 
 
 public class FisImportAction extends Action{
@@ -179,6 +181,25 @@ System.out.println("Read From File ok");
   
   else 
   */ if ( form.getAction() == null ) {
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
   
  //stmt = conn.prepareStatement("SELECT  NomerLichnogoDela, familija, Imja, Otchestvo, KodAbiturienta From Abiturient a INNER JOIN FisImport b ON a.kodAbiturienta = b.id AND (b.Status = '+' OR b.Status = 'и')");
   //stmt = conn.prepareStatement("SELECT Distinct a.NomerLichnogoDela, a.familija, a.Imja, a.Otchestvo, a.KodAbiturienta From Abiturient a, FisImport f, konkurs k, competitiveGroups c where a.kodAbiturienta = f.id AND (f.Status = '+' OR f.Status = 'и') and a.kodAbiturienta=k.kodAbiturienta and k.kodSpetsialnosti=c.kodSpetsialnosti order by kodAbiturienta");
@@ -201,6 +222,15 @@ System.out.println("Read From File ok");
   
   else if (form.getAction().equals("select")){
 
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
 	  selectedItems = form.getSelectedItems();
 	  selectedKods = form.getSelectedKods();
 	  try {
@@ -218,18 +248,27 @@ System.out.println("Read From File ok");
 //	  {
 		  
 //		  kodAbiturienta = selectedKods[i];
-		 kodAbiturienta = selectedKods[1];
+		 abit.paket.delete.Root dr=new abit.paket.delete.Root();
+			abit.paket.delete.AuthData dad=new abit.paket.delete.AuthData();
+			abit.paket.delete.DataForDelete dfd=new abit.paket.delete.DataForDelete();
+			abit.paket.delete.DataForDelete.Applications dcg=new abit.paket.delete.DataForDelete.Applications();
+			
+			dad.setLogin("revalle88@gmail.com");
+			dad.setPass("Dreamlord88");
 		  
 		
-  		 
-		  stmt = conn.prepareStatement("SELECT a.KodAbiturienta, a.NomerLichnogoDela, a.Familija, a.Imja, a.Otchestvo, a.Pol, a.NujdaetsjaVObschejitii, a.DataInput, a.DataModify, a.SeriaDokumenta, a.NomerDokumenta, a.DataVydDokumenta, a.KemVydDokument, a.TipDokumenta, a.Grajdanstvo, a.DataRojdenija, k.target, a.KopijaSertifikata, a.NomerSertifikata,adi.abitemail,a.kodlgot FROM Abiturient a, konkurs k, abitdopinf adi WHERE a.kodabiturienta=adi.kodabiturienta and a.KodAbiturienta = ? and a.kodabiturienta=k.kodabiturienta and a.kodspetsialnzach=k.kodspetsialnosti ORDER BY 1 ASC");
-		  stmt.setObject(1,kodAbiturienta,Types.INTEGER);
-            rs = stmt.executeQuery();
+  		 // and a.datamodify like '"+StringUtil.CurrDate(".")+"'
+		 stmt = conn.prepareStatement("select a.kodabiturienta, a.nomerlichnogodela, a.familija, a.imja, a.otchestvo, a.pol, adi.abitemail, a.kodlgot, a.seriadokumenta, a.nomerdokumenta, a.datainput, a.NujdaetsjaVObschejitii, a.viddoksredobraz, a.DataVydDokumenta, a.grajdanstvo, a.KemVydDokument, a.tipdokumenta, a.kodpodrazdelenija, a.datarojdenija, a.mestorojdenija from abiturient a, abitdopinf adi where a.kodabiturienta=adi.kodabiturienta and (a.prinjat like 'н' or a.prinjat is null)  and a.kodabiturienta not in (select kodabiturienta from konkurs where bud is null and dog is null) and substring(a.datainput,4,2) >5 and a.nomeratt is not null ");
+		 rs = stmt.executeQuery();
             while (rs.next()) {
+            	System.out.println(rs.getString(1));
           	  PackageData.Applications.Application applic = new PackageData.Applications.Application();
+          	abit.paket.delete.DataForDelete.Applications.Application del=new abit.paket.delete.DataForDelete.Applications.Application();
+          	del.setApplicationNumber(rs.getString(2));
+          	
           	  applic.setUID("2016-"+rs.getString(1));
-          	  applic.setApplicationNumber("2016-"+rs.getString(2));
-          	 PackageData.Applications.Application.Entrant entrant = new PackageData.Applications.Application.Entrant();
+          	  applic.setApplicationNumber(rs.getString(2));
+          	  PackageData.Applications.Application.Entrant entrant = new PackageData.Applications.Application.Entrant();
           	  entrant.setUID(rs.getString(1));
           	  entrant.setFirstName(rs.getString(4));
           	  entrant.setMiddleName(rs.getString(5));
@@ -240,11 +279,15 @@ System.out.println("Read From File ok");
           		  entrant.setGenderID(2);
           	  }
           	  PackageData.Applications.Application.Entrant.EmailOrMailAddress eoma = new PackageData.Applications.Application.Entrant.EmailOrMailAddress();
-          	  eoma.setEmail(rs.getString(20));
+          	  if(rs.getString(7)!=null && !rs.getString(7).equals("")){
+          	  eoma.setEmail(rs.getString(7));
+          	  }else{
+          		  eoma.setEmail("example@yandex.ru");
+          	  }
           	  entrant.setEmailOrMailAddress(eoma);
-          	  if(rs.getInt(21)==1){
+          	  if(rs.getInt(8)==1){
               	  PackageData.Applications.Application.Entrant.IsFromKrym ifk = new PackageData.Applications.Application.Entrant.IsFromKrym();
-              	  ifk.setDocumentUID(rs.getString(10)+" "+rs.getString(11));
+              	  ifk.setDocumentUID(rs.getString(9)+" "+rs.getString(10));
               	  entrant.setIsFromKrym(ifk);
           	  }
           	  applic.setEntrant(entrant);
@@ -256,71 +299,116 @@ System.out.println("Read From File ok");
           	  
           	  
           	  simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy");
-          	  date = simpleDateFormat.parse(rs.getString(8));        
+          	  date = simpleDateFormat.parse(rs.getString(11));        
           	  gregorianCalendar = (GregorianCalendar)GregorianCalendar.getInstance();
           	  gregorianCalendar.setTime(date);
           	  result = DatatypeFactory.newInstance().newXMLGregorianCalendar(gregorianCalendar);
           	  applic.setRegistrationDate(result);
-          	  if(rs.getString(7).equals("н")){
+          	  if(rs.getString(12).equals("н")){
           		  applic.setNeedHostel(false);
           	  }else{
           		  applic.setNeedHostel(true);
           	  }
-          	  
-          	  applic.setStatusID(4);
+          	  del.setRegistrationDate(result);
+        	  dcg.getApplication().add(del);
+          	  applic.setStatusID(2);
           	    
           	  //FinSource
-          	 PackageData.Applications.Application.FinSourceAndEduForms finSourceAndEduForms = new PackageData.Applications.Application.FinSourceAndEduForms();
-          	  stmt1 = conn.prepareStatement("SELECT k.kodspetsialnosti,k.sogl,k.target FROM Konkurs k WHERE k.KodAbiturienta = ? ORDER BY 1 ASC");
-    		  stmt1.setObject(1,kodAbiturienta,Types.INTEGER);
+          	  PackageData.Applications.Application.FinSourceAndEduForms finSourceAndEduForms = new PackageData.Applications.Application.FinSourceAndEduForms();
+          	   stmt1 = conn.prepareStatement("SELECT k.kodspetsialnosti,k.bud,k.dog, k.op, k.target,k.rlgot  FROM Konkurs k WHERE k.KodAbiturienta = ? ORDER BY 1 ASC");
+    		  stmt1.setObject(1,rs.getString(1),Types.VARCHAR);
 	              rs1 = stmt1.executeQuery();
 	              while(rs1.next()) {
 	            	 PackageData.Applications.Application.FinSourceAndEduForms.FinSourceEduForm finSourceEduForm = new PackageData.Applications.Application.FinSourceAndEduForms.FinSourceEduForm();
-	            	 finSourceEduForm.setCompetitiveGroupUID("cg16-"+rs1.getString(1));
-	            	 if(rs1.getString(2).equals("д")){
-	            	  finSourceEduForm.setIsAgreedDate(result);
-	            	 }
-	            	 if(rs1.getInt(3)!=1){
-	            		 
-	            	 if(rs1.getInt(3)==5){
-							finSourceEduForm.setTargetOrganizationUID("tcPGU-"+rs1.getString(1));
-						}else if(rs1.getInt(3)==2){
-							finSourceEduForm.setTargetOrganizationUID("tcRA-"+rs1.getString(1));
-
-						}else if(rs1.getInt(3)==3){
-							finSourceEduForm.setTargetOrganizationUID("tcRK-"+rs1.getString(1));
-
-						}else if(rs1.getInt(3)==4){
-							finSourceEduForm.setTargetOrganizationUID("tcMPT-"+rs1.getString(1));
-						}
-	              }
+	            	if(rs1.getString(2)!=null && rs1.getString(2).equals("д")){
+	            		if(rs.getInt(8)==1){
+	            			if(rs1.getInt(4)==3 || rs1.getInt(4)==4)
+	            			{
+	            				finSourceEduForm.setCompetitiveGroupUID("cg16-" + rs1.getString(1) + "kl");
+	            			}
+	            			else{finSourceEduForm.setCompetitiveGroupUID("cg16-" + rs1.getString(1) + "kb");}
+	            		}else{
+	            			if(rs1.getInt(4)==3 || rs1.getInt(4)==4){finSourceEduForm.setCompetitiveGroupUID("cg16-" + rs1.getString(1) + "l");}
+	            			else{finSourceEduForm.setCompetitiveGroupUID("cg16-" + rs1.getString(1) + "b");}
+	            		}
+	            	//	if(!rs.getString(13).equals("Аттестат ООО") && !rs.getString(13).equals("Аттестат ООО с отличием") && !rs.getString(13).equals("Аттестат СОО") && !rs.getString(13).equals("Аттестат СОО с отличием") ){
+		            //		finSourceEduForm.setIsForSPOandVO(true);
+		            //	}
 	            	 finSourceAndEduForms.getFinSourceEduForm().add(finSourceEduForm);
+	            	}
+	            	if(rs1.getString(3)!=null && rs1.getString(3).equals("д")){
+	            		if(rs.getInt(8)==1){
+	            			finSourceEduForm.setCompetitiveGroupUID("cg16-" + rs1.getString(1) + "kd");
+	            		}else{
+	            			finSourceEduForm.setCompetitiveGroupUID("cg16-" + rs1.getString(1) + "d");
+	            		}
+	            	//	if(!rs.getString(13).equals("Аттестат ООО") && !rs.getString(13).equals("Аттестат ООО с отличием") && !rs.getString(13).equals("Аттестат СОО") && !rs.getString(13).equals("Аттестат СОО с отличием") ){
+		            //		finSourceEduForm.setIsForSPOandVO(true);
+		            //	}
+	            	 finSourceAndEduForms.getFinSourceEduForm().add(finSourceEduForm);
+	            	}
 	              }
 	              applic.setFinSourceAndEduForms(finSourceAndEduForms);
 	              
+	              
+	              /*
+	              stmt1 = conn.prepareStatement("SELECT k.kodspetsialnosti, k.op,k.rlgot, k.stob  FROM Konkurs k WHERE k.KodAbiturienta = ? and k.op in ('3','4') and k.bud like 'д' ORDER BY 1 ASC");
+	    		  stmt1.setObject(1,rs.getString(1),Types.VARCHAR);
+		              rs1 = stmt1.executeQuery();
+		              while(rs1.next()) {
+		            	     
+		 	             PackageData.Applications.Application.ApplicationCommonBenefits appCBs = new PackageData.Applications.Application.ApplicationCommonBenefits();
+		 	             PackageData.Applications.Application.ApplicationCommonBenefits.ApplicationCommonBenefit appCB = new PackageData.Applications.Application.ApplicationCommonBenefits.ApplicationCommonBenefit();
+		 	            PackageData.Applications.Application.ApplicationCommonBenefits.ApplicationCommonBenefit.DocumentReason dr = new PackageData.Applications.Application.ApplicationCommonBenefits.ApplicationCommonBenefit.DocumentReason();
+		 	             appCB.setUID("appCB-"+rs1.getString(1)+"-"+rs.getString(1));
+		 	            if(rs.getInt(8)==1){
+		 	            	if(rs1.getInt(2)==3 || rs1.getInt(2)==4){
+		 	            		
+		 	            		 appCB.setCompetitiveGroupUID("cg16-" + rs1.getString(1) + "kl");
+		 	            	}else{appCB.setCompetitiveGroupUID("cg16-" + rs1.getString(1) + "kb");}
+		 	            }else{
+		 	            	if(rs1.getInt(2)==3 || rs1.getInt(2)==4){
+		 	            		
+		 	            		 appCB.setCompetitiveGroupUID("cg16-" + rs1.getString(1) + "l");
+		 	            	}else{appCB.setCompetitiveGroupUID("cg16-" + rs1.getString(1) + "b");}
+		 	            }
+		 	           appCB.setBenefitKindID(4);
+		 	           if(rs1.getInt(2)==3){
+		 	        	  appCB.setDocumentTypeID(30);
+		 	        	  
+		 	        	  
+		 	           }else if(rs1.getInt(2)==4){
+		 	        	   appCB.setDocumentTypeID(11);
+		 	        	  PackageData.Applications.Application.ApplicationCommonBenefits.ApplicationCommonBenefit.DocumentReason.MedicalDocuments md = new PackageData.Applications.Application.ApplicationCommonBenefits.ApplicationCommonBenefit.DocumentReason.MedicalDocuments();
+		 	        	 PackageData.Applications.Application.ApplicationCommonBenefits.ApplicationCommonBenefit.DocumentReason.MedicalDocuments. md = new PackageData.Applications.Application.ApplicationCommonBenefits.ApplicationCommonBenefit.DocumentReason.MedicalDocuments();
+		 	        	  
+		 	        	  dr.setMedicalDocuments(value);
+		 	           }
+		 	           
+		 	           appCB.setDocumentReason(dr);
+		 	           
+		              }
+	              */
+	              
+	              
 	             PackageData.Applications.Application.ApplicationDocuments applicationDocuments = new PackageData.Applications.Application.ApplicationDocuments();
 	             PackageData.Applications.Application.ApplicationDocuments.IdentityDocument identityDocument = new PackageData.Applications.Application.ApplicationDocuments.IdentityDocument();		
-
+	             identityDocument.setUID("id-"+rs.getString(1));
+	              identityDocument.setDocumentSeries(rs.getString(9));
+	              identityDocument.setLastName(rs.getString(3));
+	              identityDocument.setFirstName(rs.getString(4));
+	              identityDocument.setMiddleName(rs.getString(5));
+	              if(rs.getString(6).equals("м")){
+	            	  identityDocument.setGenderID(Long.valueOf(1));
+	          	  }else{
+	          		identityDocument.setGenderID(Long.valueOf(2));
+	          	  }
 	              
-	           /*   simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
-                  date = simpleDateFormat.parse("15-07-2015");        
-                  gregorianCalendar = 
-                     (GregorianCalendar)GregorianCalendar.getInstance();
-                  gregorianCalendar.setTime(date);
-                  result = DatatypeFactory.newInstance().newXMLGregorianCalendar(gregorianCalendar);
-              	  result.setHour(DatatypeConstants.FIELD_UNDEFINED);
-              	  result.setMinute(DatatypeConstants.FIELD_UNDEFINED);
-              	  result.setSecond(DatatypeConstants.FIELD_UNDEFINED);
-              	  result.setMillisecond(DatatypeConstants.FIELD_UNDEFINED);
-              	  result.setTimezone(DatatypeConstants.FIELD_UNDEFINED);
-            		             
-	              identityDocument.setOriginalReceivedDate(result);
-	              */
-	              identityDocument.setDocumentSeries(rs.getString(10));
-	              identityDocument.setDocumentNumber(rs.getString(11));
-	              if(!rs.getString(12).isEmpty()){
+	              
+	              identityDocument.setDocumentNumber(rs.getString(10));
+	              if(!rs.getString(14).isEmpty()){
 	            	  simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
-	                  date = simpleDateFormat.parse(rs.getString(12));        
+	                  date = simpleDateFormat.parse(rs.getString(14));        
 	                  gregorianCalendar = 
 	                     (GregorianCalendar)GregorianCalendar.getInstance();
 	                  gregorianCalendar.setTime(date);
@@ -331,14 +419,17 @@ System.out.println("Read From File ok");
 	              	  result.setMillisecond(DatatypeConstants.FIELD_UNDEFINED);
 	              	  result.setTimezone(DatatypeConstants.FIELD_UNDEFINED);
 	            	  identityDocument.setDocumentDate(result);
-	              }
-	              if (rs.getString(14).equals("п")){
+	              }  
+	              identityDocument.setDocumentOrganization(rs.getString(16));
+	             //identityDocument.setSubdivisionCode(rs.getString(18));
+	              
+	              if (rs.getString(17).equals("п")){
 	            	  identityDocument.setIdentityDocumentTypeID(1);
 	              }else{
-	            	  if(rs.getString(14).equals("з")){
+	            	  if(rs.getString(17).equals("з")){
 	            		  identityDocument.setIdentityDocumentTypeID(2);
 	            	  }else{
-	            		  if(rs.getString(14).equals("и")){
+	            		  if(rs.getString(17).equals("и")){
 	            			  identityDocument.setIdentityDocumentTypeID(3);
 	            		  }else{
 	            			  identityDocument.setIdentityDocumentTypeID(9);
@@ -474,7 +565,7 @@ System.out.println("Read From File ok");
 	            	  }
 	              }
 	              simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
-                 date = simpleDateFormat.parse(rs.getString(16));        
+                 date = simpleDateFormat.parse(rs.getString(19));        
                  gregorianCalendar = 
                     (GregorianCalendar)GregorianCalendar.getInstance();
                  gregorianCalendar.setTime(date);
@@ -485,6 +576,7 @@ System.out.println("Read From File ok");
               	  result.setMillisecond(DatatypeConstants.FIELD_UNDEFINED);
               	  result.setTimezone(DatatypeConstants.FIELD_UNDEFINED);
           	  identityDocument.setBirthDate(result);	
+          	identityDocument.setBirthPlace(rs.getString(20));
           	  applicationDocuments.setIdentityDocument(identityDocument);
         	  
           	  
@@ -530,7 +622,7 @@ System.out.println("Read From File ok");
           	 PackageData.Applications.Application.ApplicationDocuments.EduDocuments eduDocuments = new PackageData.Applications.Application.ApplicationDocuments.EduDocuments();
           	 PackageData.Applications.Application.ApplicationDocuments.EduDocuments.EduDocument eduDocument = new  PackageData.Applications.Application.ApplicationDocuments.EduDocuments.EduDocument();
           	 stmt2 = conn.prepareStatement("SELECT VidDokSredObraz, SeriaAtt, NomerAtt, tipDokSredObraz from Abiturient where KodAbiturienta = ?");
-          	 stmt2.setObject(1,kodAbiturienta,Types.INTEGER);
+          	 stmt2.setObject(1,rs.getString(1),Types.INTEGER);
           	 rs2 = stmt2.executeQuery();
           	 while (rs2.next()){
           		
@@ -539,12 +631,12 @@ System.out.println("Read From File ok");
           		 String vidAtt = rs2.getString(1);
           		 String originalReceived = rs2.getString(4);
           		 //Аттестат
-          		 if(vidAtt.equals("Аттестат") ||vidAtt.equals("Аттестат ООО") || vidAtt.equals("Аттестат ООО с отличием") || vidAtt.equals("Аттестат СОО")||vidAtt.equals("Аттестат СОО с отличием")){
+          		 if( vidAtt.equals("Аттестат СОО")||vidAtt.equals("Аттестат СОО с отличием")){
           			
           			 TSchoolCertificateDocument schoolCertificateDocument = new TSchoolCertificateDocument();
           			schoolCertificateDocument.setDocumentNumber(nomerAtt);
           			//schoolCertificateDocument.setDocumentSeries(seriaAtt);
-          			if (originalReceived.equals("о")){
+          			//if (originalReceived.equals("о")){
           			//	schoolCertificateDocument.setOriginalReceived(true);
           				
           				
@@ -553,7 +645,7 @@ System.out.println("Read From File ok");
           			//	schoolCertificateDocument.setOriginalReceived(false);
           			//}
           				
-          				
+          			schoolCertificateDocument.setUID("AttestatSOO-"+rs.getString(1));	
           			//	 simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
                      //    date = simpleDateFormat.parse("15-07-2015");        
                     //     gregorianCalendar = 
@@ -565,13 +657,20 @@ System.out.println("Read From File ok");
                    //  	  result.setSecond(DatatypeConstants.FIELD_UNDEFINED);
                     // 	  result.setMillisecond(DatatypeConstants.FIELD_UNDEFINED);
                     // 	  result.setTimezone(DatatypeConstants.FIELD_UNDEFINED);
-                     	 schoolCertificateDocument.setOriginalReceivedDate(result);	
-          			}
+                    // 	 schoolCertificateDocument.setOriginalReceivedDate(result);	
+          			//}
           			 eduDocument.setSchoolCertificateDocument(schoolCertificateDocument);
           			 eduDocuments.getEduDocument().add(eduDocument);
           			 
           		 }
           			
+          		 if(vidAtt.equals("Аттестат ООО") || vidAtt.equals("Аттестат ООО с отличием") ){
+          			TSchoolCertificateDocument schoolCertificateDocument = new TSchoolCertificateDocument();
+          			schoolCertificateDocument.setUID("AttestatOOO-"+rs.getString(1));
+          			schoolCertificateDocument.setDocumentNumber(nomerAtt);
+          			eduDocument.setSchoolCertificateBasicDocument(schoolCertificateDocument);
+         			 eduDocuments.getEduDocument().add(eduDocument);
+          		 }
           		 
           		 //Диплом ВПО
           		 else if(vidAtt.equals("Диплом ВПО")){
@@ -579,33 +678,19 @@ System.out.println("Read From File ok");
           			 THighEduDiplomaDocument schoolCertificateDocument = new THighEduDiplomaDocument();
           			schoolCertificateDocument.setDocumentNumber(nomerAtt);
           			schoolCertificateDocument.setDocumentSeries(seriaAtt);
-          			if (originalReceived.equals("о")){
-                    	  schoolCertificateDocument.setOriginalReceivedDate(result);
-          			//}
-          			//else if  (originalReceived.equals("к")){
-          			//	schoolCertificateDocument.setOriginalReceived(false);
-          			//}
-          			}
+          			schoolCertificateDocument.setUID("DiplomVPO-"+rs.getString(1));
           			 eduDocument.setHighEduDiplomaDocument(schoolCertificateDocument);
           			 eduDocuments.getEduDocument().add(eduDocument);
           			 
           		 }
           		 
           		 //Диплом ВПО
-          		 else if(vidAtt.equals("Диплом СПО")){
+          		 else if(vidAtt.equals("Диплом СПО") || vidAtt.equals("Диплом СПО с отличием")){
           			
           			 TMiddleEduDiplomaDocument schoolCertificateDocument = new TMiddleEduDiplomaDocument();
           			schoolCertificateDocument.setDocumentNumber(nomerAtt);
           			schoolCertificateDocument.setDocumentSeries(seriaAtt);
-          			if (originalReceived.equals("о")){
-          			//	schoolCertificateDocument.setOriginalReceived(true);
-          			//}
-          			//else if  (originalReceived.equals("к")){
-          			//	schoolCertificateDocument.setOriginalReceived(false);
-          			//}
-          			
-                     	 schoolCertificateDocument.setOriginalReceivedDate(result);
-          			}
+          			schoolCertificateDocument.setUID("DiplomSPO-"+rs.getString(1));
           			
           			 eduDocument.setMiddleEduDiplomaDocument(schoolCertificateDocument);
           			 eduDocuments.getEduDocument().add(eduDocument);
@@ -618,15 +703,7 @@ System.out.println("Read From File ok");
           			 TBasicDiplomaDocument schoolCertificateDocument = new TBasicDiplomaDocument();
           			schoolCertificateDocument.setDocumentNumber(nomerAtt);
           			schoolCertificateDocument.setDocumentSeries(seriaAtt);
-          			if (originalReceived.equals("о")){
-          		
-          			//}
-          			//else if  (originalReceived.equals("к")){
-          			//	schoolCertificateDocument.setOriginalReceived(false);
-          			//}	 simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
-         
-                    	 schoolCertificateDocument.setOriginalReceivedDate(result);
-          			}
+          			schoolCertificateDocument.setUID("DiplomNPO-"+rs.getString(1));
           			 eduDocument.setBasicDiplomaDocument(schoolCertificateDocument);
           			 eduDocuments.getEduDocument().add(eduDocument);
           			 
@@ -638,15 +715,7 @@ System.out.println("Read From File ok");
           			 TIncomplHighEduDiplomaDocument schoolCertificateDocument = new TIncomplHighEduDiplomaDocument();
           			schoolCertificateDocument.setDocumentNumber(nomerAtt);
           			schoolCertificateDocument.setDocumentSeries(seriaAtt);
-          			if (originalReceived.equals("о")){
-          			//	schoolCertificateDocument.setOriginalReceived(true);
-          			//}
-          			//else if  (originalReceived.equals("к")){
-          			//	schoolCertificateDocument.setOriginalReceived(false);
-          			//}
-          			
-                     	 schoolCertificateDocument.setOriginalReceivedDate(result);
-          			}
+          			schoolCertificateDocument.setUID("DiplomNVPO-"+rs.getString(1));
           			 eduDocument.setIncomplHighEduDiplomaDocument(schoolCertificateDocument);
           			 eduDocuments.getEduDocument().add(eduDocument);
           			 
@@ -701,7 +770,7 @@ System.out.println("Read From File ok");
 //          	applicationDocuments.setEgeDocuments(egeDocuments);
           	
           	applic.setApplicationDocuments(applicationDocuments);
-          	
+          	/*
           	// EntranceTestResults
           	  PackageData.Applications.Application.EntranceTestResults entranceTestResults = new PackageData.Applications.Application.EntranceTestResults();
     //      	  stmt1 = conn.prepareStatement("SELECT KodPredmeta, OtsenkaEge, Examen from ZajavlennyeShkolnyeOtsenki where KodAbiturienta = ?");
@@ -741,11 +810,68 @@ System.out.println("Read From File ok");
               if (!entranceTestResults.getEntranceTestResult().isEmpty()){
             	  applic.setEntranceTestResults(entranceTestResults);
               }
+              */
+          	
+          	
+          	
+          	
+          	
+          	IndividualAchievements ias = new IndividualAchievements();
+          	
+          	
+          	stmt2 = conn.prepareStatement("SELECT ballpoi, ballsgto, ballsoch, ballzgto, ballatt from abitdopinf where KodAbiturienta = ?");
+         	 stmt2.setObject(1,rs.getString(1),Types.VARCHAR);
+         	 rs2 = stmt2.executeQuery();
+         	 if (rs2.next()){
+         		IndividualAchievements.IndividualAchievement ia = new IndividualAchievements.IndividualAchievement();
+         		if(rs2.getString(1)!=null && !rs2.getString(1).equals("Да") && !rs2.getString(1).equals("0") && !rs2.getString(1).equals("да")){
+         			ia.setIAUID("d1-"+rs.getString(1));
+         			ia.setIAMark(rs2.getLong(1));
+         			ia.setInstitutionAchievementUID("d1");
+         			ia.setIADocumentUID("d1-"+rs.getString(1));
+         			ias.getIndividualAchievement().add(ia);
+         		}
+         		if(rs2.getString(2)!=null && !rs2.getString(2).equals("Да") && !rs2.getString(2).equals("0") && !rs2.getString(2).equals("да")){
+         			ia.setIAUID("d10-"+rs.getString(1));
+         			ia.setIAMark(rs2.getLong(2));
+         			ia.setInstitutionAchievementUID("d10");
+         			ia.setIADocumentUID("d10-"+rs.getString(1));
+         			ias.getIndividualAchievement().add(ia);
+         		}
+         		if(rs2.getString(3)!=null && !rs2.getString(3).equals("Да") && !rs2.getString(3).equals("0") && !rs2.getString(3).equals("да")){
+         			ia.setIAUID("d15-"+rs.getString(1));
+         			ia.setIAMark(rs2.getLong(3));
+         			ia.setInstitutionAchievementUID("d15");
+         			ia.setIADocumentUID("d15-"+rs.getString(1));
+         			ias.getIndividualAchievement().add(ia);
+         		}
+         		if(rs2.getString(4)!=null && !rs2.getString(4).equals("Да") && !rs2.getString(4).equals("0") && !rs2.getString(4).equals("да")){
+         			ia.setIAUID("d8-"+rs.getString(1));
+         			ia.setIAMark(rs2.getLong(4));
+         			ia.setInstitutionAchievementUID("d8");
+         			ia.setIADocumentUID("d8-"+rs.getString(1));
+         			ias.getIndividualAchievement().add(ia);
+         		}
+         		if(rs2.getString(5)!=null && !rs2.getString(5).equals("Да") && !rs2.getString(5).equals("0")  && !rs2.getString(5).equals("да")){
+         			ia.setIAUID("d9-"+rs.getString(1));
+         			ia.setIAMark(rs2.getLong(5));
+         			ia.setInstitutionAchievementUID("d9");
+         			ia.setIADocumentUID("d9-"+rs.getString(1));
+         			ias.getIndividualAchievement().add(ia);
+         		}
+         		if(!ias.getIndividualAchievement().isEmpty()){
+         		applic.setIndividualAchievements(ias);
+         		}
+         	 }
+          	
+          	
           	  applications.getApplication().add(applic);
             }
 
-  		 
-		  
+            dfd.setApplications(dcg);
+    		dr.setAuthData(dad);
+    		dr.setDataForDelete(dfd);
+           
 		
 //	  }
 	  
@@ -760,10 +886,17 @@ System.out.println("Read From File ok");
   		Marshaller m = context.createMarshaller();
   		m.marshal(root, os);
   		os.close();
+		
+		of = new File("D:/applicationsDelete.xml");
+		os = new FileOutputStream(of);
+		// Маршаллизация
+		context = JAXBContext.newInstance(abit.paket.delete.Root.class);
+		m = context.createMarshaller();
+		m.marshal(dr, os);
+		os.close();
 		} catch (IOException ex) {
 			;
 		}
-	  
 	  
 	  
 	  

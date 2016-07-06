@@ -130,6 +130,7 @@ var pp_all = document.forms(0).planPriemaT2.value;
 var pp_1 = document.forms(0).planPriemaT3.value;
 var pp_2 = document.forms(0).planPriemaT4.value;
 var pp_3 = document.forms(0).planPriemaT5.value;
+var pp_4 = document.forms(0).planPriemaT1.value;
 
 if(document.forms(0).kodKonGrp.value == "-1")
  {
@@ -202,7 +203,7 @@ for (var i=0; i<document.forms(0).shifrSpetsialnosti.value.length; i++)
    return false;
   }
  }
-if(pp_all != (eval(pp_1)+eval(pp_2)+eval(pp_3))) 
+if(pp_all != (eval(pp_1)+eval(pp_2)+eval(pp_3)+eval(pp_4))) 
  {
   alert("Значение в поле ''План ЦП (ВСЕ)'' должно быть равно сумме планов целевого приёма различных подразделений");
   document.forms(0).planPriemaT2.focus();
@@ -362,6 +363,10 @@ if(document.forms(0).special1.value != "-"){
       <td><html:text accesskey="п" name="abit_Spec" styleClass="text_f10_short" property="planPriema" 
                      maxlength="3" size="3" tabindex="8" value=""/>
                      
+  <tr><td><font class="text_10">План приёма (льготы):</font></td>
+      <td><html:text accesskey="п" name="abit_Spec" styleClass="text_f10_short" property="planPriemaLg" 
+                     maxlength="3" size="3" tabindex="8" value=""/>
+                                          
 <tr><td><font class="text_10">План приёма (Крым общ.):</font></td>
       <td><html:text accesskey="п" name="abit_Spec" styleClass="text_f10_short" property="krimobshee" 
                      maxlength="3" size="3" tabindex="8" value=""/>
@@ -373,15 +378,7 @@ if(document.forms(0).special1.value != "-"){
 <tr><td><font class="text_10">План приёма (Крым целевой приём):</font></td>
       <td><html:text accesskey="п" name="abit_Spec" styleClass="text_f10_short" property="krimcp" 
                      maxlength="3" size="3" tabindex="8" value=""/>
-                     
-<tr><td><font class="text_10">План приема (договор ин. гр.):</font></td>
-      <td><html:text accesskey="п" name="abit_Spec" styleClass="text_f10_short" property="planPriemaIG" 
-                     maxlength="3" size="3" tabindex="8" value=""/>         
-                     
- <tr><td><font class="text_10">План приема (дог. льготы):</font></td>
-      <td><html:text accesskey="п" name="abit_Spec" styleClass="text_f10_short" property="ppDogLgot" 
-                     maxlength="3" size="3" tabindex="8" value=""/>       
-                     
+
  <tr><td><font class="text_10">План приема (Крым дог.):</font></td>
       <td><html:text accesskey="п" name="abit_Spec" styleClass="text_f10_short" property="ppKrimDog" 
                      maxlength="3" size="3" tabindex="8" value=""/>      
@@ -389,23 +386,27 @@ if(document.forms(0).special1.value != "-"){
   <tr><td><font class="text_10">План приема (Крым дог. льготы):</font></td>
       <td><html:text accesskey="п" name="abit_Spec" styleClass="text_f10_short" property="ppKrimDogLgot" 
                      maxlength="3" size="3" tabindex="8" value=""/>                                                                                             
-                     
-  <tr><td><font class="text_10">План приёма (льготы):</font></td>
-      <td><html:text accesskey="п" name="abit_Spec" styleClass="text_f10_short" property="planPriemaLg" 
-                     maxlength="3" size="3" tabindex="8" value=""/>
-                     
+
   <tr><td><font class="text_10">План приёма (договор):</font></td>
       <td><html:text accesskey="п" name="abit_Spec" styleClass="text_f10_short" property="planPriemaDog" 
                      maxlength="3" size="3" tabindex="8" value=""/>
-
-  <tr><td><font class="text_10">План цел. приёма (ПГУ):</font></td>
-      <td><html:text accesskey="п" name="abit_Spec" styleClass="text_f10_short" property="planPriemaT1" 
-                     maxlength="3" size="3" tabindex="9" value=""/>
+                     
+<tr><td><font class="text_10">План приема (договор ин. гр.):</font></td>
+      <td><html:text accesskey="п" name="abit_Spec" styleClass="text_f10_short" property="planPriemaIG" 
+                     maxlength="3" size="3" tabindex="8" value=""/>         
+                     
+ <tr><td><font class="text_10">План приема (дог. льготы):</font></td>
+      <td><html:text accesskey="п" name="abit_Spec" styleClass="text_f10_short" property="ppDogLgot" 
+                     maxlength="3" size="3" tabindex="8" value=""/>                            
 
   <tr><td><font class="text_10">План ЦП (ВСЕ):</font></td>
       <td><html:text accesskey="п" name="abit_Spec" styleClass="text_f10_short" property="planPriemaT2"
                      maxlength="3" size="3" tabindex="10" value=""/>
-
+                     
+  <tr><td><font class="text_10">План цел. приёма (ПГУ):</font></td>
+      <td><html:text accesskey="п" name="abit_Spec" styleClass="text_f10_short" property="planPriemaT1" 
+                     maxlength="3" size="3" tabindex="9" value=""/>
+                     
   <tr><td><font class="text_10">План ЦП (РосАтом ''а''):</font></td>
       <td><html:text accesskey="п" name="abit_Spec" styleClass="text_f10_short" property="planPriemaT3"
                      maxlength="3" size="3" tabindex="11" value=""/>
@@ -543,10 +544,10 @@ if(document.forms(0).special1.value != "-"){
      В&nbsp;базе&nbsp;данных&nbsp;не&nbsp;найдено&nbsp;ни&nbsp;одной&nbsp;записи</font></td>
 </logic:notPresent>
 </table>
-<table align=center border=0>
-<tr>
+<table align=left border=0>
+<tr align="left">
 <html:form action="/spetsialnosti.do?action=new">
-  <td align=center valign=center height="40">
+  <td height="40">
     <html:submit styleClass="button" value="Вернуться назад"/>
   </td>
 </html:form>
@@ -633,11 +634,15 @@ if(document.forms(0).special1.value != "-"){
   <tr><td><font class="text_10">План приема:</font></td>
       <td><html:text accesskey="п" name="abit_Spec" styleClass="text_f10_short" property="planPriema" 
                      size="3" maxlength="3" tabindex="8"/>
-                     
+                                                               
+ <tr><td><font class="text_10">План приема (льготы):</font></td>
+      <td><html:text accesskey="п" name="abit_Spec" styleClass="text_f10_short" property="planPriemaLg" 
+                     size="3" maxlength="3" tabindex="8"/>
+ 
 <tr><td><font class="text_10">План приёма (Крым общ.):</font></td>
       <td><html:text accesskey="п" name="abit_Spec" styleClass="text_f10_short" property="krimobshee" 
                      maxlength="3" size="3" tabindex="8"/>
-                     
+
 <tr><td><font class="text_10">План приёма (Крым особая квота):</font></td>
       <td><html:text accesskey="п" name="abit_Spec" styleClass="text_f10_short" property="krimok" 
                      maxlength="3" size="3" tabindex="8"/>
@@ -645,6 +650,18 @@ if(document.forms(0).special1.value != "-"){
 <tr><td><font class="text_10">План приёма (Крым целевой приём):</font></td>
       <td><html:text accesskey="п" name="abit_Spec" styleClass="text_f10_short" property="krimcp" 
                      maxlength="3" size="3" tabindex="8"/>
+          
+ <tr><td><font class="text_10">План приема (Крым дог.):</font></td>
+      <td><html:text accesskey="п" name="abit_Spec" styleClass="text_f10_short" property="ppKrimDog" 
+                     maxlength="3" size="3" tabindex="8"/>    
+                     
+ <tr><td><font class="text_10">План приема (Крым дог. льготы):</font></td>
+      <td><html:text accesskey="п" name="abit_Spec" styleClass="text_f10_short" property="ppKrimDogLgot" 
+                     maxlength="3" size="3" tabindex="8"/>    
+                    
+ <tr><td><font class="text_10">План приема (договор):</font></td>
+      <td><html:text accesskey="п" name="abit_Spec" styleClass="text_f10_short" property="planPriemaDog" 
+                     size="3" maxlength="3" tabindex="8"/>
                      
 <tr><td><font class="text_10">План приема (договор ин. гр.):</font></td>
       <td><html:text accesskey="п" name="abit_Spec" styleClass="text_f10_short" property="planPriemaIG" 
@@ -653,30 +670,14 @@ if(document.forms(0).special1.value != "-"){
  <tr><td><font class="text_10">План приема (дог. льготы):</font></td>
       <td><html:text accesskey="п" name="abit_Spec" styleClass="text_f10_short" property="ppDogLgot" 
                      maxlength="3" size="3" tabindex="8"/>                     
-                     
- <tr><td><font class="text_10">План приема (Крым дог.):</font></td>
-      <td><html:text accesskey="п" name="abit_Spec" styleClass="text_f10_short" property="ppKrimDog" 
-                     maxlength="3" size="3" tabindex="8"/>    
-                     
- <tr><td><font class="text_10">План приема (Крым дог. льготы):</font></td>
-      <td><html:text accesskey="п" name="abit_Spec" styleClass="text_f10_short" property="ppKrimDogLgot" 
-                     maxlength="3" size="3" tabindex="8"/>    
-                     
- <tr><td><font class="text_10">План приема (льготы):</font></td>
-      <td><html:text accesskey="п" name="abit_Spec" styleClass="text_f10_short" property="planPriemaLg" 
-                     size="3" maxlength="3" tabindex="8"/>
-                     
- <tr><td><font class="text_10">План приема (договор):</font></td>
-      <td><html:text accesskey="п" name="abit_Spec" styleClass="text_f10_short" property="planPriemaDog" 
-                     size="3" maxlength="3" tabindex="8"/>
-
-  <tr><td><font class="text_10">План цел. приёма (ПГУ):</font></td>
-      <td><html:text accesskey="п" name="abit_Spec" styleClass="text_f10_short" property="planPriemaT1" 
-                     maxlength="3" size="3" tabindex="9"/>
-
+           
   <tr><td><font class="text_10">План ЦП (ВСЕ):</font></td>
       <td><html:text accesskey="п" name="abit_Spec" styleClass="text_f10_short" property="planPriemaT2"
                      maxlength="3" size="3" tabindex="10"/>
+                     
+  <tr><td><font class="text_10">План цел. приёма (ПГУ):</font></td>
+      <td><html:text accesskey="п" name="abit_Spec" styleClass="text_f10_short" property="planPriemaT1" 
+                     maxlength="3" size="3" tabindex="9"/>
 
   <tr><td><font class="text_10">План ЦП (РосАтом ''а''):</font></td>
       <td><html:text accesskey="п" name="abit_Spec" styleClass="text_f10_short" property="planPriemaT3"

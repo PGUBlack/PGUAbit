@@ -110,20 +110,18 @@ try {
 		  authData.setPass("Dreamlord88");
 		  
 		 PackageData.AdmissionInfo admissioninfo = new PackageData.AdmissionInfo();
-		 
 		 PackageData.AdmissionInfo.AdmissionVolume admvolume = new PackageData.AdmissionInfo.AdmissionVolume();
 		 PackageData.AdmissionInfo.DistributedAdmissionVolume dvolume = new PackageData.AdmissionInfo.DistributedAdmissionVolume();
-        		 stmt = conn.prepareStatement("select distinct shifrspetsialnosti, edulevel,fisid from spetsialnosti where edulevel in ('á','ñ')");
-           rs = stmt.executeQuery();
-           while (rs.next()) {
+		 	stmt = conn.prepareStatement("select distinct shifrspetsialnosti, edulevel,fisid from spetsialnosti where edulevel in ('á','ñ')");
+			rs = stmt.executeQuery();
+			while (rs.next()) {
         	   PackageData.AdmissionInfo.DistributedAdmissionVolume.Item ditem = new PackageData.AdmissionInfo.DistributedAdmissionVolume.Item();
+      		 	PackageData.AdmissionInfo.AdmissionVolume.Item litem = new PackageData.AdmissionInfo.AdmissionVolume.Item();
 
-      		 PackageData.AdmissionInfo.AdmissionVolume.Item litem = new PackageData.AdmissionInfo.AdmissionVolume.Item();
-
-        	          	   litem.setUID("16-"+rs.getString(1));
-        	          	   ditem.setAdmissionVolumeUID("16d-"+rs.getString(1));
+        	          	   litem.setUID("15-"+rs.getString(1));
+        	          	   ditem.setAdmissionVolumeUID("15d-"+rs.getString(1));
         	          	   ditem.setLevelBudget(1);
-        	          	   litem.setCampaignUID("16bakspec-1");
+        	          	   litem.setCampaignUID("15bakspec-1");
         	          	   if(rs.getString(2).equals("á")){
         	          		   litem.setEducationLevelID(2);
         	          	   }else{
@@ -178,7 +176,7 @@ try {
 					PackageData.AdmissionInfo.CompetitiveGroups cgroups = new PackageData.AdmissionInfo.CompetitiveGroups();
 					int flag = 0;
 					stmt = conn
-							.prepareStatement("select s.kodspetsialnosti,s.nazvaniespetsialnosti, s.tip_spec,s.edulevel, s.fisid, s.planpriema, s.planpriemadog, s.planpriemalg, s.TselPr_PGU,s.TselPr_ROS,s.TselPr_1,s.TselPr_2,s.TselPr_3,(s.krim_obshee+s.krim_cp+s.krim_ok) from spetsialnosti s where s.edulevel in ('á','ñ')");
+							.prepareStatement("select s.kodspetsialnosti,s.nazvaniespetsialnosti, s.tip_spec,s.edulevel, s.fisid, s.planpriema, s.planpriemadog, s.planpriemalg, s.TselPr_PGU,s.TselPr_ROS,s.TselPr_1,s.TselPr_2,s.TselPr_3, s.krim_obshee, s.krim_ok, s.) from spetsialnosti s where s.edulevel in ('á','ñ')");
 					rs = stmt.executeQuery();
 					while (rs.next()) {
 						flag = 0;
@@ -188,16 +186,16 @@ try {
 		//--------------------------------------------------------------------------
 						PackageData.AdmissionInfo.CompetitiveGroups.CompetitiveGroup.EntranceTestItems eti = new PackageData.AdmissionInfo.CompetitiveGroups.CompetitiveGroup.EntranceTestItems();
 						stmt2 = conn
-								.prepareStatement("select np.idfbs, ens.prioritet,np.predmet from nazvanijapredmetov np, ekzamenynaspetsialnosti ens where ens.kodpredmeta=np.kodpredmeta and ens.kodspetsialnosti like ? order by ens.prioritet");
+								.prepareStatement("select np.idfbs, ens.prioritet,np.predmet from nazvanijapredmetov np, ekzamenynaspetsialnosti ens where ens.kodpredmeta=np.kodpredmeta and ens.kodspetsialnosti like ? and np.idfbs not like '0' order by ens.prioritet");
 						stmt2.setObject(1, rs.getString(1), Types.VARCHAR);
 						rs2 = stmt2.executeQuery();
 						while (rs2.next()) {
 							PackageData.AdmissionInfo.CompetitiveGroups.CompetitiveGroup.EntranceTestItems.EntranceTestItem leti = new PackageData.AdmissionInfo.CompetitiveGroups.CompetitiveGroup.EntranceTestItems.EntranceTestItem();
 							leti.setUID("16leti-" + rs.getString(1) + "-"
-									+ rs2.getString(2));
+									+ rs2.getString(2)); 
 							if (rs2.getString(1) == null
 									|| rs2.getString(1).equals("0")) {
-								leti.setEntranceTestTypeID(3);
+								leti.setEntranceTestTypeID(2);
 							} else {
 								leti.setEntranceTestTypeID(1);
 							}

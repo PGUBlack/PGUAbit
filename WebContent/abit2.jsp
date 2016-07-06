@@ -127,7 +127,7 @@
      <tr>
          <td vAlign="middle" height="18" width="163">&nbsp;&nbsp;Область:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
          <td vAlign="middle" height="18">
-          <html:select onchange="regionChange();" name="abit_A" styleClass="select_f1"  property="nazv_DipSpec" tabindex="14">
+          <html:select onchange="regionChange();" name="abit_A" styleClass="select_f1" style="width:550px"  property="nazv_DipSpec" tabindex="14">
            <html:option value="-"/>
            <html:options collection="abit_A_Kladr" property="special27" labelProperty="special28"/>
           </html:select>
@@ -138,7 +138,7 @@
      <tr>
          <td vAlign="middle" height="18" width="163">&nbsp;&nbsp;Район:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
          <td vAlign="middle" height="18">
-          <html:select onchange='rajonChange();' name="abit_A" styleClass="select_f1" property="need_Spo" tabindex="15">
+          <html:select onchange='rajonChange();' name="abit_A" styleClass="select_f1" style="width:550px" property="need_Spo" tabindex="15">
            <html:options collection="abit_A_Rajon" property="special27" labelProperty="special28"/>
          
           </html:select>
@@ -151,17 +151,21 @@
          <td vAlign="middle" height="18" width="163">&nbsp;&nbsp;Насел.&nbsp;пункт:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
          <td vAlign="middle" height="18">
          
-          <html:select name="abit_A" styleClass="select_f1" property="gorod_Prop" tabindex="16">
+          <html:select onchange="gorodChange();" name="abit_A" styleClass="select_f1" style="width:550px" property="gorod_Prop" styleId="gorod_Prop_id1" tabindex="16">
            <html:options collection="abit_A_Punkt" property="special27" labelProperty="special28"/>
            </html:select>
           <html:text name="abit_A" styleClass="text_f9_short" property="gorod_Prop" size="30" maxlength="30" styleId = "foreignPunkt" value="" tabindex="17" />
          </td>
      </tr>
      <tr>
-         <td vAlign="middle" height="18">&nbsp;&nbsp;Улица&nbsp;/&nbsp;просп.:&nbsp;&nbsp;</td>
+         <td vAlign="middle" height="18" width="163">&nbsp;&nbsp;Улица/&nbsp;просп.:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
          <td vAlign="middle" height="18">
-           <html:text name="abit_A" styleClass="text_f9" property="ulica_Prop" size="46" maxlength="60"/>
-         </td>
+          <html:select name="abit_A" styleClass="select_f1" property="ulica_Prop" style="width:550px" tabindex="16">
+           <html:options collection="abit_A_Ulica" property="ulica_Prop" />
+           </html:select>
+          <html:text name="abit_A" styleClass="text_f9_short" property="ulica_Prop" size="30" maxlength="30" styleId = "foreignUlica" value="" tabindex="17" />
+         
+         
      </tr>
      <tr>
          <td vAlign="middle" height="18">&nbsp;&nbsp;Дом&nbsp;/&nbsp;корпус:&nbsp;&nbsp;</td>
@@ -207,7 +211,7 @@
         <tr>
          <td vAlign="middle" height="18" width="163">&nbsp;&nbsp;Область:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
          <td vAlign="middle" height="18">
-          <html:select onchange="regionEduChange();" name="abit_A" styleClass="select_f1"  property="nazvanieOblasti" tabindex="23">
+          <html:select onchange="regionEduChange();" name="abit_A" styleClass="select_f1" style="width:550px" property="nazvanieOblasti" tabindex="23">
            <html:option value="-"/>
            <html:options collection="abit_A_Kladr" property="special27" labelProperty="special28"/>
           </html:select>
@@ -218,7 +222,7 @@
      <tr>
          <td vAlign="middle" height="18" width="163">&nbsp;&nbsp;Район:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
          <td vAlign="middle" height="18">
-          <html:select onchange='rajonEduChange();' name="abit_A" styleClass="select_f1" property="nazvanieRajona" tabindex="24">
+          <html:select onchange='rajonEduChange();' name="abit_A" styleClass="select_f1" property="nazvanieRajona" style="width:550px" tabindex="24">
             <html:options collection="obr_A_Rajon" property="special27" labelProperty="special28"/>
            </html:select>
                 
@@ -228,7 +232,7 @@
          <td vAlign="middle" height="18" width="163">&nbsp;&nbsp;Насел.&nbsp;пункт:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
          <td vAlign="middle" height="18">
          
-          <html:select name="abit_A" styleClass="select_f1" property="nazvanie" tabindex="25">
+          <html:select name="abit_A" styleClass="select_f1" style="width:550px" property="nazvanie" tabindex="25">
             <html:options collection="obr_A_Punkt" property="special27" labelProperty="special28"/>
            <html:text name="abit_A" styleClass="text_f9_short" property="nazvanie" size="30" maxlength="30" styleId = "foreignObrPunkt" value="" tabindex="26" />
        
@@ -263,9 +267,9 @@
          <td vAlign="middle" height="18">&nbsp;&nbsp;Вид&nbsp;документа&nbsp;об&nbsp;образ.:&nbsp;&nbsp;</td>
          <td vAlign="middle" height="18">
            <html:select styleClass="select_f2" name="abit_A" property="vidDokSredObraz">
-            <html:option value="Аттестат ООО">аттестат ООО</html:option>
+            <html:option value="Аттестат ООО">аттестат ООО(9кл.)</html:option>
             <html:option value="Аттестат ООО с отличием">аттестат ООО с отличием</html:option>
-            <html:option value="Аттестат СОО">аттестат СОО</html:option>
+            <html:option value="Аттестат СОО">аттестат СОО(11кл.)</html:option>
             <html:option value="Аттестат СОО с отличием">аттестат СОО с отличием</html:option>
             <html:option value="Диплом бакалавра">диплом бакалавра</html:option>
             <html:option value="Диплом бакалавра с отличием">диплом бакалавра с отличием</html:option>
@@ -274,6 +278,7 @@
             <html:option value="Диплом магистра">диплом магистра</html:option>
             <html:option value="Диплом магистра с отличием">диплом магистра с отличием</html:option>
             <html:option value="Диплом СПО">диплом СПО</html:option>
+            <html:option value="Диплом СПО с отличием">диплом СПО с отличием</html:option>
             <html:option value="Диплом НПО">диплом НПО</html:option>
             <html:option value="Диплом НВПО">диплом НВПО</html:option>
            </html:select>

@@ -18,8 +18,30 @@ var pasp=validate_id($("[name = 'nomerDokumenta']").val());
 	  return false
   }
 
-
-  
+  if($("[name = 'kodFakulteta'] option:selected").val()!="-" && eval("document.forms(0).bud_1.checked") == false &&  eval("document.forms(0).dog_1.checked") == false){
+	  alert("Необходимо проставить основу обучения!");
+	  return false
+  }
+  if($("[name = 's_okso_2'] option:selected").val()!="-" && eval("document.forms(0).bud_2.checked") == false &&  eval("document.forms(0).dog_2.checked") == false){
+	  alert("Необходимо проставить основу обучения!");
+	  return false
+  }
+  if($("[name = 's_okso_3'] option:selected").val()!="-" && eval("document.forms(0).bud_3.checked") == false &&  eval("document.forms(0).dog_3.checked") == false){
+	  alert("Необходимо проставить основу обучения!");
+	  return false
+  }
+  if($("[name = 's_okso_4'] option:selected").val()!="-" && eval("document.forms(0).bud_4.checked") == false &&  eval("document.forms(0).dog_4.checked") == false){
+	  alert("Необходимо проставить основу обучения!");
+	  return false
+  }
+  if($("[name = 's_okso_5'] option:selected").val()!="-" && eval("document.forms(0).bud_5.checked") == false &&  eval("document.forms(0).dog_5.checked") == false){
+	  alert("Необходимо проставить основу обучения!");
+	  return false
+  }
+  if($("[name = 's_okso_6'] option:selected").val()!="-" && eval("document.forms(0).bud_6.checked") == false &&  eval("document.forms(0).dog_6.checked") == false){
+	  alert("Необходимо проставить основу обучения!");
+	  return false
+  }
 
 
 var rs=validate_spec($("[name = 'special2']").val());
@@ -124,6 +146,20 @@ var data = /^(\d{2})\-(\d{2})\-(\d{4})$/
 	  document.forms(0).dataRojdenija.focus()
 	  return false
 	}
+
+//------------------------------------------------------------------------------------------------- changed1
+if(2016<document.forms(0).dataVydDokumenta.value.substring(6,10) || 1970>document.forms(0).dataVydDokumenta.value.substring(6,10)){
+	alert("Дата выдачи документа указана неверно")
+	document.forms(0).dataVydDokumenta.focus()
+	return false
+}
+//-------------------------------------------------------------------------------------------------
+
+if(2002<document.forms(0).dataRojdenija.value.substring(6,10) || 1956>document.forms(0).dataRojdenija.value.substring(6,10)){
+	alert("Возраст поступающего должен быть от 14 до 60")
+	document.forms(0).dataRojdenija.focus()
+	return false
+}
 //-------------------------------------------------------------------------------------------------
 if(document.forms(0).tipDokumenta.value.length == 0){
   alert("Необходимо заполнить поле ''Тип документа''")
@@ -170,11 +206,12 @@ for (var i=0; i<document.forms(0).kemVydDokument.value.length; i++){
   }
 }
 //-------------------------------------------------------------------------------------------------
-if(document.forms(0).dataVydDokumenta.value == "00-00-0000"||!data.test(document.forms(0).dataVydDokumenta.value)){
+if(document.forms(0).dataVydDokumenta.value == "00-00-0000"){
 	  alert("Необходимо заполнить ''Дату выдачи паспорта''")
 	  document.forms(0).dataVydDokumenta.focus()
 	  return false
 	}
+
 for (var i=0; i<document.forms(0).dataVydDokumenta.value.length; i++){
   temp = "" + document.forms(0).dataVydDokumenta.value.substring(i, i+1)
   if (valid99.indexOf(temp) == "-1") {
@@ -182,14 +219,16 @@ for (var i=0; i<document.forms(0).dataVydDokumenta.value.length; i++){
     document.forms(0).dataVydDokumenta.focus()
     return false
   }
+ 
 }
+
 //------ 2. АДРЕС ПРОПИСКИ------------------------------------------------------
 
 
 
 
 //------------------------------------------------------------------------------------------------
-if(document.forms(0).ulica_Prop.value.length == 0){
+/*if(document.forms(0).ulica_Prop.value.length == 0){
   alert("Необходимо заполнить поле ''Улица, проспект''")
   document.forms(0).ulica_Prop.focus()
   return false
@@ -201,7 +240,7 @@ for (var i=0; i<document.forms(0).ulica_Prop.value.length; i++){
     document.forms(0).ulica_Prop.focus()
     return false
   }
-}
+}*/
 //------------------------------------------------------------------------------------------------
 if(document.forms(0).dom_Prop.value == "0"){
   alert("Необходимо заполнить поле ''Дом, корпус''")
@@ -240,8 +279,8 @@ for (var i=0; i<document.forms(0).godOkonchanijaSrObrazovanija.value.length; i++
   }
 }
 if(document.forms(0).godOkonchanijaSrObrazovanija.value < 1950 ||
-   document.forms(0).godOkonchanijaSrObrazovanija.value > 2030) {
-    alert("Поле ''Год получения образования'' может быть от 1950 до 2030")
+   document.forms(0).godOkonchanijaSrObrazovanija.value > 2016) {
+    alert("Поле ''Год получения образования'' может быть от 1950 до 2016")
     document.forms(0).godOkonchanijaSrObrazovanija.focus()
     return false
 }
@@ -382,8 +421,6 @@ function checkFields1(){
 	var result
 
 
-
-
 	  
 
 
@@ -522,11 +559,12 @@ function checkFields1(){
 	  }
 	}
 	//-------------------------------------------------------------------------------------------------
-	if(document.forms(0).dataVydDokumenta.value == "00-00-0000"||!data.test(document.forms(0).dataVydDokumenta.value)){
+	if(document.forms(0).dataVydDokumenta.value == "00-00-0000"){
 		  alert("Необходимо заполнить ''Дату выдачи паспорта''")
 		  document.forms(0).dataVydDokumenta.focus()
 		  return false
 		}
+	
 	for (var i=0; i<document.forms(0).dataVydDokumenta.value.length; i++){
 	  temp = "" + document.forms(0).dataVydDokumenta.value.substring(i, i+1)
 	  if (valid99.indexOf(temp) == "-1") {
@@ -537,11 +575,21 @@ function checkFields1(){
 	}
 	//------ 2. АДРЕС ПРОПИСКИ------------------------------------------------------
 
+	//------------------------------------------------------------------------------------------------- changed1
+	if(2016<document.forms(0).dataVydDokumenta.value.substring(6,10) || 1970>document.forms(0).dataVydDokumenta.value.substring(6,10)){
+		alert("Дата выдачи документа указана неверно")
+		document.forms(0).dataVydDokumenta.focus()
+		return false
+	}
 
 
-
+	if(2002<document.forms(0).dataRojdenija.value.substring(6,10) || 1956>document.forms(0).dataRojdenija.value.substring(6,10)){
+		alert("Возраст поступающего должен быть от 14 до 60")
+		document.forms(0).dataRojdenija.focus()
+		return false
+	}
 	//------------------------------------------------------------------------------------------------
-	if(document.forms(0).ulica_Prop.value.length == 0){
+	/*if(document.forms(0).ulica_Prop.value.length == 0){
 	  alert("Необходимо заполнить поле ''Улица, проспект''")
 	  document.forms(0).ulica_Prop.focus()
 	  return false
@@ -553,7 +601,7 @@ function checkFields1(){
 	    document.forms(0).ulica_Prop.focus()
 	    return false
 	  }
-	}
+	}*/
 	//------------------------------------------------------------------------------------------------
 	if(document.forms(0).dom_Prop.value == "0"){
 	  alert("Необходимо заполнить поле ''Дом, корпус''")
@@ -592,8 +640,8 @@ function checkFields1(){
 	  }
 	}
 	if(document.forms(0).godOkonchanijaSrObrazovanija.value < 1950 ||
-	   document.forms(0).godOkonchanijaSrObrazovanija.value > 2030) {
-	    alert("Поле ''Год получения образования'' может быть от 1950 до 2030")
+	   document.forms(0).godOkonchanijaSrObrazovanija.value > 2016) {
+	    alert("Поле ''Год получения образования'' может быть от 1950 до 2016")
 	    document.forms(0).godOkonchanijaSrObrazovanija.focus()
 	    return false
 	}
@@ -636,9 +684,11 @@ function checkFields1(){
 	//-------------------------------------------------------------------------------------------------
 	//------ 5. ИНФОРМАЦИЯ О БАЛЛАХ ПО КОНКУРСНЫМ ПРЕДМЕТАМ
 	//-------------------------------------------------------------------------------------------------
-	if(document.forms(0).special1.value.length != 0) {
+	if(document.forms(0).special1.value.length != 0 && ($("[name = 'nomerPotoka']").val()==1)) {
+
 	var offset = 0, result = 0, tmp, tmp2;
 	temp = document.forms(0).special1.value;
+	
 	do{
 	   if(temp.indexOf('%',offset+1)!=-1)
 	     result = temp.substring(temp.indexOf('%',offset)+1,temp.indexOf('%',offset+1));
@@ -723,6 +773,7 @@ function exec() {
 			document.forms(0).s_okso_6.selectedIndex = 0;
 			
 			$('#foreignPunkt').toggle(false);
+			$('#foreignUlica').toggle(false);
 			
 			teamLength = document.forms(0).special2.options.length
 			teamTXT1 = new Array(teamLength)
@@ -831,18 +882,24 @@ function exec() {
 		if (code != "Российская Федерация"){		
 			$("[name = 'gorod_Prop']").val('-');
 			$("[name = 'gorod_Prop']").toggle(false);
+			$("[name = 'ulica_Prop']").val('-');
+			$("[name = 'ulica_Prop']").toggle(false);
 			$("[name = 'need_Spo']").val('-');
 			$("[name = 'need_Spo']").toggle(false);
 			$("[name = 'nazv_DipSpec']").toggle(false);
 			$("[name = 'nazv_DipSpec']").val('-');
 			$('#foreignPunkt').toggle(true);
 			$('#foreignPunkt').val('');
+			$('#foreignUlica').toggle(true);
+			$('#foreignUlica').val('');
 		}
 		if (code == "Российская Федерация"){		
 			$("[name = 'nazv_DipSpec']").toggle(true);
 			$("[name = 'need_Spo']").toggle(true);
 			$("[name = 'gorod_Prop']").toggle(true);
+			$("[name = 'ulica_Prop']").toggle(true);
 			$('#foreignPunkt').toggle(false);
+			$('#foreignUlica').toggle(false);
 		}
 	}
 
@@ -875,14 +932,15 @@ function exec() {
 		        success: function(response){
 				//$("[name = 'rajon_KLADR']").remove();
 				//$('#need_Spo').html(response);
-		        	
+		        
 		        	var resString1 = response.substring(0,response.indexOf("@"));
 		        	var resString2 = response.substring(response.indexOf("@")+1);
-		        	
-		        	
+		        	 	
 		        $("[name = 'need_Spo']").html(resString1);
-		       
-		    	$("[name = 'gorod_Prop']").html(resString2);
+		    	$("#gorod_Prop_id1").html(resString2);
+
+		    	$("#gorod_Prop_id1").trigger('change');
+		    	$("[name = 'ulica_Prop']").searchable();
 				 },
 		        error: function(e){
 		            alert('Error: ' + e);
@@ -891,8 +949,7 @@ function exec() {
 		    });
 	//	$("[name = 'gorod_Prop']").html('');
 		
-	
-		
+		//$("[name = 'gorod_Prop']").trigger('change');
 		
 		}
 function fakChange1() {
@@ -908,6 +965,7 @@ function fakChange1() {
 				//$("[name = 'rajon_KLADR']").remove();
 				//$('#need_Spo').html(response);
 		        $("[name = 'special2']").html(response);
+		        
 				 },
 		        error: function(e){
 		            alert('Error: ' + e);
@@ -926,7 +984,31 @@ function fakChange1() {
 		        data: {code: code, action: action },
 		        success: function(response){
 					$("[name = 'gorod_Prop']").html(response);
-		           
+					$("#gorod_Prop_id1").trigger('change');
+			    	$("[name = 'ulica_Prop']").searchable();
+		        },
+		        error: function(e){
+
+		            alert('Error: ' + e);
+
+		        }
+	       
+
+		    });
+			
+	};
+	
+	function gorodChange() {
+
+		var code =  $("[name = 'gorod_Prop']").val();
+		var action = "1"
+			  $.ajax({
+		        type: "POST",
+		        url: "/abiturient/ajaxStreet.do",
+		        data: {code: code, action: action },
+		        success: function(response){
+					$("[name = 'ulica_Prop']").html(response);
+					
 		        },
 		        error: function(e){
 

@@ -33,6 +33,13 @@
   </TR>
   <TR><TD height=5></TD></TR>
   <%---- Кнопка -----%>
+  <TR><TD align=left><A href="parus_export.do"><img border=0 src="layouts/<bean:write name="user" property="idTema"/>/img/b_beg.gif" height=28 width=35></A></TD>
+      <A href="parus_export.do"><TD class="button" align="center" valign="middle" height="28">
+        <A class=menu href="parus_export.do">&nbsp;Загрузить&nbsp;Парус&nbsp;</A></TD></A>
+      <TD align=left><A href="parus_export.do"><img border=0 src="layouts/<bean:write name="user" property="idTema"/>/img/b_end.gif" height=28 width=35></A></TD>
+  </TR>
+  <TR><TD height=5></TD></TR>
+  <%---- Кнопка -----%>
   <TR><TD align=left><A href="index.jsp"><img border=0 src="layouts/<bean:write name="user" property="idTema"/>/img/b_beg.gif" height=28 width=35></A></TD>
       <A href="index.jsp"><TD class="button" align="center" valign="middle" height="28">
         <A class=menu href="index.jsp">&nbsp;Выход&nbsp;в&nbsp;меню&nbsp;</A></TD></A>
