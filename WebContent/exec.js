@@ -5,7 +5,6 @@ function checkFields(){
 	  var valid5 = "1234567890в+"
   var valid9 = " ёйцукенгшщзхъфывапролджэячсмитьбюЁЙЦУКЕНГШЩЗХЪФЫВАПРОЛДЖЭЯЧСМИТЬБЮ1234567890-.,()"
   var valid99 = "1234567890-"
-  var validpas = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
   var temp 
 var result
 
@@ -167,30 +166,17 @@ if(document.forms(0).tipDokumenta.value.length == 0){
   return false
 }
 //-------------------------------------------------------------------------------------------------
-if(!(document.forms(0).seriaDokumenta.value.length == 0)){
-for (var i=0; i<document.forms(0).seriaDokumenta.value.length; i++){
-	  temp = "" + document.forms(0).seriaDokumenta.value.substring(i, i+1)
-	  if (validpas.indexOf(temp) == "-1") {
-	    alert("Поле ''Серия документа'' может состоять только из латинских букв или цифр")
-	    document.forms(0).seriaDokumenta.focus()
-	    return false
-	  }
-}
+if(document.forms(0).seriaDokumenta.value == ""){
+  alert("Необходимо заполнить ''Серию паспорта''")
+  document.forms(0).seriaDokumenta.focus()
+  return false
 }
 //-------------------------------------------------------------------------------------------------
-if(document.forms(0).nomerDokumenta.value.length == 0){
+if(document.forms(0).nomerDokumenta.value == ""){
   alert("Необходимо заполнить ''Номер паспорта''")
   document.forms(0).nomerDokumenta.focus()
   return false
 }
-  for (var i=0; i<document.forms(0).nomerDokumenta.value.length; i++){
-  temp = "" + document.forms(0).nomerDokumenta.value.substring(i, i+1)
-  if (validpas.indexOf(temp) == "-1") {
-    alert("Поле ''Номер документа'' может состоять только из латинских букв или цифр")
-    document.forms(0).nomerDokumenta.focus()
-    return false
-  }
- }  
 //-------------------------------------------------------------------------------------------------
 if(document.forms(0).kemVydDokument.value.length == 0){
   alert("Необходимо заполнить ''Кем выдан паспорт''")
