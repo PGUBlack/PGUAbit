@@ -197,9 +197,9 @@ public class ZhurnalAction extends Action {
       int kol_abt = 0;
 
       if(!(abit_SD.getSpecial1() != null && abit_SD.getSpecial1().equals("on"))) {
-
-        stmt = conn.prepareStatement("SELECT sz.LastNumber FROM Statements_Zhurnal sz WHERE sz.KodSpetsialnosti LIKE ?");
+    	stmt = conn.prepareStatement("SELECT COUNT(a.KodAbiturienta) FROM Abiturient a, KLADR k WHERE a.KodSpetsialnosti LIKE ? AND CONVERT(char(10), a.DataModify, 126) < ? and a.Gorod_Prop = k.code");
         stmt.setObject(1,rs.getString(4),Types.VARCHAR);
+        stmt.setObject(2,analizing_data,Types.VARCHAR);
         rs2 = stmt.executeQuery();
         if(rs2.next()) kol_abt = rs2.getInt(1);
       }
