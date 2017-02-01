@@ -26,10 +26,12 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import abiturient.model.User;
 import abiturient.model.Spec;
+import abiturient.model.App;
 import abiturient.model.UserProfile;
 import abiturient.service.UserProfileService;
 import abiturient.service.UserService;
 import abiturient.service.SpecService;
+import abiturient.service.AppService;
 
 
 
@@ -43,6 +45,9 @@ public class AppController {
 
 	@Autowired
 	SpecService specService;
+
+	@Autowired
+	AppService appService;
 	
 	@Autowired
 	UserProfileService userProfileService;
@@ -92,6 +97,18 @@ public class AppController {
 	}
 
 	/**
+	 * This method will list all existing applications.
+	 */
+	@RequestMapping(value = { "/apps" }, method = RequestMethod.GET)
+	public String listApps(ModelMap model) {
+
+		List<App> apps = appService.findAllApps();
+		model.addAttribute("apps", apps);
+		model.addAttribute("loggedinuser", getPrincipal());
+		return "applist";
+	}
+
+	/**
 	 * This method will provide the medium to add a new user.
 	 */
 	@RequestMapping(value = { "/newuser" }, method = RequestMethod.GET)
@@ -113,6 +130,18 @@ public class AppController {
 		model.addAttribute("edit", false);
 		model.addAttribute("loggedinuser", getPrincipal());
 		return "specadd";
+	}
+
+	/**
+	 * This method will provide the medium to add a new application.
+	 */
+	@RequestMapping(value = { "/newapp" }, method = RequestMethod.GET)
+	public String newApp(ModelMap model) {
+		App app = new App();
+		model.addAttribute("app", app);
+		model.addAttribute("edit", false);
+		model.addAttribute("loggedinuser", getPrincipal());
+		return "appadd";
 	}
 
 	/**
@@ -175,6 +204,21 @@ public class AppController {
 		return "specaddsuccess";
 	}
 
+    /**
+     * This method will be called on form submission, handling POST request for
+     * saving user in database. It also validates the user input
+     */
+    @RequestMapping(value = { "/newapp" }, produces={"text/plain; charset=UTF-8"}, method = RequestMethod.POST)
+    public String saveApp(@Valid App app, BindingResult result,
+                           ModelMap model) {
+
+        appService.saveApp(app);
+
+        model.addAttribute("success", "Карточка добавлена");
+        model.addAttribute("loggedinuser", getPrincipal());
+        //return "success";
+        return "appaddsuccess";
+    }
 
 	/**
 	 * This method will provide the medium to update an existing user.
