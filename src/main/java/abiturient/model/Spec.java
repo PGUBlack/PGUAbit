@@ -28,6 +28,10 @@ public class Spec implements Serializable{
     private Integer id;
 
     @NotEmpty
+    @Column(name="LEVEL", unique=true, nullable=false)
+    private String level;
+
+    @NotEmpty
     @Column(name="NAME", unique=true, nullable=false)
     private String name;
 
@@ -188,6 +192,14 @@ public class Spec implements Serializable{
 
     public void setZ_d(Integer z_d) {
         this.z_d = z_d;
+    }
+
+    public String getLevel() {
+        return level;
+    }
+
+    public void setLevel(String level) {
+        this.level = level;
     }
 
     @Override

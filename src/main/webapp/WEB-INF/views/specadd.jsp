@@ -10,6 +10,7 @@
     <title>Spec Adding Form</title>
     <link href="<c:url value='/static/css/bootstrap.css' />" rel="stylesheet"></link>
     <link href="<c:url value='/static/css/app.css' />" rel="stylesheet"></link>
+    <script src="<c:url value='/static/js/jquery-3.1.1.min.js'>"></script>
 </head>
 
 <body>
@@ -19,6 +20,18 @@
     <div class="well lead">Добавление специальности</div>
     <form:form method="POST" modelAttribute="spec" class="form-horizontal">
         <form:input type="hidden" path="id" id="id"/>
+
+        <div class="row">
+            <div class="form-group col-md-12">
+                <label class="col-md-3 control-label" for="level">Level</label>
+                <div class="col-md-7">
+                    <form:select path="level" items="${levels}" multiple="false" class="form-control input-sm" />
+                    <div class="has-error">
+                        <form:errors path="level" class="help-inline"/>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <div class="row">
             <div class="form-group col-md-12">

@@ -37,6 +37,7 @@ public class AppConfig extends WebMvcConfigurerAdapter{
 		InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
 		viewResolver.setViewClass(JstlView.class);
 		viewResolver.setPrefix("/WEB-INF/views/");
+		viewResolver.setContentType("text/html;charset=UTF-8");
 		viewResolver.setSuffix(".jsp");
 		registry.viewResolver(viewResolver);
 	}
@@ -57,7 +58,6 @@ public class AppConfig extends WebMvcConfigurerAdapter{
     public void addFormatters(FormatterRegistry registry) {
         registry.addConverter(roleToUserProfileConverter);
     }
-	
 
     /**
      * Configure MessageSource to lookup any validation/error message in internationalized property files

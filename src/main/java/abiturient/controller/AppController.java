@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import abiturient.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.security.authentication.AuthenticationTrustResolver;
@@ -28,11 +29,6 @@ import abiturient.model.User;
 import abiturient.model.Spec;
 import abiturient.model.App;
 import abiturient.model.UserProfile;
-import abiturient.service.UserProfileService;
-import abiturient.service.UserService;
-import abiturient.service.SpecService;
-import abiturient.service.AppService;
-
 
 
 @Controller
@@ -125,7 +121,10 @@ public class AppController {
 	 */
 	@RequestMapping(value = { "/newspec" }, method = RequestMethod.GET)
 	public String newSpec(ModelMap model) {
+		DBWork dbWork = new DBWork();
+
 		Spec spec = new Spec();
+		model.addAttribute("levels", dbWork.getLevels());
 		model.addAttribute("spec", spec);
 		model.addAttribute("edit", false);
 		model.addAttribute("loggedinuser", getPrincipal());
@@ -226,6 +225,7 @@ public class AppController {
 	@RequestMapping(value = { "/edit-user-{ssoId}" }, method = RequestMethod.GET)
 	public String editUser(@PathVariable String ssoId, ModelMap model) {
 		User user = userService.findBySSO(ssoId);
+
 		model.addAttribute("user", user);
 		model.addAttribute("edit", true);
 		model.addAttribute("loggedinuser", getPrincipal());
@@ -238,6 +238,9 @@ public class AppController {
 	@RequestMapping(value = { "/edit-spec-{id}" }, method = RequestMethod.GET)
 	public String editSpec(@PathVariable int id, ModelMap model) {
 		Spec spec = specService.findById(id);
+		DBWork dbWork = new DBWork();
+
+		model.addAttribute("levels", dbWork.getLevels());
 		model.addAttribute("spec", spec);
 		model.addAttribute("edit", true);
 		model.addAttribute("loggedinuser", getPrincipal());
