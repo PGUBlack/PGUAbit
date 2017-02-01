@@ -36,6 +36,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
+		org.springframework.web.filter.CharacterEncodingFilter filter = new org.springframework.web.filter.CharacterEncodingFilter();
+		filter.setEncoding("UTF-8");
+		filter.setForceEncoding(true);
+		http.addFilterBefore(filter,org.springframework.security.web.csrf.CsrfFilter.class);
 		http.authorizeRequests().antMatchers("/", "/list","/specs")
 				.access("hasRole('USER') or hasRole('ADMIN') or hasRole('DBA')")
 				.antMatchers("/newuser/**", "/delete-user-*").access("hasRole('ADMIN')")
