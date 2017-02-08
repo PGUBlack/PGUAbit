@@ -10,7 +10,7 @@
     <title>Spec Adding Form</title>
     <link href="<c:url value='/static/css/bootstrap.css' />" rel="stylesheet"></link>
     <link href="<c:url value='/static/css/app.css' />" rel="stylesheet"></link>
-    <script src="<c:url value='/static/js/jquery-3.1.1.min.js'>"></script>
+    <script src="<c:url value='/static/js/jquery-3.1.1.min.js'/>"></script>
 </head>
 
 <body>
@@ -25,7 +25,7 @@
             <div class="form-group col-md-12">
                 <label class="col-md-3 control-label" for="level">Level</label>
                 <div class="col-md-7">
-                    <form:select path="level" items="${levels}" multiple="false" class="form-control input-sm" />
+                    <form:select path="level" id="level" items="${levels}" itemValue="id" itemLabel="name" multiple="false" class="form-control input-sm" onchange="getSpecs()"/>
                     <div class="has-error">
                         <form:errors path="level" class="help-inline"/>
                     </div>
@@ -37,7 +37,7 @@
             <div class="form-group col-md-12">
                 <label class="col-md-3 control-label" for="name">Name</label>
                 <div class="col-md-7">
-                    <form:input type="text" path="name" id="name" class="form-control input-sm"/>
+                    <form:select path="name" id="name" class="form-control input-sm"/>
                     <div class="has-error">
                         <form:errors path="name" class="help-inline"/>
                     </div>
@@ -190,6 +190,18 @@
         </div>
 
         <div class="row">
+            <div class="form-group col-md-12">
+                <label class="col-md-3 control-label" for="year">Year</label>
+                <div class="col-md-7">
+                    <form:input type="number" path="year" id="year" class="form-control input-sm" />
+                    <div class="has-error">
+                        <form:errors path="year" class="help-inline"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
             <div class="form-actions floatRight">
                 <c:choose>
                     <c:when test="${edit}">
@@ -204,4 +216,65 @@
     </form:form>
 </div>
 </body>
+<script type="text/javascript" charset="utf-8">
+    $(document).ready(function() {
+        $('#level').on('change', function(){
+            var code = $("#level option:selected").val();
+            var action = 1;
+            var data = 'action='
+                + encodeURIComponent(action)
+                + '&code='
+                + encodeURIComponent(code);
+            $.ajax({
+                type: "GET",
+                contentType: "application/json;charset=UTF-8",
+                cache: false,
+                url: "<c:url value='/getSpecs' />",
+                data: data,
+                success: function (response) {
+                    $('#name').html(response);
+                    $('#code').val('');
+                    $('#dir').val('');
+                    $('#shifr').val('');
+                },
+                error: function (e) {
+                    alert('Error: ' + e);
+                }
+
+            });
+        });
+
+        $('#name').on('change', function(){
+            var code = $("#name option:selected").val();
+            var action = 2;
+            var data = 'action='
+                + encodeURIComponent(action)
+                + '&code='
+                + encodeURIComponent(code);
+            $('#code').val('');
+            $('#dir').val('');
+            $('#shifr').val('');
+            $.ajax({
+                type: "GET",
+                contentType: "application/json;charset=UTF-8",
+                cache: false,
+                url: "<c:url value='/getSpecs' />",
+                data: data,
+                success: function (response) {
+                    var objData=jQuery.parseJSON(response);
+
+                    $('#code').val(objData.code);
+                    $('#dir').val(objData.ugsname);
+                    $('#shifr').val(code);
+
+                },
+                error: function (e) {
+                    alert('Error: ' + e);
+                }
+
+            });
+        });
+    });
+
+</script>
 </html>

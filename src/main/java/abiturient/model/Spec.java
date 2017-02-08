@@ -4,6 +4,7 @@ package abiturient.model;
  * Created by black on 27.01.17.
  */
 import java.io.Serializable;
+import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -81,6 +82,17 @@ public class Spec implements Serializable{
 
     @Column(name="z_d", nullable=false)
     private Integer z_d;
+
+    @Column(name="year", nullable=false)
+    private Integer year;
+
+    public Integer getYear() {
+        return year;
+    }
+
+    public void setYear(Integer year) {
+        this.year = year;
+    }
 
     public Integer getId() {
         return id;

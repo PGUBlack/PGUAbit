@@ -16,14 +16,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.annotation.*;
 
 import abiturient.model.User;
 import abiturient.model.Spec;
@@ -83,7 +80,7 @@ public class AppController {
 	/**
 	 * This method will list all existing specs.
 	 */
-	@RequestMapping(value = { "/specs" }, method = RequestMethod.GET)
+	@RequestMapping(value = { "/specs" }, method = RequestMethod.GET, produces={"text/plain; charset=UTF-8"})
 	public String listSpecs(ModelMap model) {
 
 		List<Spec> specs = specService.findAllSpecs();
@@ -181,7 +178,7 @@ public class AppController {
 	 * This method will be called on form submission, handling POST request for
 	 * saving user in database. It also validates the user input
 	 */
-	@RequestMapping(value = { "/newspec" }, method = RequestMethod.POST)
+	@RequestMapping(value = { "/newspec" }, method = RequestMethod.POST, produces={"text/plain; charset=UTF-8"})
 	public String saveSpec(@Valid Spec spec, BindingResult result,
 						   ModelMap model) {
 
@@ -197,7 +194,7 @@ public class AppController {
 
 		specService.saveSpec(spec);
 
-		model.addAttribute("success", "Spec " + spec.getCode() + " "+ spec.getName() + " registered successfully");
+		model.addAttribute("success", "Spec registered successfully");
 		model.addAttribute("loggedinuser", getPrincipal());
 		//return "success";
 		return "specaddsuccess";
@@ -379,6 +376,15 @@ public class AppController {
 	private boolean isCurrentAuthenticationAnonymous() {
 	    final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 	    return authenticationTrustResolver.isAnonymous(authentication);
+	}
+
+	@RequestMapping(value = "/getSpecs", method = RequestMethod.GET, produces={"text/plain; charset=UTF-8"})
+	public @ResponseBody String getSpecs(
+			@RequestParam("action") int action,
+			@RequestParam("code") int code) throws Exception{
+		DBWork dbWork = new DBWork();
+		String res=dbWork.getSpecs(code, action);
+		return res;
 	}
 
 

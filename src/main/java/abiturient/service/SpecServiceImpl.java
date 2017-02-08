@@ -55,6 +55,7 @@ public class SpecServiceImpl implements SpecService{
             entity.setZ_l(spec.getZ_l());
             entity.setZ_t(spec.getZ_t());
             entity.setZ_d(spec.getZ_d());
+            entity.setYear(spec.getYear());
         }
     }
 
